@@ -2,6 +2,7 @@ import streamlit as st
 import difflib
 import re
 import urllib.parse
+import os
 
 # =========================================================
 # 🔒 BƯỚC 1: LỚP BẢO MẬT BẰNG MẬT KHẨU (CHỈ BẠN TRUY CẬP ĐƯỢC)
@@ -147,16 +148,11 @@ TOPIK_54_GRAMMAR = [
     }
 ]
 
-# Hàm tạo thẻ audio HTML5 tích hợp trực tiếp nguồn phát âm tiếng Hàn
-def get_audio_html(text):
+# Hàm sử dụng st.audio trực tiếp từ URL Google TTS (Tương thích tuyệt đối trên mọi thiết bị di động)
+def play_ko_audio(text):
     encoded_text = urllib.parse.quote(text)
     audio_url = f"https://translate.google.com/translate_tts?ie=UTF-8&q={encoded_text}&tl=ko&client=tw-ob"
-    return f'''
-        <audio controls style="width: 100%; height: 40px;">
-            <source src="{audio_url}" type="audio/mp3">
-            Trình duyệt của bạn không hỗ trợ thẻ audio.
-        </audio>
-    '''
+    st.audio(audio_url, format="audio/mp3")
 
 def clean_text(text):
     text = text.lower()
@@ -191,7 +187,7 @@ if menu == "Luyện dịch Hàn ➡️ Việt":
         st.info(f"**Văn bản gốc tiếng Hàn:**\n\n{q['source']}")
         
         st.markdown("🔊 **Nghe phát âm chuẩn tiếng Hàn:**")
-        st.markdown(get_audio_html(q['source']), unsafe_allow_html=True)
+        play_ko_audio(q['source'])
         
         user_input = st.text_input("✍️ Nhập bản dịch tiếng Việt:", key=f"k2v_{idx}")
         
@@ -242,7 +238,7 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
                 st.markdown(f"💡 **Bản dịch tham khảo (Đáp án chuẩn):**\n> {q['target']}")
                 
                 st.markdown("🔊 **Nghe phát âm chuẩn tiếng Hàn:**")
-                st.markdown(get_audio_html(q['target']), unsafe_allow_html=True)
+                play_ko_audio(q['target'])
                 st.markdown("---")
             else:
                 st.warning("⚠️ Vui lòng nhập bản dịch!")
@@ -265,13 +261,13 @@ elif menu == "📚 Từ vựng TOPIK (3-6) & Ví dụ":
         with st.expander(f"📌 {item['word']} ({item['level']}) - {item['meaning']}"):
             st.markdown(f"### Từ vựng: `{item['word']}`")
             st.markdown("🔊 **Nghe phát âm từ vựng:**")
-            st.markdown(get_audio_html(item['word']), unsafe_allow_html=True)
+            play_ko_audio(item['word'])
             
             st.markdown(f"**Ý nghĩa:** {item['meaning']}")
             st.markdown(f"**Ví dụ trong bài:** `{item['example']}`")
             st.markdown(f"**Dịch nghĩa:** _{item['example_meaning']}_")
             st.markdown("🔊 **Nghe phát âm cả câu ví dụ:**")
-            st.markdown(get_audio_html(item['example']), unsafe_allow_html=True)
+            play_ko_audio(item['example'])
 
 elif menu == "✍️ Biểu hiện & Ngữ pháp Câu 54 TOPIK":
     st.subheader("📝 Tổng hợp Ngữ pháp & Biểu hiện ôn thi Câu 54 TOPIK II")
@@ -280,11 +276,11 @@ elif menu == "✍️ Biểu hiện & Ngữ pháp Câu 54 TOPIK":
     for i, g_item in enumerate(TOPIK_54_GRAMMAR):
         st.markdown(f"### 🔹 Cấu trúc: `{g_item['grammar']}`")
         st.markdown("🔊 **Nghe phát âm cấu trúc / biểu hiện:**")
-        st.markdown(get_audio_html(g_item['grammar']), unsafe_allow_html=True)
+        play_ko_audio(g_item['grammar'])
         
         st.markdown(f"- **Cách dùng:** {g_item['usage']}")
         st.markdown(f"- **Câu ví dụ trong bài:** `{g_item['example']}`")
         st.markdown(f"- **Bản dịch:** _{g_item['example_meaning']}_")
         st.markdown("🔊 **Nghe phát âm cả câu ví dụ:**")
-        st.markdown(get_audio_html(g_item['example']), unsafe_allow_html=True)
+        play_ko_audio(g_item['example'])
         st.markdown("---")
