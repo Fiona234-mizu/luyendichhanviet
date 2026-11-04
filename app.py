@@ -4,13 +4,13 @@ import difflib
 import html
 import json
 
-st.set_page_config(page_title="Luyện dịch TOPIK II câu 54 – Miễn phí", page_icon="🇰🇷", layout="wide")
+st.set_page_config(page_title="Luyện dịch TOPIK II Câu 54 – Miễn phí", page_icon="🇰🇷", layout="wide")
 
 # ==========================================
-# 1. DỮ LIỆU BÀI LUYỆN DỊCH (8 ĐỀ TOPIK 54)
+# 1. DỮ LIỆU BÀI LUYỆN DỊCH (ĐỀ 96 - ĐỀ 108)
 # ==========================================
 TOPIK_54_TOPICS = {
-    "Đề 107: 직업 체험 교육 (Giáo dục trải nghiệm nghề nghiệp)": {
+    "Đề 108: 청소년의 진로 선택과 직업 체험 교육 (Lựa chọn nghề nghiệp & Trải nghiệm nghề nghiệp)": {
         "kr_vi": [
             {"id": 1, "source": "청소년기는 자신의 적성과 흥미를 발견하고 미래의 진로를 결정하는 중요한 시기이다.", "target": "Tuổi thanh thiếu niên là giai đoạn quan trọng để khám phá năng lực, sở thích của bản thân và quyết định con đường nghề nghiệp trong tương lai."},
             {"id": 2, "source": "그러나 많은 청소년들이 진로를 선택하는 과정에서 여러 가지 어려움을 겪고 있다.", "target": "Tuy nhiên, nhiều thanh thiếu niên đang gặp phải nhiều khó khăn khác nhau trong quá trình lựa chọn nghề nghiệp."},
@@ -28,14 +28,14 @@ TOPIK_54_TOPICS = {
             {"id": 14, "source": "이처럼 체계적이고 실질적인 직업 체험 교육이 이루어진다면 청소년들은 자신의 미래를 주도적으로 설계하고 올바른 진로를 선택하는 데 큰 도움을 받을 수 있을 것이다.", "target": "Nếu hoạt động giáo dục trải nghiệm nghề nghiệp được thực hiện một cách có hệ thống và thiết thực như vậy, thanh thiếu niên sẽ nhận được sự hỗ trợ lớn trong việc chủ động hoạch định tương lai và lựa chọn con đường nghề nghiệp đúng đắn."}
         ]
     },
-    "Đề 106: 올바른 대중매체 활용 (Sử dụng truyền thông đúng đắn)": {
+    "Đề 106: 올바른 대중매체 활용 (Sử dụng truyền thông đại chúng đúng đắn)": {
         "kr_vi": [
             {"id": 1, "source": "아울러 자신에게 필요한 내용을 선택하고 이용 시간을 적절하게 조절해야 한다.", "target": "Ngoài ra, các em cần lựa chọn những nội dung cần thiết cho bản thân và điều chỉnh thời gian sử dụng một cách hợp lý."},
             {"id": 2, "source": "이를 위해 학교에서는 미디어 교육을 강화하고 올바른 정보 이용 방법을 가르칠 필요가 있다.", "target": "Để làm được điều này, nhà trường cần tăng cường giáo dục truyền thông và giảng dạy phương pháp sử dụng thông tin đúng đắn."},
             {"id": 3, "source": "이처럼 청소년들이 대중 매체를 올바르게 활용한다면 다양한 지식을 얻는 동시에 건강한 가치관을 형성할 수 있을 것이다.", "target": "Nếu thanh thiếu niên sử dụng truyền thông đại chúng một cách đúng đắn như vậy, các em có thể vừa tiếp thu được nhiều kiến thức đa dạng, vừa hình thành hệ giá trị quan lành mạnh."}
         ]
     },
-    "Đề 105: 경험의 중요성과 활용 (Tầm quan trọng và cách vận dụng kinh nghiệm)": {
+    "Đề 105: 경험의 활용과 성장 (Vận dụng kinh nghiệm và phát triển bản thân)": {
         "kr_vi": [
             {"id": 1, "source": "아울러 다양한 활동에 참여한 후에는 자신의 경험을 돌아보고 잘한 점과 부족한 점을 분석해야 한다.", "target": "Ngoài ra, sau khi tham gia các hoạt động đa dạng, chúng ta cần nhìn lại trải nghiệm của bản thân và phân tích những điểm đã làm tốt cũng như những điểm còn thiếu sót."},
             {"id": 2, "source": "이를 통해 같은 실수를 반복하지 않고 경험을 실제적인 성장으로 연결할 수 있다.", "target": "Thông qua đó, chúng ta có thể không lặp lại những sai lầm giống nhau và biến kinh nghiệm thành sự phát triển thực chất."},
@@ -56,62 +56,89 @@ TOPIK_54_TOPICS = {
             {"id": 3, "source": "이처럼 정부의 체계적인 관리와 시민들의 자발적인 참여가 함께 이루어진다면 더욱 깨끗하고 건강한 사회를 만들 수 있을 것이다.", "target": "Nếu việc quản lý có hệ thống của chính phủ và sự tham gia tự giác của người dân được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội sạch sẽ và lành mạnh hơn."}
         ]
     },
-    "Đề 102: 디지털 정보 격차 해소 (Xóa bỏ khoảng cách thông tin kỹ thuật số)": {
+    "Đề 102: 디지털 정보 격차 해소 (Giải quyết khoảng cách thông tin kỹ thuật số)": {
         "kr_vi": [
-            {"id": 1, "source": "아울러 사회적으로는 고령자와 장애인을 위한 교육 프로그램을 확대하고, 누구나 쉽게 sử dụng할 수 있도록 기기의 화면과 기능을 개선해야 한다.", "target": "Ngoài ra, về mặt xã hội, cần mở rộng các chương trình giáo dục dành cho người cao tuổi và người khuyết tật, đồng thời cải thiện màn hình và chức능 của thiết bị để bất kỳ ai cũng có thể dễ dàng sử dụng."},
+            {"id": 1, "source": "아울러 사회적으로는 고령자와 장애인을 위한 교육 프로그램을 확대하고, 누구나 쉽게 사용할 수 있도록 기기의 화면과 기능을 개선해야 한다.", "target": "Ngoài ra, về mặt xã hội, cần mở rộng các chương trình giáo dục dành cho người cao tuổi và người khuyết tật, đồng thời cải thiện màn hình và chức năng của thiết bị để bất kỳ ai cũng có thể dễ dàng sử dụng."},
             {"id": 2, "source": "아울러 디지털 기기 사용이 어려운 사람들을 위해 대면 서비스도 함께 제공할 필요가 있다.", "target": "Đồng thời, cần cung cấp cả dịch vụ trực tiếp dành cho những người gặp khó khăn trong việc sử dụng thiết bị kỹ thuật số."},
             {"id": 3, "source": "이처럼 개인의 노력과 사회의 제도적 지원이 함께 이루어진다면 누구나 디지털 기술의 혜택을 누릴 수 있는 포용적인 사회를 만들 수 있을 것이다.", "target": "Nếu nỗ lực của cá nhân và sự hỗ trợ về mặt chính sách, thể chế của xã hội được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội hòa nhập, nơi bất kỳ ai cũng có thể tận hưởng những lợi ích của công nghệ số."}
         ]
     },
-    "Đề 101: 재택근무의 정착 (Định hình hình thức làm việc tại nhà)": {
+    "Đề 101: 재택근무의 효율적 운용 (Vận hành hiệu quả hình thức làm việc tại nhà)": {
         "kr_vi": [
             {"id": 1, "source": "우선 기업은 화상 회의나 메신저 등 온라인 소통 수단을 적극 활용하여 직원 간의 원활한 정보 공유를 지원해야 한다.", "target": "Trước tiên, doanh nghiệp cần tích cực sử dụng các phương tiện giao tiếp trực tuyến như họp trực tuyến hoặc ứng dụng nhắn tin để hỗ trợ việc trao đổi thông tin thuận lợi giữa các nhân viên."},
             {"id": 2, "source": "또한 직원들은 정해진 근무 시간과 휴식 시간을 지키고 업무 공간을 별도로 마련하는 등 스스로 업무 환경을 관리해야 한다.", "target": "Ngoài ra, nhân viên cần tự quản lý môi trường làm việc của mình bằng cách tuân thủ thời gian làm việc và nghỉ ngơi đã quy định, đồng thời bố trí không gian làm việc riêng biệt."},
             {"id": 3, "source": "이처럼 기업의 체계적인 지원과 직원들의 자발적인 노력이 함께 이루어진다면 재택근무의 장점을 살리면서 문제점을 줄일 수 있을 것이다.", "target": "Nếu sự hỗ trợ có hệ thống của doanh nghiệp và nỗ lực tự giác của nhân viên được thực hiện đồng thời như vậy thì có thể phát huy những ưu điểm của hình thức làm việc tại nhà đồng thời giảm thiểu các vấn đề của nó."}
         ]
     },
-    "Đề 100 & 99: 인공지능 활용 / 마음의 회복 (Sử dụng AI & Chữa lành tâm hồn)": {
+    "Đề 100: 인공지능의 올바른 활용 (Sử dụng trí tuệ nhân tạo AI đúng đắn)": {
         "kr_vi": [
             {"id": 1, "source": "아울러 인공지능에 지나치게 의존하지 않고 스스로 생각하고 판단하는 능력을 길러야 한다.", "target": "Ngoài ra, cần rèn luyện khả năng tự suy nghĩ và phán đoán mà không phụ thuộc quá mức vào AI."},
             {"id": 2, "source": "아울러 개인정보를 함부로 입력하지 않는 등 안전한 사용 방법을 익혀야 한다.", "target": "Bên cạnh đó, cần học cách sử dụng an toàn, chẳng hạn như không tùy tiện nhập thông tin cá nhân vào AI."},
             {"id": 3, "source": "이처럼 인공지능은 어떻게 활용하느냐에 따라 긍정적인 결과를 가져올 수도 있고 부정적인 결과를 초래할 수도 있다.", "target": "Như vậy, tùy thuộc vào cách sử dụng, AI có thể mang lại kết quả tích cực nhưng cũng có thể gây ra những hậu quả tiêu cực."},
-            {"id": 4, "source": "그러므로 인공지능의 장점을 적극적으로 활용하되 인간의 판단력과 책임감을 바탕으로 올바르게 사용하는 것이 중요하다.", "target": "Do đó, điều quan trọng là tích cực tận dụng những ưu điểm của AI, đồng thời sử dụng nó một cách đúng đắn dựa trên khả năng phán đoán và tinh thần trách nhiệm của con người."},
-            {"id": 5, "source": "아울러 운동이나 취미 활동을 통해 스트레스를 해소하고, 새로운 목표를 세워 일상에 활력을 되찾는 것도 중요하다.", "target": "Bên cạnh đó, việc giải tỏa căng thẳng thông qua tập thể dục hoặc các hoạt động sở thích, đồng thời đặt ra mục tiêu mới để lấy lại sức sống trong cuộc sống hằng ngày cũng rất quan trọng."},
-            {"id": 6, "source": "이처럼 마음의 상처를 회복하는 데에는 시간이 필요하지만, 자신의 감정을 이해하고 긍정적으로 극복하려는 노력을 꾸준히 한다면 다시 건강한 마음으로 살아갈 수 있을 것이다.", "target": "Như vậy, mặc dù cần có thời gian để chữa lành những tổn thương tinh thần, nhưng nếu kiên trì nỗ lực thấu hiểu cảm xúc của bản thân và vượt qua chúng theo hướng tích cực, chúng ta sẽ có thể tiếp tục sống với một tinh thần khỏe mạnh."}
+            {"id": 4, "source": "그러므로 인공지능의 장점을 적극적으로 활용하되 인간의 판단력과 책임감을 바탕으로 올바르게 사용하는 것이 중요하다.", "target": "Do đó, điều quan trọng là tích cực tận dụng những ưu điểm của AI, đồng thời sử dụng nó một cách đúng đắn dựa trên khả năng phán đoán và tinh thần trách nhiệm của con người."}
+        ]
+    },
+    "Đề 99: 마음의 상처 회복 (Chữa lành vết thương lòng)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 운동이나 취미 활동을 통해 스트레스를 해소하고 새로운 목표를 세워 일상에 활력을 되찾는 노력도 중요하다.", "target": "Bên cạnh đó, nỗ lực giải tỏa căng thẳng thông qua tập thể dục hoặc các hoạt động sở thích, đồng thời đặt ra mục tiêu mới để lấy lại sức sống trong cuộc sống hằng ngày cũng rất quan trọng."},
+            {"id": 2, "source": "이처럼 마음의 상처를 회복하는 데에는 시간이 필요하다.", "target": "Như vậy, việc chữa lành những vết thương lòng cần có thời gian."},
+            {"id": 3, "source": "그러나 자신의 감정을 이해하고 긍정적으로 극복하려는 노력을 꾸준히 한다면 누구나 다시 건강한 마음으로 살아갈 수 있을 것이다.", "target": "Tuy nhiên, nếu kiên trì nỗ lực thấu hiểu cảm xúc của bản thân và vượt qua chúng theo hướng tích cực thì bất kỳ ai cũng có thể tiếp tục sống với một tinh thần khỏe mạnh."}
+        ]
+    },
+    "Đề 98: 진정한 격려와 응원 (Sự động viên và khích lệ thực sự)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 막연한 칭찬보다는 지금까지의 노력 과정과 상대방의 구체적인 장점을 인정해 주는 것이 효과적이다.", "target": "Bên cạnh đó, thay vì những lời khen ngợi chung chung, việc công nhận quá trình nỗ lực từ trước đến nay và những ưu điểm cụ thể của đối phương sẽ hiệu quả hơn."},
+            {"id": 2, "source": "이처럼 진정한 격려와 응원은 단순히 긍정적인 말을 건네는 것이 아니라 상대방의 마음을 이해하고 다시 도전할 수 있도록 용기를 주는 것이다.", "target": "Như vậy, sự động viên và khích lệ thực sự không đơn thuần là nói những lời tích cực, mà là thấu hiểu tâm tư của đối phương và tiếp thêm dũng khí để họ có thể thử sức một lần nữa."},
+            {"id": 3, "source": "그러므로 상대방의 입장에서 생각하며 진심 어린 격려와 응원을 하는 자세가 필요하다.", "target": "Do đó, cần có thái độ suy nghĩ từ góc độ của đối phương và dành cho họ những lời động viên, khích lệ chân thành."}
+        ]
+    },
+    "Đề 97: 차별 없는 사회 (Một xã hội không phân biệt đối xử)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 학교와 사회에서는 차별 문제와 인권의 중요성에 대한 인식을 높이기 위해 교육을 강화해야 한다.", "target": "Ngoài ra, nhà trường và xã hội cần tăng cường giáo dục nhằm nâng cao nhận thức về những vấn đề của phân biệt đối xử và tầm quan trọng của nhân quyền."},
+            {"id": 2, "source": "아울러 정부는 차별을 방지하기 위한 제도와 법적 장치를 마련하고 이를 공정하게 시행해야 한다.", "target": "Bên cạnh đó, chính phủ cần thiết lập các chế độ và biện pháp pháp lý nhằm ngăn chặn sự phân biệt đối xử, đồng thời thực thi chúng một cách công bằng."},
+            {"id": 3, "source": "이처럼 차별 없는 사회를 만들기 위해서는 개인의 인식 개선과 사회적 노력이 함께 이루어져야 한다.", "target": "Như vậy, để xây dựng một xã hội không có sự phân biệt đối xử, việc nâng cao nhận thức của cá nhân và những nỗ lực của xã hội cần được thực hiện đồng thời."},
+            {"id": 4, "source": "서로의 차이를 존중하고 동등한 기회를 보장할 때 더욱 평등하고 발전된 사회를 만들 수 있을 것이다.", "target": "Chỉ khi tôn trọng sự khác biệt của nhau và bảo đảm cơ hội bình đẳng, chúng ta mới có thể xây dựng một xã hội bình đẳng và phát triển hơn."}
+        ]
+    },
+    "Đề 96: 자율성과 조직 내 협력 (Tính tự chủ và sự hợp tác trong tổ chức)": {
+        "kr_vi": [
+            {"id": 1, "source": "이러한 문제를 해결하기 위해서는 구성원들이 개인의 자율성을 존중하면서도 업무를 수행할 때는 동료와 적극적으로 협력하고 서로를 배려해야 한다.", "target": "Để giải quyết những vấn đề này, các thành viên cần tôn trọng tính tự chủ của mỗi cá nhân, đồng thời tích cực hợp tác với đồng nghiệp và quan tâm đến nhau trong quá trình thực hiện công việc."},
+            {"id": 2, "source": "또한 조직은 구성원의 자율성을 보장하는 동시에 조직의 목표를 달성할 수 있는 방안을 마련해야 한다.", "target": "Ngoài ra, tổ chức cần xây dựng những phương án vừa bảo đảm tính tự chủ của các thành viên, vừa giúp đạt được mục tiêu chung của tổ chức."},
+            {"id": 3, "source": "나아가 효율적인 의사소통 방안을 마련하여 구성원 간 원활한 협력이 이루어지도록 해야 할 것이다.", "target": "Hơn nữa, cần xây dựng những phương thức giao tiếp hiệu quả để sự hợp tác giữa các thành viên có thể diễn ra một cách thuận lợi."}
         ]
     }
 }
 
 # ==========================================
-# 2. TỪ VỰNG & NGỮ PHÁP MỞ RỘNG (TOPIK 3-6)
+# 2. TỪ VỰNG & NGỮ PHÁP TOPIK (3-6)
 # ==========================================
 TOPIK_VOCAB = [
+    {"word": "자율성", "level": "TOPIK 5", "meaning": "Tính tự chủ, tính tự do cá nhân", "example": "개인의 자율성을 존중해야 한다.", "example_meaning": "Cần tôn trọng tính tự chủ của cá nhân."},
+    {"word": "격려하다", "level": "TOPIK 4", "meaning": "Khích lệ, động viên", "example": "진심 어린 격려와 응원이 필요하다.", "example_meaning": "Cần có sự động viên và khích lệ chân thành."},
+    {"word": "차별", "level": "TOPIK 4", "meaning": "Sự phân biệt đối xử", "example": "차별 없는 사회를 만들어야 한다.", "example_meaning": "Cần phải tạo ra một xã hội không có sự phân biệt đối xử."},
+    {"word": "인권", "level": "TOPIK 5", "meaning": "Nhân quyền, quyền con người", "example": "인권의 중요성에 대한 인식을 높여야 한다.", "example_meaning": "Cần nâng cao nhận thức về tầm quan trọng của nhân quyền."},
+    {"word": "상처", "level": "TOPIK 3", "meaning": "Vết thương, tổn thương", "example": "마음의 상처를 회복하는 데에는 시간이 필요하다.", "example_meaning": "Việc chữa lành vết thương lòng cần có thời gian."},
+    {"word": "극복하다", "level": "TOPIK 4", "meaning": "Vượt qua, khắc phục", "example": "어려움을 긍정적으로 극복해야 한다.", "example_meaning": "Cần vượt qua khó khăn một cách tích cực."},
     {"word": "적성", "level": "TOPIK 4", "meaning": "Năng khiếu, sở trường", "example": "자신의 적성과 흥미를 발견하는 것이 중요하다.", "example_meaning": "Việc phát hiện năng khiếu và sở thích của bản thân là rất quan trọng."},
-    {"word": "소질", "level": "TOPIK 4", "meaning": "Tố chất, năng khiếu", "example": "어떤 분야에 소질이 있는지 파악해야 한다.", "example_meaning": "Cần phải nắm bắt được bản thân có tố chất ở lĩnh vực nào."},
-    {"word": "체계적이다", "level": "TOPIK 5", "meaning": "Có hệ thống, bài bản", "example": "체계적인 직업 체험 교육이 필요하다.", "example_meaning": "Cần có giáo dục trải nghiệm nghề nghiệp mang tính hệ thống."},
-    {"word": "주도적이다", "level": "TOPIK 5", "meaning": "Chủ động, dẫn dắt", "example": "미래를 주도적으로 설계할 수 있다.", "example_meaning": "Có thể chủ động hoạch định tương lai."},
-    {"word": "자발적이다", "level": "TOPIK 5", "meaning": "Tự giác, tự nguyện", "example": "시민들의 자발적인 참여가 중요하다.", "example_meaning": "Sự tham gia tự giác của người dân là rất quan trọng."},
-    {"word": "포용적이다", "level": "TOPIK 6", "meaning": "Bao hàm, hòa nhập, bao용", "example": "포용적인 사회를 만들어야 한다.", "example_meaning": "Cần phải tạo ra một xã hội hòa nhập."},
-    {"word": "초래하다", "level": "TOPIK 5-6", "meaning": "Gây ra, dẫn đến (kết quả xấu)", "example": "부정적인 결과를 초래할 수 있다.", "example_meaning": "Có thể gây ra kết quả tiêu cực."},
-    {"word": "구체적이다", "level": "TOPIK 4", "meaning": "Cụ thể, rõ ràng", "example": "적성과 흥미를 구체적으로 파악한다.", "example_meaning": "Xác định cụ thể năng lực và sở thích."}
+    {"word": "체계적이다", "level": "TOPIK 5", "meaning": "Có hệ thống, bài bản", "example": "정부의 체계적인 관리가 필요하다.", "example_meaning": "Cần có sự quản lý có hệ thống của chính phủ."}
 ]
 
 TOPIK_54_GRAMMAR = [
-    {"grammar": "이처럼 ~ -ㄴ/는다/ㄹ 것이다", "usage": "Viết câu kết luận cho bài văn TOPIK 54 (Như vậy... thì sẽ...)", "example": "이처럼 체계적인 교육이 이루어진다면 올바른 진로를 선택하는 데 큰 도움이 될 것이다.", "example_meaning": "Như vậy nếu giáo dục có hệ thống được thực hiện thì sẽ trợ giúp lớn cho việc lựa chọn con đường đúng đắn."},
-    {"grammar": "-는 동시에", "usage": "Đồng thời, vừa... vừa... (Diễn tả 2 hành động/trạng thái song song)", "example": "지식을 얻는 동시에 건강한 가치관을 형성할 수 있다.", "example_meaning": "Vừa tiếp thu được kiến thức, đồng thời vừa hình thành được giá trị quan lành mạnh."},
+    {"grammar": "이처럼 ~ -ㄴ/는다/ㄹ 것이다", "usage": "Viết câu kết luận cho bài văn TOPIK 54 (Như vậy... thì sẽ...)", "example": "이처럼 차별 없는 사회를 만들기 위해서는 사회적 노력이 함께 이루어져야 한다.", "example_meaning": "Như vậy để tạo ra một xã hội không phân biệt đối xử thì cần thực hiện đồng thời các nỗ lực xã hội."},
+    {"grammar": "-는 동시에", "usage": "Đồng thời, vừa... vừa... (Diễn tả 2 hành động/trạng thái song song)", "example": "구성원의 자율성을 보장하는 동시에 조직의 목표를 달성해야 한다.", "example_meaning": "Vừa bảo đảm tính tự chủ của thành viên, đồng thời vừa phải đạt được mục tiêu của tổ chức."},
     {"grammar": "-을/를 바탕으로", "usage": "Dựa trên cơ sở..., lấy... làm nền tảng", "example": "인간의 판단력과 책임감을 바탕으로 올바르게 사용해야 한다.", "example_meaning": "Cần sử dụng đúng đắn dựa trên khả năng phán đoán và tinh thần trách nhiệm của con người."},
-    {"grammar": "-에 그치지 않고", "usage": "Không dừng lại ở... (mà còn tiếp tục...)", "example": "단순히 소개하는 데 그치지 않고 직접 경험을 제공해야 한다.", "example_meaning": "Không dừng lại ở việc giới thiệu đơn thuần mà còn phải cung cấp trải nghiệm trực tiếp."}
+    {"grammar": "~기 위해서는 ~ -아/어야 한다", "usage": "Mẫu câu chỉ mục đích & giải pháp (Để... thì phải...)", "example": "이러한 문제를 해결하기 위해서는 서로 배려해야 한다.", "example_meaning": "Để giải quyết vấn đề này thì cần phải quan tâm lẫn nhau."}
 ]
 
 SYNONYMS = {
     "청소년": ["thanh thiếu niên", "giới trẻ", "học sinh"],
     "진로": ["con đường nghề nghiệp", "hướng đi", "tương lai nghề nghiệp"],
-    "적성": ["năng khiếu", "sở trường", "khả năng"],
-    "흥미": ["sở thích", "hứng thú"],
+    "자율성": ["tính tự chủ", "sự tự chủ", "tự do cá nhân"],
+    "격려": ["động viên", "khích lệ", "an ủi"],
+    "차별": ["phân biệt đối xử", "sự phân biệt"],
+    "인권": ["nhân quyền", "quyền con người"],
     "체계적": ["có hệ thống", "bài bản"],
-    "주도적": ["chủ động", "tự mình"],
-    "자발적": ["tự giác", "tự nguyện"],
-    "포용적": ["hòa nhập", "bao dung"]
+    "자발적": ["tự giác", "tự nguyện"]
 }
 
 # ==========================================
@@ -197,19 +224,16 @@ def speak_button(text, key, label="🔊 Nghe phát âm"):
 # ==========================================
 # 4. GIAO DIỆN STREAMLIT MAIN
 # ==========================================
-st.title("🇰🇷 Luyện dịch TOPIK II Câu 54 (8 Bài văn mẫu)")
+st.title("🇰🇷 Luyện dịch TOPIK II Câu 54 (Đề 96 đến Đề 108)")
 st.caption("Ứng dụng miễn phí: Hệ thống chấm câu theo từ khóa & phát âm Web Speech API chuẩn giọng Hàn.")
 
 menu = st.sidebar.selectbox("Chọn chế độ luyện tập", [
-    "📝 Luyện dịch Hàn → Việt (8 Đề)", 
-    "📝 Luyện dịch Việt → Hàn (8 Đề)",
+    "📝 Luyện dịch Hàn → Việt (Các Đề)", 
+    "📝 Luyện dịch Việt → Hàn (Các Đề)",
     "📚 Từ vựng TOPIK 3-6", 
     "✍️ Ngữ pháp & Biểu hiện TOPIK 54", 
     "🔍 Chấm câu tự nhập"
 ])
-
-# Quản lý State
-if "topic_idx" not in st.session_state: st.session_state.topic_idx = 0
 
 def render_multi_topic_practice(direction):
     is_k2v = direction == "kr_vi"
@@ -219,7 +243,7 @@ def render_multi_topic_practice(direction):
     selected_topic_name = st.selectbox("📌 Chọn đề TOPIK 54:", list(TOPIK_54_TOPICS.keys()))
     data_list = TOPIK_54_TOPICS[selected_topic_name]["kr_vi"]
     
-    # Đặt key quản lý riêng cho từng đề
+    # Key quản lý từng đề
     state_key = f"idx_{direction}_{selected_topic_name}"
     if state_key not in st.session_state:
         st.session_state[state_key] = 0
@@ -237,7 +261,7 @@ def render_multi_topic_practice(direction):
     q = data_list[idx]
     st.markdown(f"### **Câu {idx+1} / {len(data_list)}**")
     
-    # Câu nguồn
+    # Hiển thị câu nguồn
     if is_k2v:
         st.info(f"**Tiếng Hàn:** {q['source']}")
         speak_button(q["source"], f"src_{selected_topic_name}_{idx}")
@@ -286,10 +310,10 @@ def render_multi_topic_practice(direction):
             st.rerun()
 
 # RENDER MENU SELECTION
-if menu == "📝 Luyện dịch Hàn → Việt (8 Đề)":
+if menu == "📝 Luyện dịch Hàn → Việt (Các Đề)":
     render_multi_topic_practice("kr_vi")
-elif menu == "📝 Luyện dịch Việt → Hàn (8 Đề)":
-    render_practice_v2k = render_multi_topic_practice("vi_kr")
+elif menu == "📝 Luyện dịch Việt → Hàn (Các Đề)":
+    render_multi_topic_practice("vi_kr")
 
 elif menu == "📚 Từ vựng TOPIK 3-6":
     st.subheader("📚 Từ vựng quan trọng trong các bài TOPIK 54 mẫu")
