@@ -52,7 +52,7 @@ KR_TO_VI_LIST = [
     {"id": 13, "source": "따라서 학교에서는 학생들이 서로 협력하면서 자신의 능력을 발휘할 수 있는 환경을 조성해야 한다.", "target": "Do đó, nhà trường cần tạo môi trường để học sinh phát huy năng lực trong khi hợp tác với nhau."},
     {"id": 14, "source": "예를 들어 개인의 성적이나 순위만을 강조하기보다는 모둠별 과제나 체육 활동을 통해 서로의 장점을 인정해야 한다.", "target": "Ví dụ, thay vì chỉ nhấn mạnh điểm số cá nhân, nên thông qua bài tập nhóm hoặc thể thao để công nhận ưu điểm của nhau."},
     {"id": 15, "source": "부족한 부분을 서로 도와주도록 해야 한다.", "target": "Cần phải giúp đỡ lẫn nhau trong những phần còn thiếu sót."},
-    {"id": 16, "source": "또한 결과뿐만 아니라 노력과 발전 과정도 공정하게 평가해야 한다.", "target": "Hơn nữa, không chỉ kết quả mà cả nỗ lực và quá trình 발전 cũng cần được đánh giá công bằng."},
+    {"id": 16, "source": "또한 결과뿐만 아니라 노력과 발전 과정도 공정하게 평가해야 한다.", "target": "Hơn nữa, không chỉ kết quả mà cả nỗ lực và quá trình phát triển cũng cần được đánh giá công bằng."},
     {"id": 17, "source": "이를 통해 학생들은 다른 사람과의 경쟁을 두려워하지 않게 된다.", "target": "Qua đó, học sinh sẽ không còn sợ hãi việc cạnh tranh với người khác."},
     {"id": 18, "source": "서로 배우며 함께 성장할 수 있을 것이다.", "target": "Các em có thể học hỏi lẫn nhau và cùng nhau trưởng thành."},
     {"id": 19, "source": "경쟁은 때로는 우리에게 발전의 자극제가 된다.", "target": "Cạnh tranh đôi khi là chất kích thích cho sự phát triển của chúng ta."},
@@ -196,7 +196,7 @@ def evaluate_translation_detailed(user_input, reference):
     
     if missing_tokens and final_score < 0.85:
         sample_missing = ", ".join(list(set(missing_tokens))[:5])
-        analysis.append(f"• **Điểm cần cải thiện (Từ vựng/Ý còn thiếu):** Để câu văn chuẩn xác và đạt điểm tối đa như đáp án mẫu, bạn nên bổ sung hoặc thay thế các sắc thái ý nghĩa xoay quanh các từ/ý: *{sample_missing*}.")
+        analysis.append(f"• **Điểm cần cải thiện (Từ vựng/Ý còn thiếu):** Để câu văn chuẩn xác và đạt điểm tối đa như đáp án mẫu, bạn nên bổ sung hoặc thay thế các sắc thái ý nghĩa xoay quanh các từ/ý: *{sample_missing}*.")
 
     analysis.append(f"• **Gợi ý hoàn thiện cấu trúc:** Hãy đối chiếu trực tiếp với câu tham khảo bên dưới để học hỏi thêm cách diễn đạt trang trọng nhất cho bài luận.")
 
