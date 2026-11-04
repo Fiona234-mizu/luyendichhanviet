@@ -146,38 +146,58 @@ TOPIK_54_GRAMMAR = [
     }
 ]
 
-# 🧠 THUẬT TOÁN CHẤM ĐIỂM LINH HOẠT (THÍCH HỢP CHO VĂN PHONG TOPIK 54)
+# 🧠 THUẬT TOÁN ĐÁNH GIÁ CHI TIẾT & GIẢI THÍCH TIÊU CHÍ TOPIK 54
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'[.,?!:;“”"\'()~–-]', '', text)
     return ' '.join(text.split())
 
-def check_translation(user_input, reference):
+def evaluate_translation_detailed(user_input, reference):
     cleaned_input = clean_text(user_input)
     cleaned_ref = clean_text(reference)
     
-    # 1. So khớp trực tiếp toàn câu (chuẩn xác cao)
+    # 1. So khớp cấu trúc tổng thể bằng chuỗi
     similarity = difflib.SequenceMatcher(None, cleaned_input, cleaned_ref).ratio()
     
-    # 2. Kiểm tra độ phủ từ khóa cốt lõi (dành cho trường hợp diễn đạt ý nghĩa tương đương câu 54)
-    ref_words = set(cleaned_ref.split())
+    # 2. Phân tích độ phủ từ khóa/ý nghĩa cốt lõi
+    ref_words = [w for w in cleaned_ref.split() if len(w) > 1] # Lọc các từ có nghĩa chính
     input_words = set(cleaned_input.split())
     
+    matched_words = [w for w in ref_words if w in input_words]
+    
     if len(ref_words) > 0:
-        # Tính tỷ lệ từ khóa xuất hiện trong câu người dùng nhập
-        common_words = ref_words.intersection(input_words)
-        keyword_coverage = len(common_words) / len(ref_words)
+        keyword_coverage = len(set(matched_words)) / len(set(ref_words))
     else:
         keyword_coverage = 0.0
 
-    # Lấy mức điểm cao nhất giữa so khớp chuỗi và độ phủ từ khóa ý nghĩa
+    # Tổng điểm tổng hợp (ưu tiên độ phủ ý nghĩa cốt lõi của câu 54)
     final_score = max(similarity, keyword_coverage)
     
-    # Ngưỡng linh hoạt: Chỉ cần đạt từ 20% trở lên (hoặc nắm bắt được các từ khóa ý chính của câu 54) là được tính là ĐẠT/HỢP LÝ
-    threshold = 0.20
-    is_correct = final_score >= threshold
+    # Xây dựng phần giải thích chi tiết lý do đạt điểm
+    explanations = []
     
-    return is_correct, final_score
+    if final_score >= 0.75:
+        status = "✅ HỢP LÝ / ĐẠT CHUẨN XUẤT SẮC"
+        explanations.append("• **Độ chính xác:** Rất cao. Bản dịch bám sát hoàn toàn ý nghĩa và cấu trúc của đáp án tham khảo.")
+        explanations.append(f"• **Từ khóa cốt lõi:** Đã sử dụng đầy đủ các từ vựng trọng tâm (khớp khoảng {int(keyword_coverage * 100)}% từ khóa chính).")
+        explanations.append("• **Văn phong TOPIK 54:** Diễn đạt trôi chảy, súc tích và hoàn toàn phù hợp với yêu cầu viết luận cấp cao.")
+    elif final_score >= 0.40:
+        status = "⚠️ ĐẠT TẠM ỔN / ĐÚNG Ý CHÍnh"
+        explanations.append("• **Độ chính xác:** Khá tốt. Đã truyền tải được ý nghĩa chính của câu theo đúng định hướng câu 54.")
+        explanations.append(f"• **Từ khóa cốt lõi:** Đã bao hàm một phần các từ khóa quan trọng ({int(keyword_coverage * 100)}% từ khóa chính xuất hiện).")
+        explanations.append("• **Góp ý cải thiện:** Tuy nhiên, cấu trúc câu hoặc một số từ vựng chưa hoàn toàn đồng điệu với văn phong chuẩn, có thể diễn đạt tự nhiên và trang trọng hơn nữa.")
+    elif final_score >= 0.20:
+        status = "💡 ĐẠT MỨC TỐI THIỂU (Ý CƠ BẢN)"
+        explanations.append("• **Độ chính xác:** Ở mức tối thiểu. Câu dịch có nhắc đến một vài từ vựng liên quan nhưng chưa phản ánh đầy đủ chiều sâu ý nghĩa câu 54.")
+        explanations.append(f"• **Từ khóa cốt lõi:** Độ bao phủ từ khóa còn thấp ({int(keyword_coverage * 100)}%).")
+        explanations.append("• **Góp ý cải thiện:** Cần kiểm tra lại các vế câu phụ và bổ sung các từ nối học thuật để câu văn có sức nặng hơn.")
+    else:
+        status = "❌ CHƯA ĐẠT"
+        explanations.append("• **Độ chính xác:** Thấp. Nội dung dịch chưa bám sát hoặc bị lệch hướng so với trọng tâm câu 54.")
+        explanations.append(f"• **Từ khóa cốt lõi:** Gần như chưa khớp các từ khóa chủ chốt của câu tham khảo.")
+        explanations.append("• **Góp ý cải thiện:** Nên đọc lại phần ngữ pháp cấu trúc của câu này và dịch lại từ ý chính trước khi hoàn thiện câu văn.")
+
+    return status, final_score, explanations
 
 st.title("🇰🇷 Ứng Dụng Luyện Dịch TOPIK II - Câu 54")
 
@@ -204,13 +224,16 @@ if menu == "Luyện dịch Hàn ➡️ Việt":
         
         if st.button("Kiểm tra kết quả", key=f"btn_k2v_{idx}"):
             if user_input.strip():
-                is_correct, ratio = check_translation(user_input, q['target'])
+                status, ratio, explanations = evaluate_translation_detailed(user_input, q['target'])
                 st.markdown("---")
-                st.write(f"• **Độ tương đồng ý nghĩa:** {int(ratio * 100)}%")
-                if is_correct:
-                    st.success("✅ **ĐÁNH GIÁ: HỢP LÝ / ĐẠT!** Bản dịch đã truyền tải đúng ý nghĩa cốt lõi theo phong cách câu 54.")
-                else:
-                    st.error("❌ **ĐÁNH GIÁ: CHƯA ĐẠT.** Ý nghĩa còn xa so với trọng tâm câu.")
+                st.markdown(f"### Kết quả đánh giá: {status}")
+                st.write(f"• **Mức độ tương đồng tổng quan:** `{int(ratio * 100)}%`")
+                
+                st.markdown("#### 🔍 Phân tích chi tiết tiêu chí chấm điểm:")
+                for exp in explanations:
+                    st.markdown(exp)
+                    
+                st.markdown("---")
                 st.markdown(f"💡 **Bản dịch tham khảo chuẩn:**\n> {q['target']}")
                 st.markdown("---")
             else:
@@ -239,13 +262,16 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
         
         if st.button("Kiểm tra kết quả", key=f"btn_v2k_{idx}"):
             if user_input.strip():
-                is_correct, ratio = check_translation(user_input, q['target'])
+                status, ratio, explanations = evaluate_translation_detailed(user_input, q['target'])
                 st.markdown("---")
-                st.write(f"• **Độ tương đồng ý nghĩa:** {int(ratio * 100)}%")
-                if is_correct:
-                    st.success("✅ **ĐÁNH GIÁ: HỢP LÝ / ĐẠT!** Cấu trúc ngữ pháp và từ vựng đã đáp ứng tốt yêu cầu văn viết TOPIK.")
-                else:
-                    st.error("❌ **ĐÁNH GIÁ: CHƯA ĐẠT.** Cần xem lại cấu trúc hoặc từ vựng trọng tâm.")
+                st.markdown(f"### Kết quả đánh giá: {status}")
+                st.write(f"• **Mức độ tương đồng tổng quan:** `{int(ratio * 100)}%`")
+                
+                st.markdown("#### 🔍 Phân tích chi tiết tiêu chí chấm điểm:")
+                for exp in explanations:
+                    st.markdown(exp)
+                    
+                st.markdown("---")
                 st.markdown(f"💡 **Bản dịch tham khảo chuẩn (Đáp án):**\n> {q['target']}")
                 st.markdown("---")
             else:
