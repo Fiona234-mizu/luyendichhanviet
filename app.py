@@ -84,7 +84,7 @@ VI_TO_KR_LIST = [
     {"id": 20, "source": "Chúng ta phải tôn trọng lẫn nhau trong cạnh tranh lành mạnh.", "target": "우리는 바람직한 경쟁 속에서 서로를 존중해야 한다."}
 ]
 
-# 📚 TỪ VỰNG TOPIK (Lấy trực tiếp các từ cốt lõi trong bài dịch)
+# 📚 TỪ VỰNG TOPIK
 TOPIK_VOCAB = [
     {
         "word": "초래하다", "level": "TOPIK 5-6", "meaning": "Gây ra, dẫn đến (kết quả xấu)", 
@@ -123,7 +123,7 @@ TOPIK_VOCAB = [
     }
 ]
 
-# 📝 CẤU TRÚC NGỮ PHÁP & BIỂU HIỆN (Lấy trực tiếp câu ví dụ trong bài)
+# 📝 CẤU TRÚC NGỮ PHÁP & BIỂU HIỆN
 TOPIK_54_GRAMMAR = [
     {
         "grammar": "-기 마련이다", "usage": "Đương nhiên sẽ, quy luật tất yếu", 
@@ -138,7 +138,7 @@ TOPIK_54_GRAMMAR = [
     {
         "grammar": "-기보다는", "usage": "Thay vì... thì...", 
         "example": "개인의 성적이나 순위만을 강조하기보다는 모둠별 과제나 체육 활동을 통해 서로의 장점을 인정해야 한다.", 
-        "example_meaning": "Thay vì chỉ nhấn mạnh điểm số cá nhân, nên thông qua bài tập nhóm hoặc thể thao để công nhận ưu điểm của nhau."
+        "example_meaning": "Ví dụ, thay vì chỉ nhấn mạnh điểm số cá nhân, nên thông qua bài tập nhóm hoặc thể thao để công nhận ưu điểm của nhau."
     },
     {
         "grammar": "-을 뿐만 아니라", "usage": "Không những... mà còn...", 
@@ -147,13 +147,12 @@ TOPIK_54_GRAMMAR = [
     }
 ]
 
-# Hàm tạo audio chuẩn bằng Google Translate TTS (Click nghe ngay, không lỗi)
+# Hàm tạo audio chuẩn bằng Google Translate TTS
 def get_audio_html(text):
     encoded_text = urllib.parse.quote(text)
-    # Sử dụng Google Translate TTS API trực tiếp qua thẻ audio HTML5
     audio_url = f"https://translate.google.com/translate_tts?ie=UTF-8&q={encoded_text}&tl=ko&client=tw-ob"
     return f'''
-        <audio controls style="width: 100%; height: 40px;">
+        <audio controls style="width: 100%; height: 36px;">
             <source src="{audio_url}" type="audio/mp3">
             Trình duyệt của bạn không hỗ trợ thẻ audio.
         </audio>
@@ -212,11 +211,11 @@ if menu == "Luyện dịch Hàn ➡️ Việt":
                 
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("➡️ Câu tiếp theo", key=f"next_k2v_{idx}"):
+            if st.button("➡️ Câu tiếp theo", key=f"next_k2v_{idx}****"):
                 st.session_state.current_q += 1
                 st.rerun()
         with col2:
-            if st.button("🔄 Làm lại từ đầu", key=f"reset_k2v_{idx}"):
+            if st.button("🔄 Làm lại từ đầu", key=f"reset_k2v_{idx}****"):
                 st.session_state.current_q = 0
                 st.rerun()
 
@@ -242,7 +241,7 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
                     st.error("❌ **ĐÁNH GIÁ: CHƯA ĐẠT.** Ý nghĩa chưa đủ sát.")
                 st.markdown(f"💡 **Bản dịch tham khảo (Đáp án chuẩn):**\n> {q['target']}")
                 
-                st.markdown("🔊 **Nghe phát âm chuẩn tiếng Hàn:**")
+                st.markdown("🔊 **Nghe phát âm chuẩn câu tiếng Hàn:**")
                 st.markdown(get_audio_html(q['target']), unsafe_allow_html=True)
                 st.markdown("---")
             else:
@@ -250,35 +249,42 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
                 
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("➡️ Câu tiếp theo", key=f"next_v2k_{idx}"):
+            if st.button("➡️ Câu tiếp theo", key=f"next_v2k_{idx}****"):
                 st.session_state.current_q += 1
                 st.rerun()
         with col2:
-            if st.button("🔄 Làm lại từ đầu", key=f"reset_v2k_{idx}"):
+            if st.button("🔄 Làm lại từ đầu", key=f"reset_v2k_{idx}****"):
                 st.session_state.current_q = 0
                 st.rerun()
 
 elif menu == "📚 Từ vựng TOPIK (3-6) & Ví dụ":
     st.subheader("📖 Từ vựng tiêu biểu cấp cao (TOPIK 3 - 6)")
-    st.markdown("Các từ vựng học thuật quan trọng trích trực tiếp từ bài học, có kèm câu ví dụ thực tế và phát âm:")
+    st.markdown("Mỗi từ vựng đều có phần phát âm riêng để bạn luyện nghe từng từ một cách chuẩn xác nhất:")
     
     for item in TOPIK_VOCAB:
         with st.expander(f"📌 {item['word']} ({item['level']}) - {item['meaning']}"):
+            st.markdown(f"### Từ vựng: `{item['word']}`")
+            st.markdown(f"🔊 **Nghe phát âm từ vựng:**")
+            st.markdown(get_audio_html(item['word']), unsafe_allow_html=True)
+            
             st.markdown(f"**Ý nghĩa:** {item['meaning']}")
             st.markdown(f"**Ví dụ trong bài:** `{item['example']}`")
             st.markdown(f"**Dịch nghĩa:** _{item['example_meaning']}_")
-            st.markdown("🔊 **Nghe phát âm câu ví dụ:**")
+            st.markdown(f"🔊 **Nghe phát âm cả câu ví dụ:**")
             st.markdown(get_audio_html(item['example']), unsafe_allow_html=True)
 
 elif menu == "✍️ Biểu hiện & Ngữ pháp Câu 54 TOPIK":
     st.subheader("📝 Tổng hợp Ngữ pháp & Biểu hiện ôn thi Câu 54 TOPIK II")
-    st.markdown("Các cấu trúc câu văn viết trang trọng được lấy ngay từ các câu trong bài đọc để bạn dễ ứng dụng:")
+    st.markdown("Các cấu trúc câu văn viết trang trọng cùng với phát âm riêng cho từng cấu trúc ngữ pháp:")
     
     for g_item in TOPIK_54_GRAMMAR:
         st.markdown(f"### 🔹 Cấu trúc: `{g_item['grammar']}`")
+        st.markdown(f"🔊 **Nghe phát âm cấu trúc / biểu hiện:**")
+        st.markdown(get_audio_html(g_item['grammar']), unsafe_allow_html=True)
+        
         st.markdown(f"- **Cách dùng:** {g_item['usage']}")
         st.markdown(f"- **Câu ví dụ trong bài:** `{g_item['example']}`")
         st.markdown(f"- **Bản dịch:** _{g_item['example_meaning']}_")
-        st.markdown("🔊 **Nghe phát âm câu ví dụ:**")
+        st.markdown(f"🔊 **Nghe phát âm cả câu ví dụ:**")
         st.markdown(get_audio_html(g_item['example']), unsafe_allow_html=True)
         st.markdown("---")
