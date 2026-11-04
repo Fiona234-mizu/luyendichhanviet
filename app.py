@@ -52,7 +52,7 @@ KR_TO_VI_LIST = [
     {"id": 13, "source": "따라서 학교에서는 학생들이 서로 협력하면서 자신의 능력을 발휘할 수 있는 환경을 조성해야 한다.", "target": "Do đó, nhà trường cần tạo môi trường để học sinh phát huy năng lực trong khi hợp tác với nhau."},
     {"id": 14, "source": "예를 들어 개인의 성적이나 순위만을 강조하기보다는 모둠별 과제나 체육 활동을 통해 서로의 장점을 인정해야 한다.", "target": "Ví dụ, thay vì chỉ nhấn mạnh điểm số cá nhân, nên thông qua bài tập nhóm hoặc thể thao để công nhận ưu điểm của nhau."},
     {"id": 15, "source": "부족한 부분을 서로 도와주도록 해야 한다.", "target": "Cần phải giúp đỡ lẫn nhau trong những phần còn thiếu sót."},
-    {"id": 16, "source": "또한 결과뿐만 아니라 노력과 발전 과정도 공정하게 평가해야 한다.", "target": "Hơn nữa, không chỉ kết quả mà cả nỗ lực và quá trình phát triển cũng cần được đánh giá công bằng."},
+    {"id": 16, "source": "또한 결과뿐만 아니라 노력과 발전 과정도 공정하게 평가해야 한다.", "target": "Hơn nữa, không chỉ kết quả mà cả nỗ lực và quá trình 발전 cũng cần được đánh giá công bằng."},
     {"id": 17, "source": "이를 통해 학생들은 다른 사람과의 경쟁을 두려워하지 않게 된다.", "target": "Qua đó, học sinh sẽ không còn sợ hãi việc cạnh tranh với người khác."},
     {"id": 18, "source": "서로 배우며 함께 성장할 수 있을 것이다.", "target": "Các em có thể học hỏi lẫn nhau và cùng nhau trưởng thành."},
     {"id": 19, "source": "경쟁은 때로는 우리에게 발전의 자극제가 된다.", "target": "Cạnh tranh đôi khi là chất kích thích cho sự phát triển của chúng ta."},
@@ -146,7 +146,7 @@ TOPIK_54_GRAMMAR = [
     }
 ]
 
-# 🧠 THUẬT TOÁN ĐÁNH GIÁ CHI TIẾT & GIẢI THÍCH TIÊU CHÍ TOPIK 54
+# 🧠 THUẬT TOÁN ĐÁNH GIÁ VÀ PHÂN TÍCH CHI TIẾT TỪNG Ý / TỪ KHÓA
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'[.,?!:;“”"\'()~–-]', '', text)
@@ -156,48 +156,51 @@ def evaluate_translation_detailed(user_input, reference):
     cleaned_input = clean_text(user_input)
     cleaned_ref = clean_text(reference)
     
-    # 1. So khớp cấu trúc tổng thể bằng chuỗi
     similarity = difflib.SequenceMatcher(None, cleaned_input, cleaned_ref).ratio()
     
-    # 2. Phân tích độ phủ từ khóa/ý nghĩa cốt lõi
-    ref_words = [w for w in cleaned_ref.split() if len(w) > 1] # Lọc các từ có nghĩa chính
-    input_words = set(cleaned_input.split())
+    ref_tokens = [w for w in cleaned_ref.split() if len(w) > 1]
+    input_tokens = set(cleaned_input.split())
     
-    matched_words = [w for w in ref_words if w in input_words]
+    matched_tokens = [w for w in ref_tokens if w in input_tokens]
+    missing_tokens = [w for w in ref_tokens if w not in input_tokens]
     
-    if len(ref_words) > 0:
-        keyword_coverage = len(set(matched_words)) / len(set(ref_words))
+    if len(ref_tokens) > 0:
+        keyword_coverage = len(set(matched_tokens)) / len(set(ref_tokens))
     else:
         keyword_coverage = 0.0
 
-    # Tổng điểm tổng hợp (ưu tiên độ phủ ý nghĩa cốt lõi của câu 54)
     final_score = max(similarity, keyword_coverage)
     
-    # Xây dựng phần giải thích chi tiết lý do đạt điểm
-    explanations = []
+    # Xây dựng nhận xét chi tiết
+    analysis = []
     
-    if final_score >= 0.75:
-        status = "✅ HỢP LÝ / ĐẠT CHUẨN XUẤT SẮC"
-        explanations.append("• **Độ chính xác:** Rất cao. Bản dịch bám sát hoàn toàn ý nghĩa và cấu trúc của đáp án tham khảo.")
-        explanations.append(f"• **Từ khóa cốt lõi:** Đã sử dụng đầy đủ các từ vựng trọng tâm (khớp khoảng {int(keyword_coverage * 100)}% từ khóa chính).")
-        explanations.append("• **Văn phong TOPIK 54:** Diễn đạt trôi chảy, súc tích và hoàn toàn phù hợp với yêu cầu viết luận cấp cao.")
-    elif final_score >= 0.40:
-        status = "⚠️ ĐẠT TẠM ỔN / ĐÚNG Ý CHÍnh"
-        explanations.append("• **Độ chính xác:** Khá tốt. Đã truyền tải được ý nghĩa chính của câu theo đúng định hướng câu 54.")
-        explanations.append(f"• **Từ khóa cốt lõi:** Đã bao hàm một phần các từ khóa quan trọng ({int(keyword_coverage * 100)}% từ khóa chính xuất hiện).")
-        explanations.append("• **Góp ý cải thiện:** Tuy nhiên, cấu trúc câu hoặc một số từ vựng chưa hoàn toàn đồng điệu với văn phong chuẩn, có thể diễn đạt tự nhiên và trang trọng hơn nữa.")
-    elif final_score >= 0.20:
-        status = "💡 ĐẠT MỨC TỐI THIỂU (Ý CƠ BẢN)"
-        explanations.append("• **Độ chính xác:** Ở mức tối thiểu. Câu dịch có nhắc đến một vài từ vựng liên quan nhưng chưa phản ánh đầy đủ chiều sâu ý nghĩa câu 54.")
-        explanations.append(f"• **Từ khóa cốt lõi:** Độ bao phủ từ khóa còn thấp ({int(keyword_coverage * 100)}%).")
-        explanations.append("• **Góp ý cải thiện:** Cần kiểm tra lại các vế câu phụ và bổ sung các từ nối học thuật để câu văn có sức nặng hơn.")
+    if final_score >= 0.70:
+        status = "✅ ĐẠT CHUẨN XUẤT SẮC (Sát nghĩa và đúng văn phong câu 54)"
+        analysis.append("• **Đánh giá chung:** Bản dịch của bạn rất mượt mà, bám sát nghĩa gốc và sử dụng từ vựng học thuật tương đương hoàn hảo với đáp án tham khảo.")
+    elif final_score >= 0.35:
+        status = "⚠️ ĐẠT MỨC KHÁ / ĐÚNG Ý CHÍNH (Cần tinh chỉnh nhỏ)"
+        analysis.append("• **Đánh giá chung:** Bạn đã nắm bắt được ý chính cốt lõi của câu và truyền tải đúng tinh thần đoạn văn TOPIK 54, tuy nhiên một số cụm từ chưa thực sự hoàn hảo.")
+    elif final_score >= 0.15:
+        status = "💡 ĐẠT MỨC TỐI THIỂU (Có chứa từ khóa cơ bản)"
+        analysis.append("• **Đánh giá chung:** Câu dịch có đề cập đến một vài nội dung liên quan nhưng cấu trúc hoặc các từ vựng chính chưa khớp nhiều với văn bản chuẩn.")
     else:
-        status = "❌ CHƯA ĐẠT"
-        explanations.append("• **Độ chính xác:** Thấp. Nội dung dịch chưa bám sát hoặc bị lệch hướng so với trọng tâm câu 54.")
-        explanations.append(f"• **Từ khóa cốt lõi:** Gần như chưa khớp các từ khóa chủ chốt của câu tham khảo.")
-        explanations.append("• **Góp ý cải thiện:** Nên đọc lại phần ngữ pháp cấu trúc của câu này và dịch lại từ ý chính trước khi hoàn thiện câu văn.")
+        status = "❌ CHƯA ĐẠT (Lệch ý hoặc thiếu từ khóa cốt lõi)"
+        analysis.append("• **Đánh giá chung:** Nội dung dịch còn rời rạc, chưa phản ánh đúng trọng tâm yêu cầu của câu gốc.")
 
-    return status, final_score, explanations
+    # Phân tích cụ thể từ khóa đã làm được và chưa làm được
+    analysis.append(f"• **Tỷ lệ từ khóa cốt lõi xuất hiện:** Khoảng `{int(keyword_coverage * 100)}%` các từ khóa trọng tâm của đáp án đã có trong câu của bạn.")
+    
+    if matched_tokens:
+        sample_matched = ", ".join(list(set(matched_tokens))[:5])
+        analysis.append(f"• **Điểm cộng (Từ vựng/Ý đã dịch đúng):** Bạn đã sử dụng thành công các từ hoặc ý chính như: *{sample_matched}*, giúp truyền tải đúng nội dung thành phần.")
+    
+    if missing_tokens and final_score < 0.85:
+        sample_missing = ", ".join(list(set(missing_tokens))[:5])
+        analysis.append(f"• **Điểm cần cải thiện (Từ vựng/Ý còn thiếu):** Để câu văn chuẩn xác và đạt điểm tối đa như đáp án mẫu, bạn nên bổ sung hoặc thay thế các sắc thái ý nghĩa xoay quanh các từ/ý: *{sample_missing*}.")
+
+    analysis.append(f"• **Gợi ý hoàn thiện cấu trúc:** Hãy đối chiếu trực tiếp với câu tham khảo bên dưới để học hỏi thêm cách diễn đạt trang trọng nhất cho bài luận.")
+
+    return status, final_score, analysis
 
 st.title("🇰🇷 Ứng Dụng Luyện Dịch TOPIK II - Câu 54")
 
@@ -224,20 +227,20 @@ if menu == "Luyện dịch Hàn ➡️ Việt":
         
         if st.button("Kiểm tra kết quả", key=f"btn_k2v_{idx}"):
             if user_input.strip():
-                status, ratio, explanations = evaluate_translation_detailed(user_input, q['target'])
+                status, ratio, analysis = evaluate_translation_detailed(user_input, q['target'])
                 st.markdown("---")
-                st.markdown(f"### Kết quả đánh giá: {status}")
-                st.write(f"• **Mức độ tương đồng tổng quan:** `{int(ratio * 100)}%`")
+                st.markdown(f"### Kết quả chấm điểm: {status}")
+                st.write(f"• **Mức độ tương đồng tổng thể:** `{int(ratio * 100)}%`")
                 
-                st.markdown("#### 🔍 Phân tích chi tiết tiêu chí chấm điểm:")
-                for exp in explanations:
-                    st.markdown(exp)
+                st.markdown("#### 🔍 Giải thích chi tiết và phân tích tiêu chí:")
+                for item in analysis:
+                    st.markdown(item)
                     
                 st.markdown("---")
-                st.markdown(f"💡 **Bản dịch tham khảo chuẩn:**\n> {q['target']}")
+                st.markdown(f"💡 **Bản dịch tham khảo chuẩn (Đáp án mẫu):**\n> {q['target']}")
                 st.markdown("---")
             else:
-                st.warning("⚠️ Vui lòng nhập bản dịch!")
+                st.warning("⚠️ Vui lòng nhập bản dịch của bạn trước khi kiểm tra!")
                 
         col1, col2 = st.columns(2)
         with col1:
@@ -262,20 +265,20 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
         
         if st.button("Kiểm tra kết quả", key=f"btn_v2k_{idx}"):
             if user_input.strip():
-                status, ratio, explanations = evaluate_translation_detailed(user_input, q['target'])
+                status, ratio, analysis = evaluate_translation_detailed(user_input, q['target'])
                 st.markdown("---")
-                st.markdown(f"### Kết quả đánh giá: {status}")
-                st.write(f"• **Mức độ tương đồng tổng quan:** `{int(ratio * 100)}%`")
+                st.markdown(f"### Kết quả chấm điểm: {status}")
+                st.write(f"• **Mức độ tương đồng tổng thể:** `{int(ratio * 100)}%`")
                 
-                st.markdown("#### 🔍 Phân tích chi tiết tiêu chí chấm điểm:")
-                for exp in explanations:
-                    st.markdown(exp)
+                st.markdown("#### 🔍 Giải thích chi tiết và phân tích tiêu chí:")
+                for item in analysis:
+                    st.markdown(item)
                     
                 st.markdown("---")
-                st.markdown(f"💡 **Bản dịch tham khảo chuẩn (Đáp án):**\n> {q['target']}")
+                st.markdown(f"💡 **Bản dịch tham khảo chuẩn (Đáp án mẫu):**\n> {q['target']}")
                 st.markdown("---")
             else:
-                st.warning("⚠️ Vui lòng nhập bản dịch!")
+                st.warning("⚠️ Vui lòng nhập bản dịch của bạn trước khi kiểm tra!")
                 
         col1, col2 = st.columns(2)
         with col1:
