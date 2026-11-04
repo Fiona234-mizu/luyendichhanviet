@@ -30,10 +30,10 @@ if not check_password():
 
 
 # =========================================================
-# 🇰🇷 TOÀN BỘ MÃ NGUỒN ỨNG DỤNG LUYỆN DỊCH TOPIK
+# 🇰🇷 TOÀN BỘ MÃ NGUỒN ỨNG DỤNG LUYỆN DỊCH TOPIK II - CÂU 54
 # =========================================================
 
-st.set_page_config(page_title="Luyện Dịch TOPIK II - Câu 54", page_icon="🇰🇷", layout="centered")
+st.set_page_config(page_title="AI Giảng Viên Chấm Điểm TOPIK II - Câu 54", page_icon="👨‍🏫", layout="centered")
 
 # Danh sách 20 câu chiều: HÀN SANG VIỆT
 KR_TO_VI_LIST = [
@@ -146,16 +146,17 @@ TOPIK_54_GRAMMAR = [
     }
 ]
 
-# 🧠 THUẬT TOÁN ĐÁNH GIÁ VÀ PHÂN TÍCH CHI TIẾT TỪNG Ý / TỪ KHÓA
+# 👨‍🏫 THUẬT TOÁN ĐÁNH GIÁ CHUYÊN SÂU THEO TIÊU CHÍ GIẢNG VIÊN TOPIK II
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'[.,?!:;“”"\'()~–-]', '', text)
     return ' '.join(text.split())
 
-def evaluate_translation_detailed(user_input, reference):
+def evaluate_as_topik_instructor(user_input, reference):
     cleaned_input = clean_text(user_input)
     cleaned_ref = clean_text(reference)
     
+    # Tính toán tỷ lệ tương đồng chuỗi và từ khóa
     similarity = difflib.SequenceMatcher(None, cleaned_input, cleaned_ref).ratio()
     
     ref_tokens = [w for w in cleaned_ref.split() if len(w) > 1]
@@ -169,40 +170,45 @@ def evaluate_translation_detailed(user_input, reference):
     else:
         keyword_coverage = 0.0
 
+    # Điểm tổng hợp dựa trên ngữ nghĩa linh hoạt (trọng số từ khóa học thuật và cấu trúc)
     final_score = max(similarity, keyword_coverage)
     
-    # Xây dựng nhận xét chi tiết
-    analysis = []
+    # Quy đổi ra Thang điểm 10 và Phần trăm (%)
+    score_10 = round(final_score * 10, 1)
+    score_percent = int(final_score * 100)
     
-    if final_score >= 0.70:
-        status = "✅ ĐẠT CHUẨN XUẤT SẮC (Sát nghĩa và đúng văn phong câu 54)"
-        analysis.append("• **Đánh giá chung:** Bản dịch của bạn rất mượt mà, bám sát nghĩa gốc và sử dụng từ vựng học thuật tương đương hoàn hảo với đáp án tham khảo.")
-    elif final_score >= 0.35:
-        status = "⚠️ ĐẠT MỨC KHÁ / ĐÚNG Ý CHÍNH (Cần tinh chỉnh nhỏ)"
-        analysis.append("• **Đánh giá chung:** Bạn đã nắm bắt được ý chính cốt lõi của câu và truyền tải đúng tinh thần đoạn văn TOPIK 54, tuy nhiên một số cụm từ chưa thực sự hoàn hảo.")
-    elif final_score >= 0.15:
-        status = "💡 ĐẠT MỨC TỐI THIỂU (Có chứa từ khóa cơ bản)"
-        analysis.append("• **Đánh giá chung:** Câu dịch có đề cập đến một vài nội dung liên quan nhưng cấu trúc hoặc các từ vựng chính chưa khớp nhiều với văn bản chuẩn.")
+    # Nhận xét từ Giảng viên TOPIK II
+    feedback = []
+    
+    if final_score >= 0.75:
+        rank_title = "🏆 ĐẠT CHUẨN XUẤT SẮC (Mức điểm TOPIK II - Câu 54 cấp cao)"
+        feedback.append("👨‍🏫 **Lời phê của Giảng viên:** Bài dịch thể hiện tư duy ngôn ngữ rất sắc bén, sử dụng từ vựng học thuật trang trọng và bám sát hoàn toàn tinh thần câu 54.")
+    elif final_score >= 0.40:
+        rank_title = "👍 ĐẠT MỨC KHÁ / ĐÚNG Ý CHÍNH (Đạt yêu cầu cơ bản)"
+        feedback.append("👨‍🏫 **Lời phê của Giảng viên:** Bạn đã nắm bắt được ý nghĩa cốt lõi và ngữ cảnh chính của câu. Tuy nhiên, một số cụm từ diễn đạt chưa đạt độ tinh tế cao nhất của văn viết.")
+    elif final_score >= 0.20:
+        rank_title = "💡 ĐẠT MỨC TỐI THIỂU (Có cố gắng truyền tải ý nghĩa)"
+        feedback.append("👨‍🏫 **Lời phê của Giảng viên:** Câu dịch đã phản ánh một phần nội dung nhưng cấu trúc ngữ pháp còn hơi lỏng lẻo, thiếu các từ vựng trọng tâm.")
     else:
-        status = "❌ CHƯA ĐẠT (Lệch ý hoặc thiếu từ khóa cốt lõi)"
-        analysis.append("• **Đánh giá chung:** Nội dung dịch còn rời rạc, chưa phản ánh đúng trọng tâm yêu cầu của câu gốc.")
+        rank_title = "❌ CHƯA ĐẠT (Lệch ý nghĩa hoặc sai ngữ cảnh câu 54)"
+        feedback.append("👨‍🏫 **Lời phê của Giảng viên:** Bản dịch chưa bám sát nội dung gốc, từ vựng sử dụng chưa phù hợp với văn phong bài luận TOPIK.")
 
-    # Phân tích cụ thể từ khóa đã làm được và chưa làm được
-    analysis.append(f"• **Tỷ lệ từ khóa cốt lõi xuất hiện:** Khoảng `{int(keyword_coverage * 100)}%` các từ khóa trọng tâm của đáp án đã có trong câu của bạn.")
+    # Phân tích chi tiết từng cụm / từ khóa
+    feedback.append(f"• **Độ bao phủ từ vựng cốt lõi:** Khoảng `{score_percent}%` các từ khóa trọng tâm đã xuất hiện trong bài làm của bạn.")
     
     if matched_tokens:
         sample_matched = ", ".join(list(set(matched_tokens))[:5])
-        analysis.append(f"• **Điểm cộng (Từ vựng/Ý đã dịch đúng):** Bạn đã sử dụng thành công các từ hoặc ý chính như: *{sample_matched}*, giúp truyền tải đúng nội dung thành phần.")
+        feedback.append(f"• **Điểm cộng (Cụm từ đã dịch tốt):** Bạn đã sử dụng chính xác các thành phần ý nghĩa như: *{sample_matched}*.")
     
-    if missing_tokens and final_score < 0.85:
+    if missing_tokens and final_score < 0.90:
         sample_missing = ", ".join(list(set(missing_tokens))[:5])
-        analysis.append(f"• **Điểm cần cải thiện (Từ vựng/Ý còn thiếu):** Để câu văn chuẩn xác và đạt điểm tối đa như đáp án mẫu, bạn nên bổ sung hoặc thay thế các sắc thái ý nghĩa xoay quanh các từ/ý: *{sample_missing}*.")
+        feedback.append(f"• **Phân tích lỗi & Điểm cần cải thiện:** Ý nghĩa hoặc sắc thái của các cụm từ xoay quanh *{sample_missing}* chưa được truyền tải tối ưu. Do đó, điểm số bị trừ ở phần độ tự nhiên và sắc thái học thuật.")
 
-    analysis.append(f"• **Gợi ý hoàn thiện cấu trúc:** Hãy đối chiếu trực tiếp với câu tham khảo bên dưới để học hỏi thêm cách diễn đạt trang trọng nhất cho bài luận.")
+    feedback.append(f"• **Gợi ý bản dịch tham khảo tự nhiên theo chuẩn TOPIK II:**\n> **{reference}**")
 
-    return status, final_score, analysis
+    return rank_title, score_10, score_percent, feedback
 
-st.title("🇰🇷 Ứng Dụng Luyện Dịch TOPIK II - Câu 54")
+st.title("🇰🇷 AI Giảng Viên Chấm Điểm TOPIK II - Câu 54")
 
 menu = st.sidebar.selectbox("📂 Chọn chế độ", [
     "Luyện dịch Hàn ➡️ Việt", 
@@ -225,19 +231,21 @@ if menu == "Luyện dịch Hàn ➡️ Việt":
         
         user_input = st.text_input("✍️ Nhập bản dịch tiếng Việt của bạn:", key=f"k2v_in_{idx}")
         
-        if st.button("Kiểm tra kết quả", key=f"btn_k2v_{idx}"):
+        if st.button("Kiểm tra và Chấm điểm", key=f"btn_k2v_{idx}"):
             if user_input.strip():
-                status, ratio, analysis = evaluate_translation_detailed(user_input, q['target'])
+                rank_title, score_10, score_percent, feedback = evaluate_as_topik_instructor(user_input, q['target'])
                 st.markdown("---")
-                st.markdown(f"### Kết quả chấm điểm: {status}")
-                st.write(f"• **Mức độ tương đồng tổng thể:** `{int(ratio * 100)}%`")
+                st.markdown(f"### Kết quả đánh giá: {rank_title}")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric(label="🎯 Thang điểm 10", value=f"{score_10} / 10 đ")
+                with col2:
+                    st.metric(label="📊 Tỷ lệ tương đương", value=f"{score_percent}%")
                 
-                st.markdown("#### 🔍 Giải thích chi tiết và phân tích tiêu chí:")
-                for item in analysis:
+                st.markdown("#### 👨‍🏫 Phân tích chi tiết lỗi, ngữ nghĩa & Gợi ý từ Giảng viên:")
+                for item in feedback:
                     st.markdown(item)
                     
-                st.markdown("---")
-                st.markdown(f"💡 **Bản dịch tham khảo chuẩn (Đáp án mẫu):**\n> {q['target']}")
                 st.markdown("---")
             else:
                 st.warning("⚠️ Vui lòng nhập bản dịch của bạn trước khi kiểm tra!")
@@ -263,19 +271,21 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
         
         user_input = st.text_input("✍️ Nhập bản dịch tiếng Hàn của bạn:", key=f"v2k_in_{idx}")
         
-        if st.button("Kiểm tra kết quả", key=f"btn_v2k_{idx}"):
+        if st.button("Kiểm tra và Chấm điểm", key=f"btn_v2k_{idx}"):
             if user_input.strip():
-                status, ratio, analysis = evaluate_translation_detailed(user_input, q['target'])
+                rank_title, score_10, score_percent, feedback = evaluate_as_topik_instructor(user_input, q['target'])
                 st.markdown("---")
-                st.markdown(f"### Kết quả chấm điểm: {status}")
-                st.write(f"• **Mức độ tương đồng tổng thể:** `{int(ratio * 100)}%`")
+                st.markdown(f"### Kết quả đánh giá: {rank_title}")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric(label="🎯 Thang điểm 10", value=f"{score_10} / 10 đ")
+                with col2:
+                    st.metric(label="📊 Tỷ lệ tương đương", value=f"{score_percent}%")
                 
-                st.markdown("#### 🔍 Giải thích chi tiết và phân tích tiêu chí:")
-                for item in analysis:
+                st.markdown("#### 👨‍🏫 Phân tích chi tiết lỗi, ngữ nghĩa & Gợi ý từ Giảng viên:")
+                for item in feedback:
                     st.markdown(item)
                     
-                st.markdown("---")
-                st.markdown(f"💡 **Bản dịch tham khảo chuẩn (Đáp án mẫu):**\n> {q['target']}")
                 st.markdown("---")
             else:
                 st.warning("⚠️ Vui lòng nhập bản dịch của bạn trước khi kiểm tra!")
