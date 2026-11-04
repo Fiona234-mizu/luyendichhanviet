@@ -4,139 +4,119 @@ import difflib
 import html
 import json
 
-st.set_page_config(page_title="Luyện dịch TOPIK II – miễn phí", page_icon="🇰🇷", layout="wide")
+st.set_page_config(page_title="Luyện dịch TOPIK II câu 54 – Miễn phí", page_icon="🇰🇷", layout="wide")
 
-# Dữ liệu luyện tập được giữ từ phiên bản bạn gửi.
-KR_TO_VI_LIST = [
-    {"id": 1, "source": "현대 사회에서 경쟁은 학생들이 성장하는 데 중요한 역할을 한다.", "target": "Trong xã hội hiện đại, sự cạnh tranh đóng vai trò quan trọng đối với sự phát triển của học sinh."},
-    {"id": 2, "source": "학생들은 경쟁을 통해 자신의 능력을 확인하고 부족한 점을 개선할 수 있다.", "target": "Thông qua cạnh tranh, học sinh có thể xác định năng lực bản thân và cải thiện những điểm thiếu sót."},
-    {"id": 3, "source": "그러나 지나친 경쟁은 오히려 부정적인 결과를 초래할 수 있으므로 바람직한 경쟁이 이루어져야 한다.", "target": "Tuy nhiên, cạnh tranh quá mức có thể dẫn đến kết quả tiêu cực, vì vậy cần phải có sự cạnh tranh lành mạnh."},
-    {"id": 4, "source": "먼저 학생들은 경쟁을 통해 자신의 실력을 향상시키고 목표를 달성하려는 의지를 기를 수 있다.", "target": "Trước hết, thông qua cạnh tranh, học sinh có thể nâng cao thực lực và nuôi dưỡng ý chí đạt được mục tiêu."},
-    {"id": 5, "source": "다른 학생들과 실력을 겨루는 과정에서 자신의 강점과 약점을 파악할 수 있다.", "target": "Trong quá trình đọ sức với các học sinh khác, các em có thể nắm bắt được điểm mạnh và điểm yếu."},
-    {"id": 6, "source": "부족한 부분을 보완하기 위해 더욱 노력하게 된다.", "target": "Các em sẽ nỗ lực hơn nữa để bù đắp những phần còn thiếu sót."},
-    {"id": 7, "source": "또한 이러한 경험은 학생들이 어려움에 부딪혔을 때 포기하지 않고 도전하는 태도를 기르는 데에도 도움이 된다.", "target": "Ngoài ra, trải nghiệm này giúp học sinh rèn luyện thái độ dám thử thách, không bỏ cuộc khi gặp khó khăn."},
-    {"id": 8, "source": "반면 지나친 경쟁은 학생들에게 심한 스트레스와 심리적 부담을 줄 수 있다.", "target": "Ngược lại, cạnh tranh quá mức có thể gây áp lực tâm lý và căng thẳng nặng nề cho học sinh."},
-    {"id": 9, "source": "특히 좋은 성적이나 높은 순위만을 중요하게 생각하게 되면 결과에 집착하게 된다.", "target": "Đặc biệt, nếu chỉ coi trọng điểm số cao hay thứ hạng cao, các em sẽ dễ bị ám ảnh bởi kết quả."},
-    {"id": 10, "source": "결과에 집착한 나머지 친구를 경쟁 상대로만 여기게 될 수 있다.", "target": "Quá chìm đắm vào kết quả có thể khiến các em xem bạn bè chỉ là đối thủ cạnh tranh."},
-    {"id": 11, "source": "심한 경우에는 부정행위를 하거나 다른 사람을 배려하지 않는 태도가 나타날 수도 있다.", "target": "Trong trường hợp nặng, có thể xuất hiện hành vi gian lận hoặc thái độ không biết quan tâm đến người khác."},
-    {"id": 12, "source": "이는 학생들의 건강한 성장뿐만 아니라 원만한 교우 관계에도 부정적인 영향을 미친다.", "target": "Điều này gây ảnh hưởng tiêu cực đến sự phát triển lành mạnh và các mối quan hệ bạn bè."},
-    {"id": 13, "source": "따라서 학교에서는 학생들이 서로 협력하면서 자신의 능력을 발휘할 수 있는 환경을 조성해야 한다.", "target": "Do đó, nhà trường cần tạo môi trường để học sinh phát huy năng lực trong khi hợp tác với nhau."},
-    {"id": 14, "source": "예를 들어 개인의 성적이나 순위만을 강조하기보다는 모둠별 과제나 체육 활동을 통해 서로의 장점을 인정해야 한다.", "target": "Ví dụ, thay vì chỉ nhấn mạnh điểm số cá nhân, nên thông qua bài tập nhóm hoặc thể thao để công nhận ưu điểm của nhau."},
-    {"id": 15, "source": "부족한 부분을 서로 도와주도록 해야 한다.", "target": "Cần phải giúp đỡ lẫn nhau trong những phần còn thiếu sót."},
-    {"id": 16, "source": "또한 결과뿐만 아니라 노력과 발전 과정도 공정하게 평가해야 한다.", "target": "Hơn nữa, không chỉ kết quả mà cả nỗ lực và quá trình phát triển cũng cần được đánh giá công bằng."},
-    {"id": 17, "source": "이를 통해 학생들은 다른 사람과의 경쟁을 두려워하지 않게 된다.", "target": "Qua đó, học sinh sẽ không còn sợ hãi việc cạnh tranh với người khác."},
-    {"id": 18, "source": "서로 배우며 함께 성장할 수 있을 것이다.", "target": "Các em có thể học hỏi lẫn nhau và cùng nhau trưởng thành."},
-    {"id": 19, "source": "경쟁은 때로는 우리에게 발전의 자극제가 된다.", "target": "Cạnh tranh đôi khi là chất kích thích cho sự phát triển của chúng ta."},
-    {"id": 20, "source": "우리는 건강한 경쟁 속에서 서로를 존중하며 살아가야 한다.", "target": "Chúng ta phải sống và tôn trọng lẫn nhau trong môi trường cạnh tranh lành mạnh."}
-]
-
-VI_TO_KR_LIST = [
-    {"id": 1, "source": "Trong xã hội hiện đại, sự cạnh tranh đóng vai trò quan trọng đối với sự phát triển của học sinh.", "target": "현대 사회에서 경쟁은 학생들이 성장하는 데 중요한 역할을 한다."},
-    {"id": 2, "source": "Thông qua cạnh tranh, học sinh có thể xác định năng lực và cải thiện điểm thiếu sót.", "target": "학생들은 경쟁을 통해 자신의 능력을 확인하고 부족한 점을 개선할 수 있다."},
-    {"id": 3, "source": "Tuy nhiên, cạnh tranh quá mức có thể dẫn đến kết quả tiêu cực.", "target": "그러나 지나친 경쟁은 오히려 부정적인 결과를 초래할 수 있다."},
-    {"id": 4, "source": "Cần phải có sự cạnh tranh lành mạnh.", "target": "바람직한 경쟁이 이루어져야 한다."},
-    {"id": 5, "source": "Học sinh có thể nâng cao thực lực và nuôi dưỡng ý chí đạt mục tiêu.", "target": "학생들은 실력을 향상시키고 목표를 달성하려는 의지를 기를 수 있다."},
-    {"id": 6, "source": "Trong quá trình đọ sức, các em có thể nắm bắt điểm mạnh và điểm yếu.", "target": "겨루는 과정에서 자신의 강점과 약점을 파악할 수 있다."},
-    {"id": 7, "source": "Trải nghiệm này giúp học sinh rèn luyện thái độ không bỏ cuộc khi gặp khó khăn.", "target": "이러한 경험은 학생들이 어려움에 부딪혔을 때 포기하지 않는 태도를 기르는 데 도움이 된다."},
-    {"id": 8, "source": "Cạnh tranh quá mức có thể gây ra áp lực tâm lý nặng nề cho học sinh.", "target": "지나친 경쟁은 학생들에게 심한 심리적 부담을 줄 수 있다."},
-    {"id": 9, "source": "Nếu chỉ coi trọng điểm số, học sinh sẽ dễ bị ám ảnh bởi kết quả.", "target": "성적만을 중요하게 생각하게 되면 결과에 집착하게 된다."},
-    {"id": 10, "source": "Việc này khiến các em xem bạn bè chỉ là đối thủ.", "target": "이는 친구를 경쟁 상대로만 여기게 될 수 있다."},
-    {"id": 11, "source": "Trường hợp nặng có thể xuất hiện hành vi gian lận.", "target": "심한 경우에는 부정행위가 나타날 수도 있다."},
-    {"id": 12, "source": "Điều này gây ảnh hưởng tiêu cực đến quan hệ bạn bè.", "target": "이는 교우 관계에도 부정적인 영향을 미친다."},
-    {"id": 13, "source": "Nhà trường cần tạo ra môi trường để học sinh hợp tác với nhau.", "target": "학교에서는 학생들이 서로 협력할 수 있는 환경을 조성해야 한다."},
-    {"id": 14, "source": "Thay vì chỉ nhấn mạnh điểm số, nên tổ chức bài tập nhóm.", "target": "성적만을 강조하기보다는 모둠별 과제를 통해야 한다."},
-    {"id": 15, "source": "Học sinh cần công nhận ưu điểm của nhau.", "target": "학생들은 서로의 장점을 인정해야 한다."},
-    {"id": 16, "source": "Cần đánh giá công bằng cả quá trình nỗ lực.", "target": "노력 과정도 공정하게 평가해야 한다."},
-    {"id": 17, "source": "Học sinh sẽ không sợ hãi việc cạnh tranh.", "target": "학생들은 경쟁을 두려워하지 않게 된다."},
-    {"id": 18, "source": "Các em có thể học hỏi lẫn nhau và cùng nhau trưởng thành.", "target": "서로 배우며 함께 성장할 수 있다."},
-    {"id": 19, "source": "Cạnh tranh là chất kích thích cho sự phát triển.", "target": "경쟁은 발전의 자극제가 된다."},
-    {"id": 20, "source": "Chúng ta phải tôn trọng lẫn nhau trong cạnh tranh lành mạnh.", "target": "우리는 바람직한 경쟁 속에서 서로를 존중해야 한다."}
-]
-
-TOPIK_VOCAB = [
-    {
-        "word": "초래하다", "level": "TOPIK 5-6", "meaning": "Gây ra, dẫn đến (kết quả xấu)", 
-        "example": "그러나 지나친 경쟁은 오히려 부정적인 결과를 초래할 수 있으므로 바람직한 경쟁이 이루어져야 한다.", 
-        "example_meaning": "Tuy nhiên, cạnh tranh quá mức có thể dẫn đến kết quả tiêu cực, vì vậy cần phải có sự cạnh tranh lành mạnh."
+# ==========================================
+# 1. DỮ LIỆU BÀI LUYỆN DỊCH (8 ĐỀ TOPIK 54)
+# ==========================================
+TOPIK_54_TOPICS = {
+    "Đề 107: 직업 체험 교육 (Giáo dục trải nghiệm nghề nghiệp)": {
+        "kr_vi": [
+            {"id": 1, "source": "청소년기는 자신의 적성과 흥미를 발견하고 미래의 진로를 결정하는 중요한 시기이다.", "target": "Tuổi thanh thiếu niên là giai đoạn quan trọng để khám phá năng lực, sở thích của bản thân và quyết định con đường nghề nghiệp trong tương lai."},
+            {"id": 2, "source": "그러나 많은 청소년들이 진로를 선택하는 과정에서 여러 가지 어려움을 겪고 있다.", "target": "Tuy nhiên, nhiều thanh thiếu niên đang gặp phải nhiều khó khăn khác nhau trong quá trình lựa chọn nghề nghiệp."},
+            {"id": 3, "source": "먼저 자신의 적성과 능력을 정확하게 파악하지 못한다는 점을 들 수 있다.", "target": "Trước tiên, có thể kể đến việc không thể xác định chính xác năng lực và sở trường của bản thân."},
+            {"id": 4, "source": "자신이 무엇을 좋아하고 어떤 분야에 소질이 있는지 충분히 알지 못하기 때문에 진로를 결정하는 데 어려움을 느끼는 것이다.", "target": "Vì không hiểu rõ bản thân thích điều gì và có năng khiếu trong lĩnh vực nào nên các em cảm thấy khó khăn trong việc quyết định nghề nghiệp."},
+            {"id": 5, "source": "또한 직업에 대한 정보와 실제 경험이 부족하여 부모나 주변 사람들의 기대에 따라 진로를 선택하는 경우도 적지 않다.", "target": "Ngoài ra, do thiếu thông tin và kinh nghiệm thực tế về nghề nghiệp nên cũng có không ít trường hợp lựa chọn nghề nghiệp theo kỳ vọng của cha mẹ hoặc những người xung quanh."},
+            {"id": 6, "source": "이러한 상황에서 직업 체험 교육은 청소년들에게 큰 도움을 줄 수 있다.", "target": "Trong hoàn cảnh đó, giáo dục trải nghiệm nghề nghiệp có thể mang lại nhiều lợi ích cho thanh thiếu niên."},
+            {"id": 7, "source": "우선 다양한 직업을 직접 경험함으로써 자신의 적성과 흥미를 구체적으로 파악할 수 있다.", "target": "Trước hết, thông qua việc trực tiếp trải nghiệm nhiều nghề nghiệp khác nhau, các em có thể xác định cụ thể năng lực và sở thích của bản thân."},
+            {"id": 8, "source": "이를 통해 막연하게 생각했던 진로를 현실적으로 계획하고 자신에게 적합한 직업을 선택할 수 있게 된다.", "target": "Thông qua đó, các em có thể lập kế hoạch thực tế cho con đường nghề nghiệp mà trước đây mình chỉ nghĩ đến một cách mơ hồ, đồng thời có thể lựa chọn công việc phù hợp với bản thân."},
+            {"id": 9, "source": "또한 실제 직업 현장을 경험하면서 해당 직업에 필요한 능력과 책임감을 이해할 수 있으며, 미래를 준비하는 데 필요한 동기와 자신감도 얻을 수 있다.", "target": "Ngoài ra, thông qua việc trải nghiệm môi trường làm việc thực tế, các em có thể hiểu được những năng lực và tinh thần trách nhiệm cần thiết đối với nghề nghiệp đó, đồng thời có được động lực và sự tự tin cần thiết để chuẩn bị cho tương lai."},
+            {"id": 10, "source": "그렇다면 학교는 의미 있는 직업 체험 교육을 위해 무엇을 해야 할까?", "target": "Vậy nhà trường cần làm gì để tổ chức hoạt động giáo dục trải nghiệm nghề nghiệp có ý nghĩa?"},
+            {"id": 11, "source": "먼저 학생들의 관심 분야와 적성을 고려하여 다양한 직업 체험 프로그램을 마련해야 한다.", "target": "Trước tiên, nhà trường cần xây dựng nhiều chương trình trải nghiệm nghề nghiệp đa dạng, có cân nhắc đến lĩnh vực quan tâm và năng lực của học sinh."},
+            {"id": 12, "source": "단순히 직업을 소개하는 데 그치지 않고 실제 업무를 직접 해 볼 수 있는 기회를 제공하는 것이 중요하다.", "target": "Điều quan trọng là không chỉ dừng lại ở việc giới thiệu nghề nghiệp đơn thuần mà còn phải cung cấp cơ hội để học sinh trực tiếp thử sức với công việc thực tế."},
+            {"id": 13, "source": "또한 기업이나 지역 사회와 협력하여 전문가와의 만남, 현장 견학 및 실습 활동을 확대해야 한다.", "target": "Ngoài ra, cần mở rộng các hoạt động gặp gỡ chuyên gia, tham quan nơi làm việc và thực hành thông qua việc hợp tác với các doanh nghiệp hoặc cộng đồng địa phương."},
+            {"id": 14, "source": "이처럼 체계적이고 실질적인 직업 체험 교육이 이루어진다면 청소년들은 자신의 미래를 주도적으로 설계하고 올바른 진로를 선택하는 데 큰 도움을 받을 수 있을 것이다.", "target": "Nếu hoạt động giáo dục trải nghiệm nghề nghiệp được thực hiện một cách có hệ thống và thiết thực như vậy, thanh thiếu niên sẽ nhận được sự hỗ trợ lớn trong việc chủ động hoạch định tương lai và lựa chọn con đường nghề nghiệp đúng đắn."}
+        ]
     },
-    {
-        "word": "바람직하다", "level": "TOPIK 4-5", "meaning": "Đáng mong muốn, lành mạnh", 
-        "example": "바람직한 경쟁이 이루어져야 한다.", 
-        "example_meaning": "Cần phải có sự cạnh tranh lành mạnh."
+    "Đề 106: 올바른 대중매체 활용 (Sử dụng truyền thông đúng đắn)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 자신에게 필요한 내용을 선택하고 이용 시간을 적절하게 조절해야 한다.", "target": "Ngoài ra, các em cần lựa chọn những nội dung cần thiết cho bản thân và điều chỉnh thời gian sử dụng một cách hợp lý."},
+            {"id": 2, "source": "이를 위해 학교에서는 미디어 교육을 강화하고 올바른 정보 이용 방법을 가르칠 필요가 있다.", "target": "Để làm được điều này, nhà trường cần tăng cường giáo dục truyền thông và giảng dạy phương pháp sử dụng thông tin đúng đắn."},
+            {"id": 3, "source": "이처럼 청소년들이 대중 매체를 올바르게 활용한다면 다양한 지식을 얻는 동시에 건강한 가치관을 형성할 수 있을 것이다.", "target": "Nếu thanh thiếu niên sử dụng truyền thông đại chúng một cách đúng đắn như vậy, các em có thể vừa tiếp thu được nhiều kiến thức đa dạng, vừa hình thành hệ giá trị quan lành mạnh."}
+        ]
     },
-    {
-        "word": "집착하다", "level": "TOPIK 5-6", "meaning": "Ám ảnh, câu nệ, bám chấp", 
-        "example": "특히 좋은 성적이나 높은 순위만을 중요하게 생각하게 되면 결과에 집착하게 된다.", 
-        "example_meaning": "Đặc biệt, nếu chỉ coi trọng điểm số cao hay thứ hạng cao, các em sẽ dễ bị ám ảnh bởi kết quả."
+    "Đề 105: 경험의 중요성과 활용 (Tầm quan trọng và cách vận dụng kinh nghiệm)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 다양한 활동에 참여한 후에는 자신의 경험을 돌아보고 잘한 점과 부족한 점을 분석해야 한다.", "target": "Ngoài ra, sau khi tham gia các hoạt động đa dạng, chúng ta cần nhìn lại trải nghiệm của bản thân và phân tích những điểm đã làm tốt cũng như những điểm còn thiếu sót."},
+            {"id": 2, "source": "이를 통해 같은 실수를 반복하지 않고 경험을 실제적인 성장으로 연결할 수 있다.", "target": "Thông qua đó, chúng ta có thể không lặp lại những sai lầm giống nhau và biến kinh nghiệm thành sự phát triển thực chất."},
+            {"id": 3, "source": "이처럼 간접 경험과 직접 경험을 적절히 활용하고 꾸준히 새로운 경험을 쌓는다면 개인의 능력을 향상시키고 더욱 주도적으로 미래를 준비할 수 있을 것이다.", "target": "Nếu biết sử dụng hợp lý cả trải nghiệm gián tiếp lẫn trải nghiệm trực tiếp, đồng thời không ngừng tích lũy những trải nghiệm mới như vậy, chúng ta có thể nâng cao năng lực cá nhân và chủ động hơn trong việc chuẩn bị cho tương lai."}
+        ]
     },
-    {
-        "word": "보완하다", "level": "TOPIK 4", "meaning": "Bổ sung, bù đắp phần thiếu sót", 
-        "example": "부족한 부분을 보완하기 위해 더욱 노력하게 된다.", 
-        "example_meaning": "Các em sẽ nỗ lực hơn nữa để bù đắp những phần còn thiếu sót."
+    "Đề 104: 공정한 보상 제도 (Chế độ khen thưởng công bằng)": {
+        "kr_vi": [
+            {"id": 1, "source": "이를 통해 구성원들이 서로 돕고 함께 성장하는 분위기를 만들 수 있다.", "target": "Thông qua đó, có thể tạo ra bầu không khí trong đó các thành viên giúp đỡ lẫn nhau và cùng nhau phát triển."},
+            {"id": 2, "source": "또한 단기적인 결과만으로 평가하지 않고 업무의 과정과 장기적인 발전 가능성까지 종합적으로 고려해야 한다.", "target": "Ngoài ra, không nên chỉ đánh giá dựa trên kết quả ngắn hạn mà cần xem xét một cách toàn diện cả quá trình làm việc và khả năng phát triển lâu dài."},
+            {"id": 3, "source": "이처럼 공정하고 균형 잡힌 보상 제도가 마련된다면 구성원들의 만족도를 높이는 동시에 조직 전체의 지속적인 발전에도 기여할 수 있을 것이다.", "target": "Nếu một chế độ khen thưởng công bằng và cân bằng được xây dựng như vậy thì có thể vừa nâng cao mức độ hài lòng của các thành viên, vừa đóng góp vào sự phát triển bền vững của toàn bộ tổ chức."}
+        ]
     },
-    {
-        "word": "조성하다", "level": "TOPIK 5", "meaning": "Kiến tạo, tạo dựng (môi trường)", 
-        "example": "따라서 학교에서는 학생들이 서로 협력하면서 자신의 능력을 발휘할 수 있는 환경을 조성해야 한다.", 
-        "example_meaning": "Do đó, nhà trường cần tạo môi trường để học sinh phát huy năng lực trong khi hợp tác với nhau."
+    "Đề 103: 환경 위생과 시민 의식 (Vệ sinh môi trường và ý thức công dân)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 시민들은 쓰레기를 함부로 버리지 않고 분리배출을 실천하는 등 일상생활에서 위생 수칙을 준수해야 한다.", "target": "Ngoài ra, người dân cần tuân thủ các quy tắc vệ sinh trong cuộc sống hằng ngày, chẳng hạn như không vứt rác bừa bãi và thực hiện phân loại rác thải."},
+            {"id": 2, "source": "이와 함께 학교와 지역 사회에서는 위생 교육과 캠페인을 통해 시민들의 인식을 높일 필요가 있다.", "target": "Cùng với đó, nhà trường và cộng đồng địa phương cần nâng cao nhận thức của người dân thông qua giáo dục vệ sinh và các chiến dịch tuyên truyền."},
+            {"id": 3, "source": "이처럼 정부의 체계적인 관리와 시민들의 자발적인 참여가 함께 이루어진다면 더욱 깨끗하고 건강한 사회를 만들 수 있을 것이다.", "target": "Nếu việc quản lý có hệ thống của chính phủ và sự tham gia tự giác của người dân được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội sạch sẽ và lành mạnh hơn."}
+        ]
     },
-    {
-        "word": "자극제", "level": "TOPIK 5-6", "meaning": "Chất kích thích, động lực", 
-        "example": "경쟁은 때로는 우리에게 발전의 자극제가 된다.", 
-        "example_meaning": "Cạnh tranh đôi khi là chất kích thích cho sự phát triển của chúng ta."
+    "Đề 102: 디지털 정보 격차 해소 (Xóa bỏ khoảng cách thông tin kỹ thuật số)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 사회적으로는 고령자와 장애인을 위한 교육 프로그램을 확대하고, 누구나 쉽게 sử dụng할 수 있도록 기기의 화면과 기능을 개선해야 한다.", "target": "Ngoài ra, về mặt xã hội, cần mở rộng các chương trình giáo dục dành cho người cao tuổi và người khuyết tật, đồng thời cải thiện màn hình và chức능 của thiết bị để bất kỳ ai cũng có thể dễ dàng sử dụng."},
+            {"id": 2, "source": "아울러 디지털 기기 사용이 어려운 사람들을 위해 대면 서비스도 함께 제공할 필요가 있다.", "target": "Đồng thời, cần cung cấp cả dịch vụ trực tiếp dành cho những người gặp khó khăn trong việc sử dụng thiết bị kỹ thuật số."},
+            {"id": 3, "source": "이처럼 개인의 노력과 사회의 제도적 지원이 함께 이루어진다면 누구나 디지털 기술의 혜택을 누릴 수 있는 포용적인 사회를 만들 수 있을 것이다.", "target": "Nếu nỗ lực của cá nhân và sự hỗ trợ về mặt chính sách, thể chế của xã hội được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội hòa nhập, nơi bất kỳ ai cũng có thể tận hưởng những lợi ích của công nghệ số."}
+        ]
     },
-    {
-        "word": "부정행위", "level": "TOPIK 4", "meaning": "Hành vi gian lận", 
-        "example": "심한 경우에는 부정행위를 하거나 다른 사람을 배려하지 않는 태도가 나타날 수도 있다.", 
-        "example_meaning": "Trong trường hợp nặng, có thể xuất hiện hành vi gian lận hoặc thái độ không biết quan tâm đến người khác."
+    "Đề 101: 재택근무의 정착 (Định hình hình thức làm việc tại nhà)": {
+        "kr_vi": [
+            {"id": 1, "source": "우선 기업은 화상 회의나 메신저 등 온라인 소통 수단을 적극 활용하여 직원 간의 원활한 정보 공유를 지원해야 한다.", "target": "Trước tiên, doanh nghiệp cần tích cực sử dụng các phương tiện giao tiếp trực tuyến như họp trực tuyến hoặc ứng dụng nhắn tin để hỗ trợ việc trao đổi thông tin thuận lợi giữa các nhân viên."},
+            {"id": 2, "source": "또한 직원들은 정해진 근무 시간과 휴식 시간을 지키고 업무 공간을 별도로 마련하는 등 스스로 업무 환경을 관리해야 한다.", "target": "Ngoài ra, nhân viên cần tự quản lý môi trường làm việc của mình bằng cách tuân thủ thời gian làm việc và nghỉ ngơi đã quy định, đồng thời bố trí không gian làm việc riêng biệt."},
+            {"id": 3, "source": "이처럼 기업의 체계적인 지원과 직원들의 자발적인 노력이 함께 이루어진다면 재택근무의 장점을 살리면서 문제점을 줄일 수 있을 것이다.", "target": "Nếu sự hỗ trợ có hệ thống của doanh nghiệp và nỗ lực tự giác của nhân viên được thực hiện đồng thời như vậy thì có thể phát huy những ưu điểm của hình thức làm việc tại nhà đồng thời giảm thiểu các vấn đề của nó."}
+        ]
+    },
+    "Đề 100 & 99: 인공지능 활용 / 마음의 회복 (Sử dụng AI & Chữa lành tâm hồn)": {
+        "kr_vi": [
+            {"id": 1, "source": "아울러 인공지능에 지나치게 의존하지 않고 스스로 생각하고 판단하는 능력을 길러야 한다.", "target": "Ngoài ra, cần rèn luyện khả năng tự suy nghĩ và phán đoán mà không phụ thuộc quá mức vào AI."},
+            {"id": 2, "source": "아울러 개인정보를 함부로 입력하지 않는 등 안전한 사용 방법을 익혀야 한다.", "target": "Bên cạnh đó, cần học cách sử dụng an toàn, chẳng hạn như không tùy tiện nhập thông tin cá nhân vào AI."},
+            {"id": 3, "source": "이처럼 인공지능은 어떻게 활용하느냐에 따라 긍정적인 결과를 가져올 수도 있고 부정적인 결과를 초래할 수도 있다.", "target": "Như vậy, tùy thuộc vào cách sử dụng, AI có thể mang lại kết quả tích cực nhưng cũng có thể gây ra những hậu quả tiêu cực."},
+            {"id": 4, "source": "그러므로 인공지능의 장점을 적극적으로 활용하되 인간의 판단력과 책임감을 바탕으로 올바르게 사용하는 것이 중요하다.", "target": "Do đó, điều quan trọng là tích cực tận dụng những ưu điểm của AI, đồng thời sử dụng nó một cách đúng đắn dựa trên khả năng phán đoán và tinh thần trách nhiệm của con người."},
+            {"id": 5, "source": "아울러 운동이나 취미 활동을 통해 스트레스를 해소하고, 새로운 목표를 세워 일상에 활력을 되찾는 것도 중요하다.", "target": "Bên cạnh đó, việc giải tỏa căng thẳng thông qua tập thể dục hoặc các hoạt động sở thích, đồng thời đặt ra mục tiêu mới để lấy lại sức sống trong cuộc sống hằng ngày cũng rất quan trọng."},
+            {"id": 6, "source": "이처럼 마음의 상처를 회복하는 데에는 시간이 필요하지만, 자신의 감정을 이해하고 긍정적으로 극복하려는 노력을 꾸준히 한다면 다시 건강한 마음으로 살아갈 수 있을 것이다.", "target": "Như vậy, mặc dù cần có thời gian để chữa lành những tổn thương tinh thần, nhưng nếu kiên trì nỗ lực thấu hiểu cảm xúc của bản thân và vượt qua chúng theo hướng tích cực, chúng ta sẽ có thể tiếp tục sống với một tinh thần khỏe mạnh."}
+        ]
     }
+}
+
+# ==========================================
+# 2. TỪ VỰNG & NGỮ PHÁP MỞ RỘNG (TOPIK 3-6)
+# ==========================================
+TOPIK_VOCAB = [
+    {"word": "적성", "level": "TOPIK 4", "meaning": "Năng khiếu, sở trường", "example": "자신의 적성과 흥미를 발견하는 것이 중요하다.", "example_meaning": "Việc phát hiện năng khiếu và sở thích của bản thân là rất quan trọng."},
+    {"word": "소질", "level": "TOPIK 4", "meaning": "Tố chất, năng khiếu", "example": "어떤 분야에 소질이 있는지 파악해야 한다.", "example_meaning": "Cần phải nắm bắt được bản thân có tố chất ở lĩnh vực nào."},
+    {"word": "체계적이다", "level": "TOPIK 5", "meaning": "Có hệ thống, bài bản", "example": "체계적인 직업 체험 교육이 필요하다.", "example_meaning": "Cần có giáo dục trải nghiệm nghề nghiệp mang tính hệ thống."},
+    {"word": "주도적이다", "level": "TOPIK 5", "meaning": "Chủ động, dẫn dắt", "example": "미래를 주도적으로 설계할 수 있다.", "example_meaning": "Có thể chủ động hoạch định tương lai."},
+    {"word": "자발적이다", "level": "TOPIK 5", "meaning": "Tự giác, tự nguyện", "example": "시민들의 자발적인 참여가 중요하다.", "example_meaning": "Sự tham gia tự giác của người dân là rất quan trọng."},
+    {"word": "포용적이다", "level": "TOPIK 6", "meaning": "Bao hàm, hòa nhập, bao용", "example": "포용적인 사회를 만들어야 한다.", "example_meaning": "Cần phải tạo ra một xã hội hòa nhập."},
+    {"word": "초래하다", "level": "TOPIK 5-6", "meaning": "Gây ra, dẫn đến (kết quả xấu)", "example": "부정적인 결과를 초래할 수 있다.", "example_meaning": "Có thể gây ra kết quả tiêu cực."},
+    {"word": "구체적이다", "level": "TOPIK 4", "meaning": "Cụ thể, rõ ràng", "example": "적성과 흥미를 구체적으로 파악한다.", "example_meaning": "Xác định cụ thể năng lực và sở thích."}
 ]
 
 TOPIK_54_GRAMMAR = [
-    {
-        "grammar": "-기 마련이다", "usage": "Đương nhiên sẽ, quy luật tất yếu", 
-        "example": "현대 사회에서 경쟁은 학생들이 성장하는 데 중요한 역할을 한다.", 
-        "example_meaning": "Trong xã hội hiện đại, sự cạnh tranh đóng vai trò quan trọng đối với sự phát triển của học sinh."
-    },
-    {
-        "grammar": "-을/를 초래하다", "usage": "Gây ra kết quả tiêu cực (văn viết trang trọng)", 
-        "example": "그러나 지나친 경쟁은 오히려 부정적인 결과를 초래할 수 있다.", 
-        "example_meaning": "Tuy nhiên, cạnh tranh quá mức có thể dẫn đến kết quả tiêu cực."
-    },
-    {
-        "grammar": "-기보다는", "usage": "Thay vì... thì...", 
-        "example": "개인의 성적이나 순위만을 강조하기보다는 모둠별 과제나 체육 활동을 통해 서로의 장점을 인정해야 한다.", 
-        "example_meaning": "Ví dụ, thay vì chỉ nhấn mạnh điểm số cá nhân, nên thông qua bài tập nhóm hoặc thể thao để công nhận ưu điểm của nhau."
-    },
-    {
-        "grammar": "-을 뿐만 아니라", "usage": "Không những... mà còn...", 
-        "example": "이는 학생들의 건강한 성장뿐만 아니라 원만한 교우 관계에도 부정적인 영향을 미친다.", 
-        "example_meaning": "Điều này gây ảnh hưởng tiêu cực đến sự phát triển lành mạnh và các mối quan hệ bạn bè."
-    }
+    {"grammar": "이처럼 ~ -ㄴ/는다/ㄹ 것이다", "usage": "Viết câu kết luận cho bài văn TOPIK 54 (Như vậy... thì sẽ...)", "example": "이처럼 체계적인 교육이 이루어진다면 올바른 진로를 선택하는 데 큰 도움이 될 것이다.", "example_meaning": "Như vậy nếu giáo dục có hệ thống được thực hiện thì sẽ trợ giúp lớn cho việc lựa chọn con đường đúng đắn."},
+    {"grammar": "-는 동시에", "usage": "Đồng thời, vừa... vừa... (Diễn tả 2 hành động/trạng thái song song)", "example": "지식을 얻는 동시에 건강한 가치관을 형성할 수 있다.", "example_meaning": "Vừa tiếp thu được kiến thức, đồng thời vừa hình thành được giá trị quan lành mạnh."},
+    {"grammar": "-을/를 바탕으로", "usage": "Dựa trên cơ sở..., lấy... làm nền tảng", "example": "인간의 판단력과 책임감을 바탕으로 올바르게 사용해야 한다.", "example_meaning": "Cần sử dụng đúng đắn dựa trên khả năng phán đoán và tinh thần trách nhiệm của con người."},
+    {"grammar": "-에 그치지 않고", "usage": "Không dừng lại ở... (mà còn tiếp tục...)", "example": "단순히 소개하는 데 그치지 않고 직접 경험을 제공해야 한다.", "example_meaning": "Không dừng lại ở việc giới thiệu đơn thuần mà còn phải cung cấp trải nghiệm trực tiếp."}
 ]
 
 SYNONYMS = {
-    "좋은 성적": ["điểm số tốt", "thành tích tốt", "kết quả học tập tốt"],
-    "높은 순위": ["thứ hạng cao", "vị trí xếp hạng cao", "xếp hạng cao"],
-    "결과에 집착하다": ["ám ảnh với kết quả", "quá chú trọng vào kết quả", "bám chấp vào kết quả"],
-    "경쟁": ["cạnh tranh", "sự cạnh tranh", "thi đua"],
-    "능력": ["năng lực", "khả năng", "thực lực"],
-    "부족한 점": ["điểm thiếu sót", "điểm còn thiếu", "điểm yếu"],
-    "개선하다": ["cải thiện", "khắc phục", "nâng cao"],
-    "지나친 경쟁": ["cạnh tranh quá mức", "sự cạnh tranh thái quá"],
-    "부정적인 결과": ["kết quả tiêu cực", "hậu quả tiêu cực", "kết quả không tốt"],
-    "바람직한 경쟁": ["cạnh tranh lành mạnh", "sự cạnh tranh đáng mong muốn"],
-    "심리적 부담": ["áp lực tâm lý", "gánh nặng tâm lý"],
-    "부정행위": ["hành vi gian lận", "việc gian lận"],
-    "협력하다": ["hợp tác", "phối hợp"],
-    "장점": ["ưu điểm", "điểm mạnh", "thế mạnh"],
-    "보완하다": ["bù đắp", "bổ sung", "khắc phục"],
-    "조성하다": ["tạo ra", "tạo dựng", "xây dựng", "kiến tạo"],
-    "자극제": ["động lực", "yếu tố thúc đẩy", "chất xúc tác"],
-    "성장하다": ["trưởng thành", "phát triển"],
-    "존중하다": ["tôn trọng", "coi trọng"],
-    "교우 관계": ["quan hệ bạn bè", "mối quan hệ bạn bè"],
+    "청소년": ["thanh thiếu niên", "giới trẻ", "học sinh"],
+    "진로": ["con đường nghề nghiệp", "hướng đi", "tương lai nghề nghiệp"],
+    "적성": ["năng khiếu", "sở trường", "khả năng"],
+    "흥미": ["sở thích", "hứng thú"],
+    "체계적": ["có hệ thống", "bài bản"],
+    "주도적": ["chủ động", "tự mình"],
+    "자발적": ["tự giác", "tự nguyện"],
+    "포용적": ["hòa nhập", "bao dung"]
 }
 
+# ==========================================
+# 3. HÀM XỬ LÝ KỸ THUẬT & ĐÁNH GIÁ
+# ==========================================
 def normalize(text):
     text = text.lower().strip()
     text = re.sub(r"[\s.,?!:;“”\"'()~–\-·]", "", text)
@@ -174,33 +154,31 @@ def evaluate_rule_based(user_text, reference, direction):
 
     missing = sorted(rt - ut)
     notes = []
-    notes.append("Đây là điểm ước lượng theo quy tắc/từ khóa miễn phí, không phải phần trăm hiểu đúng ngữ nghĩa.")
+    notes.append("Đây là điểm ước lượng từ vựng/cụm từ theo quy tắc tự động.")
     if synonym_hits:
-        notes.append("Có nhận diện được cách diễn đạt tương đương: " + "; ".join(f"{a} ↔ {b}" for a, b in synonym_hits[:8]))
-    else:
-        notes.append("Chưa nhận diện được cụm tương đương trong từ điển nhỏ của ứng dụng; điều này không đồng nghĩa bản dịch sai.")
+        notes.append("Nhận diện được diễn đạt tương đương: " + "; ".join(f"{a} ↔ {b}" for a, b in synonym_hits[:8]))
     if missing:
-        notes.append("Một số từ trong đáp án tham khảo chưa xuất hiện nguyên dạng: " + ", ".join(missing[:12]))
-        notes.append("Hãy kiểm tra xem bạn đã diễn đạt bằng từ đồng nghĩa hay vô tình bỏ sót ý.")
+        notes.append("Một số từ trong đáp án chưa xuất hiện nguyên dạng: " + ", ".join(missing[:10]))
+    
     if estimate >= 0.8:
-        level = "Mức tương đồng từ ngữ khá cao 🎉"
+        level = "Mức tương đồng khá cao"
     elif estimate >= 0.5:
-        level = "Có một phần từ/cụm tương ứng 👍"
+        level = "Có một số từ/cụm tương ứng"
     else:
-        level = "Cần tự đối chiếu lại nội dung 💡"
-    return score, percent, level, notes, synonym_hits, estimate
+        level = "Cần kiểm tra và chỉnh sửa lại"
+    return score, percent, level, notes, synonym_hits
 
 def speak_button(text, key, label="🔊 Nghe phát âm"):
     safe_text = json.dumps(text, ensure_ascii=False)
     component = f"""
-    <button id="b_{key}" style="padding:8px 13px;border:1px solid #bbb;border-radius:8px;background:white;cursor:pointer">
+    <button id="b_{key}" style="padding:6px 12px;border:1px solid #ccc;border-radius:6px;background:#f9f9f9;cursor:pointer">
       {html.escape(label)}
     </button>
     <script>
     const btn = document.getElementById("b_{key}");
     btn.onclick = () => {{
       if (!('speechSynthesis' in window)) {{
-        alert('Trình duyệt này không hỗ trợ đọc văn bản. Hãy thử Chrome.');
+        alert('Trình duyệt không hỗ trợ phát âm.');
         return;
       }}
       window.speechSynthesis.cancel();
@@ -214,123 +192,145 @@ def speak_button(text, key, label="🔊 Nghe phát âm"):
     }};
     </script>
     """
-    st.components.v1.html(component, height=48)
+    st.components.v1.html(component, height=42)
 
-st.title("🇰🇷 Luyện dịch Hàn – Việt theo định hướng TOPIK II")
-st.caption("Phiên bản miễn phí: không dùng OpenAI API, không cần API Key, không phát sinh phí API từ ứng dụng.")
+# ==========================================
+# 4. GIAO DIỆN STREAMLIT MAIN
+# ==========================================
+st.title("🇰🇷 Luyện dịch TOPIK II Câu 54 (8 Bài văn mẫu)")
+st.caption("Ứng dụng miễn phí: Hệ thống chấm câu theo từ khóa & phát âm Web Speech API chuẩn giọng Hàn.")
 
-menu = st.sidebar.selectbox("Chọn chế độ", [
-    "Luyện dịch Hàn → Việt", "Luyện dịch Việt → Hàn",
-    "📚 Từ vựng TOPIK", "✍️ Ngữ pháp TOPIK 54", "📝 Chấm câu tự nhập"
+menu = st.sidebar.selectbox("Chọn chế độ luyện tập", [
+    "📝 Luyện dịch Hàn → Việt (8 Đề)", 
+    "📝 Luyện dịch Việt → Hàn (8 Đề)",
+    "📚 Từ vựng TOPIK 3-6", 
+    "✍️ Ngữ pháp & Biểu hiện TOPIK 54", 
+    "🔍 Chấm câu tự nhập"
 ])
 
-if "idx_k2v" not in st.session_state: st.session_state.idx_k2v = 0
-if "idx_v2k" not in st.session_state: st.session_state.idx_v2k = 0
+# Quản lý State
+if "topic_idx" not in st.session_state: st.session_state.topic_idx = 0
 
-def render_practice(direction, data):
+def render_multi_topic_practice(direction):
     is_k2v = direction == "kr_vi"
-    state_key = "idx_k2v" if is_k2v else "idx_v2k"
+    dir_label = "Hàn → Việt" if is_k2v else "Việt → Hàn"
+    
+    # Chọn đề TOPIK
+    selected_topic_name = st.selectbox("📌 Chọn đề TOPIK 54:", list(TOPIK_54_TOPICS.keys()))
+    data_list = TOPIK_54_TOPICS[selected_topic_name]["kr_vi"]
+    
+    # Đặt key quản lý riêng cho từng đề
+    state_key = f"idx_{direction}_{selected_topic_name}"
+    if state_key not in st.session_state:
+        st.session_state[state_key] = 0
     idx = st.session_state[state_key]
-    title = "Hàn → Việt" if is_k2v else "Việt → Hàn"
-    st.subheader(f"Luyện dịch {title}")
-    if idx >= len(data):
-        st.success(f"Bạn đã hoàn thành {len(data)} câu của phần {title}.")
-        if st.button("Làm lại từ câu 1", key=f"restart_{direction}"):
+
+    st.subheader(f"Luyện dịch {dir_label}: {selected_topic_name}")
+    
+    if idx >= len(data_list):
+        st.success(f"🎉 Bạn đã hoàn thành toàn bộ {len(data_list)} câu của bài này!")
+        if st.button("Làm lại từ đầu", key=f"restart_{selected_topic_name}"):
             st.session_state[state_key] = 0
             st.rerun()
         return
-    q = data[idx]
-    st.write(f"**Câu {idx+1}/{len(data)}**")
-    st.info(q["source"])
-    if is_k2v:
-        speak_button(q["source"], f"source_{direction}_{idx}")
-        answer = st.text_area("Nhập bản dịch tiếng Việt:", key=f"answer_{direction}_{idx}", height=100)
-    else:
-        answer = st.text_area("Nhập bản dịch tiếng Hàn:", key=f"answer_{direction}_{idx}", height=100)
-        speak_button(q["target"], f"reference_{direction}_{idx}", "🔊 Nghe câu tham khảo")
+
+    q = data_list[idx]
+    st.markdown(f"### **Câu {idx+1} / {len(data_list)}**")
     
-    if st.button("Chấm thử", key=f"grade_{direction}_{idx}"):
-        if not answer.strip():
-            st.warning("Bạn hãy nhập bản dịch trước.")
+    # Câu nguồn
+    if is_k2v:
+        st.info(f"**Tiếng Hàn:** {q['source']}")
+        speak_button(q["source"], f"src_{selected_topic_name}_{idx}")
+        user_ans = st.text_area("Nhập bản dịch tiếng Việt của bạn:", key=f"ans_{selected_topic_name}_{idx}", height=100)
+        ref_text = q["target"]
+    else:
+        st.info(f"**Tiếng Việt:** {q['target']}")
+        user_ans = st.text_area("Nhập bản dịch tiếng Hàn của bạn:", key=f"ans_{selected_topic_name}_{idx}", height=100)
+        ref_text = q["source"]
+        speak_button(q["source"], f"ref_spk_{selected_topic_name}_{idx}", "🔊 Nghe câu tham khảo")
+
+    # Chấm bài
+    if st.button("Chấm câu", key=f"grade_{selected_topic_name}_{idx}"):
+        if not user_ans.strip():
+            st.warning("Vui lòng nhập bản dịch trước khi chấm.")
         else:
-            score, pct, level, notes, hits, estimate = evaluate_rule_based(answer, q["target"], direction)
-            st.markdown("### Kết quả đánh giá")
+            score, pct, level, notes, hits = evaluate_rule_based(user_ans, ref_text, direction)
+            st.markdown("---")
+            st.markdown("#### 📊 Kết quả phân tích tham khảo")
+            col1, col2 = st.columns(2)
+            col1.metric("Điểm ước lượng", f"{score} / 10")
+            col2.metric("Chỉ số trùng khớp từ ngữ", f"{pct}%")
             
-            # Hiển thị tỷ lệ phần trăm chính xác trực quan
-            st.metric(label="📊 Mức độ chính xác so với đáp án", value=f"{pct}%")
-            st.progress(float(min(1.0, max(0.0, estimate))))
+            st.write(f"**Đánh giá:** {level}")
+            for n in notes: st.write("• " + n)
             
-            c1, c2 = st.columns(2)
-            c1.metric("Điểm ước lượng", f"{score}/10")
-            c2.metric("Trạng thái", level)
-            
-            for note in notes: st.write("• " + note)
             if hits:
-                st.write("**Cụm tương đương được nhận diện:**")
+                st.write("**Cụm từ tương đương nhận diện được:**")
                 for a, b in hits: st.write(f"- {a} ↔ {b}")
-            st.write("**Đáp án tham khảo:**")
-            st.success(q["target"])
-            if not is_k2v:
-                speak_button(q["target"], f"answer_{direction}_{idx}", "🔊 Nghe đáp án tiếng Hàn")
-            st.caption("Lưu ý: công cụ miễn phí này không thể xác nhận chính xác ngữ nghĩa như giảng viên hoặc mô hình AI. Đừng xem % là xác suất dịch đúng.")
-            
-    a, b = st.columns(2)
-    with a:
-        if st.button("Câu tiếp theo ➡️", key=f"next_{direction}_{idx}"):
+                
+            st.write("**Đáp án mẫu:**")
+            st.success(ref_text)
+            if is_k2v:
+                speak_button(q["source"], f"ans_spk_{selected_topic_name}_{idx}", "🔊 Nghe lại tiếng Hàn")
+            else:
+                speak_button(q["source"], f"ans_spk_{selected_topic_name}_{idx}", "🔊 Nghe đáp án tiếng Hàn")
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        if st.button("Câu tiếp theo ➡️", key=f"next_{selected_topic_name}_{idx}"):
             st.session_state[state_key] += 1
             st.rerun()
-    with b:
-        if st.button("🔄 Làm lại phần này", key=f"reset_{direction}_{idx}"):
+    with col_b:
+        if st.button("🔄 Làm lại bài này", key=f"reset_{selected_topic_name}_{idx}"):
             st.session_state[state_key] = 0
             st.rerun()
 
-if menu == "Luyện dịch Hàn → Việt":
-    render_practice("kr_vi", KR_TO_VI_LIST)
-elif menu == "Luyện dịch Việt → Hàn":
-    render_practice("vi_kr", VI_TO_KR_LIST)
-elif menu == "📚 Từ vựng TOPIK":
-    st.subheader("Từ vựng TOPIK 3–6")
+# RENDER MENU SELECTION
+if menu == "📝 Luyện dịch Hàn → Việt (8 Đề)":
+    render_multi_topic_practice("kr_vi")
+elif menu == "📝 Luyện dịch Việt → Hàn (8 Đề)":
+    render_practice_v2k = render_multi_topic_practice("vi_kr")
+
+elif menu == "📚 Từ vựng TOPIK 3-6":
+    st.subheader("📚 Từ vựng quan trọng trong các bài TOPIK 54 mẫu")
     for i, item in enumerate(TOPIK_VOCAB):
-        with st.expander(f"{item['word']} ({item['level']}) – {item['meaning']}"):
+        with st.expander(f"📌 {item['word']} ({item['level']}) – {item['meaning']}"):
             st.write("**Nghĩa:**", item["meaning"])
             st.write("**Ví dụ:**", item["example"])
-            speak_button(item["word"], f"vocab_{i}", "🔊 Nghe từ")
-            speak_button(item["example"], f"vocab_ex_{i}", "🔊 Nghe câu ví dụ")
+            speak_button(item["word"], f"voc_{i}", "🔊 Nghe từ")
+            speak_button(item["example"], f"voc_ex_{i}", "🔊 Nghe câu ví dụ")
             st.write("**Dịch:**", item["example_meaning"])
-elif menu == "✍️ Ngữ pháp TOPIK 54":
-    st.subheader("Biểu hiện và ngữ pháp TOPIK 54")
+
+elif menu == "✍️ Ngữ pháp & Biểu hiện TOPIK 54":
+    st.subheader("✍️ Ngữ pháp & Biểu hiện cao cấp dùng cho bài viết 54")
     for i, item in enumerate(TOPIK_54_GRAMMAR):
-        with st.expander(item["grammar"]):
+        with st.expander(f"🔑 {item['grammar']}"):
             st.write("**Cách dùng:**", item["usage"])
             st.write("**Ví dụ:**", item["example"])
-            speak_button(item["example"], f"grammar_{i}", "🔊 Nghe câu ví dụ")
+            speak_button(item["example"], f"grm_{i}", "🔊 Nghe ví dụ")
             st.write("**Dịch:**", item["example_meaning"])
-elif menu == "📝 Chấm câu tự nhập":
-    st.subheader("Luyện dịch câu tự nhập – chế độ miễn phí")
-    direction_label = st.radio("Chiều dịch", ["Hàn → Việt", "Việt → Hàn"], horizontal=True)
-    direction = "kr_vi" if direction_label == "Hàn → Việt" else "vi_kr"
-    source_text = st.text_area("Câu gốc")
-    answer_text = st.text_area("Bản dịch của bạn")
-    reference_text = st.text_area("Đáp án tham khảo (cùng ngôn ngữ với bản dịch, nếu có)")
-    if direction == "kr_vi" and source_text.strip():
-        speak_button(source_text, "custom_source")
-    if direction == "vi_kr" and answer_text.strip():
-        speak_button(answer_text, "custom_answer")
-    if st.button("Đánh giá tham khảo", key="custom_grade"):
-        if not source_text.strip() or not answer_text.strip():
-            st.warning("Hãy nhập cả câu gốc và bản dịch.")
-        elif not reference_text.strip():
-            st.info("Bạn chưa nhập đáp án tham khảo. Ứng dụng miễn phí không thể tự hiểu và chấm chính xác một cặp câu khác ngôn ngữ nếu không có đáp án đối chiếu. Hãy thêm đáp án tham khảo bằng ngôn ngữ đích để xem chỉ số từ ngữ.")
+
+elif menu == "🔍 Chấm câu tự nhập":
+    st.subheader("🔍 Chấm bản dịch tự nhập")
+    dir_sel = st.radio("Chiều dịch", ["Hàn → Việt", "Việt → Hàn"], horizontal=True)
+    direction = "kr_vi" if dir_sel == "Hàn → Việt" else "vi_kr"
+    
+    src = st.text_area("Nhập câu gốc:")
+    ans = st.text_area("Nhập bản dịch của bạn:")
+    ref = st.text_area("Nhập đáp án tham khảo (để đối chiếu):")
+    
+    if direction == "kr_vi" and src.strip():
+        speak_button(src, "cust_src")
+        
+    if st.button("Đánh giá ngay"):
+        if not src.strip() or not ans.strip() or not ref.strip():
+            st.warning("Vui lòng nhập đầy đủ câu gốc, bản dịch và đáp án tham khảo.")
         else:
-            score, pct, level, notes, hits, estimate = evaluate_rule_based(answer_text, reference_text, direction)
-            st.metric(label="📊 Mức độ chính xác so với đáp án", value=f"{pct}%")
-            st.progress(float(min(1.0, max(0.0, estimate))))
-            
-            c1, c2 = st.columns(2)
-            c1.metric("Điểm ước lượng", f"{score}/10")
-            c2.metric("Trạng thái", level)
-            
-            for note in notes: st.write("• " + note)
+            score, pct, level, notes, hits = evaluate_rule_based(ans, ref, direction)
+            st.metric("Điểm ước lượng", f"{score}/10")
+            st.metric("Tỷ lệ khớp từ ngữ", f"{pct}%")
+            st.write(level)
+            for n in notes: st.write("• " + n)
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Miễn phí, không tích hợp OpenAI API. Phát âm dùng giọng tiếng Hàn có sẵn trong trình duyệt/thiết bị; có thể không hoạt động nếu thiết bị không có giọng ko-KR.")
+st.sidebar.caption("Ứng dụng tự động hóa dành riêng cho học viên ôn thi TOPIK II. Phát âm sử dụng giọng đọc hệ thống ko-KR.")
