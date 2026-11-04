@@ -92,6 +92,26 @@ VI_TO_KR_LIST = [
     {"id": 20, "source": "Chúng ta phải tôn trọng lẫn nhau trong cạnh tranh lành mạnh.", "target": "우리는 바람직한 경쟁 속에서 서로를 존중해야 한다."}
 ]
 
+# 📚 DỮ LIỆU TỪ VỰNG TOPIK 3-6
+TOPIK_VOCAB = [
+    {"word": "초래하다", "level": "TOPIK 5-6", "meaning": "Gây ra, dẫn đến (kết quả xấu)", "example": "지나친 경쟁은 부작용을 초래할 수 있다.", "example_meaning": "Cạnh tranh quá mức có thể gây ra tác dụng phụ."},
+    {"word": "바람직하다", "level": "TOPIK 4-5", "meaning": "Đáng mong muốn, lý tưởng, lành mạnh", "example": "바람직한 방향으로 문제를 해결하다.", "example_meaning": "Giải quyết vấn đề theo hướng tích cực/đáng mong muốn."},
+    {"word": "집착하다", "level": "TOPIK 5-6", "meaning": "Ám ảnh, câu nệ, bám chấp", "example": "과거의 실패에 집착할 필요가 없다.", "example_meaning": "Không cần thiết phải ám ảnh với thất bại trong quá khứ."},
+    {"word": "보완하다", "level": "TOPIK 4", "meaning": "Bổ sung, bù đắp phần thiếu sót", "example": "부족한 부분을 보완하여 다시 제출하세요.", "example_meaning": "Hãy bổ sung phần còn thiếu và nộp lại."},
+    {"word": "조성하다", "level": "TOPIK 5", "meaning": "Kiến tạo, tạo dựng (môi trường, không khí)", "example": "학습 분위기를 조성하는 것이 중요하다.", "example_meaning": "Việc tạo dựng bầu không khí học tập là rất quan trọng."},
+    {"word": "자극제", "level": "TOPIK 5-6", "meaning": "Chất kích thích, động lực thúc đẩy", "example": "친구의 성공은 나에게 큰 자극제가 되었다.", "example_meaning": "Sự thành công của bạn bè đã trở thành động lực lớn cho tôi."},
+    {"word": "부정행위", "level": "TOPIK 4", "meaning": "Hành vi gian lận (thi cử,...)", "example": "시험에서 부정행위를 하면 불이익을 받는다.", "example_meaning": "Nếu gian lận trong thi cử sẽ chịu bất lợi."}
+]
+
+# 📝 CẤU TRÚC NGỮ PHÁP & BIỂU HIỆN CÂU 54 TOPIK II
+TOPIK_54_GRAMMAR = [
+    {"grammar": "-기 마련이다", "usage": "Đương nhiên sẽ, quy luật tất yếu", "example": "시간이 지나면 모든 것은 변하기 마련이다.", "example_meaning": "Qua thời gian thì vạn vật đương nhiên sẽ đổi thay."},
+    {"grammar": "-을/를 초래하다", "usage": "Gây ra kết quả (thường dùng trong văn viết trang trọng)", "example": "이러한 현상은 사회적 갈등을 초래한다.", "example_meaning": "Hiện tượng này gây ra mâu thuẫn xã hội."},
+    {"grammar": "-기보다는", "usage": "Thay vì... thì... (so sánh lựa chọn)", "example": "말하기보다는 행동으로 보여 주는 것이 좋다.", "example_meaning": "Thay vì nói thì nên thể hiện bằng hành động."},
+    {"grammar": "-을 뿐만 아니라", "usage": "Không những... mà còn...", "example": "그는 공부를 잘할 뿐만 아니라 인성도 좋다.", "example_meaning": "Cậu ấy không chỉ học giỏi mà nhân cách cũng tốt."},
+    {"grammar": "-는 셈이다", "usage": "Xem như là, coi như là", "example": "목표의 절반은 달성한 셈이다.", "example_meaning": "Xem như đã hoàn thành một nửa mục tiêu rồi."}
+]
+
 def get_audio_html(text):
     if not TTS_AVAILABLE:
         return ""
@@ -119,7 +139,12 @@ def check_translation(user_input, reference, threshold=0.35):
 
 st.title("🇰🇷 Ứng Dụng Luyện Dịch Hàn - Việt")
 
-menu = st.sidebar.selectbox("📂 Chọn chế độ", ["Luyện dịch Hàn ➡️ Việt", "Luyện dịch Việt ➡️ Hàn"])
+menu = st.sidebar.selectbox("📂 Chọn chế độ", [
+    "Luyện dịch Hàn ➡️ Việt", 
+    "Luyện dịch Việt ➡️ Hàn", 
+    "📚 Từ vựng TOPIK (3-6) & Ví dụ", 
+    "✍️ Biểu hiện & Ngữ pháp Câu 54 TOPIK"
+])
 
 if 'current_q' not in st.session_state:
     st.session_state.current_q = 0
@@ -133,6 +158,7 @@ if menu == "Luyện dịch Hàn ➡️ Việt":
         st.markdown(f"**📌 Câu {idx + 1} / {len(quiz_data)}**")
         st.info(f"**Văn bản gốc tiếng Hàn:**\n\n{q['source']}")
         
+        st.markdown("🔊 **Nghe phát âm chuẩn tiếng Hàn:**")
         audio_html = get_audio_html(q['source'])
         st.markdown(audio_html, unsafe_allow_html=True)
         
@@ -182,8 +208,9 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
                     st.success("✅ **ĐÁNH GIÁ: ĐÚNG!** Bạn dịch rất sát nghĩa.")
                 else:
                     st.error("❌ **ĐÁNH GIÁ: CHƯA ĐẠT.** Ý nghĩa chưa đủ sát.")
-                st.markdown(f"💡 **Bản dịch tham khảo:**\n> {q['target']}")
-                st.markdown("🔊 **Nghe phát âm chuẩn:**")
+                st.markdown(f"💡 **Bản dịch tham khảo (Đáp án chuẩn):**\n> {q['target']}")
+                
+                st.markdown("🔊 **Nghe phát âm chuẩn tiếng Hàn:**")
                 audio_html = get_audio_html(q['target'])
                 st.markdown(audio_html, unsafe_allow_html=True)
                 st.markdown("---")
@@ -199,3 +226,29 @@ elif menu == "Luyện dịch Việt ➡️ Hàn":
             if st.button("🔄 Làm lại từ đầu", key=f"reset_v2k_{idx}"):
                 st.session_state.current_q = 0
                 st.rerun()
+
+elif menu == "📚 Từ vựng TOPIK (3-6) & Ví dụ":
+    st.subheader("📖 Từ vựng tiêu biểu cấp cao (TOPIK 3 - 6)")
+    st.markdown("Dưới đây là các từ vựng học thuật quan trọng xuất hiện trong bài luyện dịch giúp bạn nâng cao điểm số:")
+    
+    for item in TOPIK_VOCAB:
+        with st.expander(f"📌 {item['word']} ({item['level']})"):
+            st.markdown(f"**Ý nghĩa:** {item['meaning']}")
+            st.markdown(f"**Ví dụ:** `{item['example']}`")
+            st.markdown(f"**Dịch nghĩa:** _{item['example_meaning']}_")
+            
+            # Nút nghe audio cho từng từ vựng
+            if st.button(f"🔊 Nghe từ: {item['word']}", key=f"vocab_{item['word']}"):
+                audio_html = get_audio_html(item['word'])
+                st.markdown(audio_html, unsafe_allow_html=True)
+
+elif menu == "✍️ Biểu hiện & Ngữ pháp Câu 54 TOPIK":
+    st.subheader("📝 Tổng hợp Ngữ pháp & Biểu hiện ôn thi Câu 54 TOPIK II")
+    st.markdown("Các cấu trúc câu văn viết trang trọng, cấu trúc biểu hiện thường dùng để ghi điểm cao:")
+    
+    for g_item in TOPIK_54_GRAMMAR:
+        st.markdown(f"### 🔹 Cấu trúc: `{g_item['grammar']}`")
+        st.markdown(f"- **Cách dùng:** {g_item['usage']}")
+        st.markdown(f"- **Ví dụ câu:** `{g_item['example']}`")
+        st.markdown(f"- **Bản dịch:** _{g_item['example_meaning']}_")
+        st.markdown("---")
