@@ -4,146 +4,243 @@ import difflib
 import html
 import json
 
-st.set_page_config(page_title="Luyện dịch TOPIK II Câu 54 – Miễn phí", page_icon="🇰🇷", layout="wide")
+st.set_page_config(page_title="Luyện dịch TOPIK II – miễn phí", page_icon="🇰🇷", layout="wide")
 
 # ==========================================
-# 1. DỮ LIỆU BÀI LUYỆN DỊCH (ĐỀ 96 - ĐỀ 108)
+# DỮ LIỆU CÁC ĐỀ THI (104, 105, 106, 107, 108)
 # ==========================================
-TOPIK_54_TOPICS = {
-    "Đề 108: 청소년의 진로 선택과 직업 체험 교육 (Lựa chọn nghề nghiệp & Trải nghiệm nghề nghiệp)": {
+
+TOPICS_DATA = {
+    "Đề 108: Luyện dịch tổng hợp": {
         "kr_vi": [
-            {"id": 1, "source": "청소년기는 자신의 적성과 흥미를 발견하고 미래의 진로를 결정하는 중요한 시기이다.", "target": "Tuổi thanh thiếu niên là giai đoạn quan trọng để khám phá năng lực, sở thích của bản thân và quyết định con đường nghề nghiệp trong tương lai."},
-            {"id": 2, "source": "그러나 많은 청소년들이 진로를 선택하는 과정에서 여러 가지 어려움을 겪고 있다.", "target": "Tuy nhiên, nhiều thanh thiếu niên đang gặp phải nhiều khó khăn khác nhau trong quá trình lựa chọn nghề nghiệp."},
-            {"id": 3, "source": "먼저 자신의 적성과 능력을 정확하게 파악하지 못한다는 점을 들 수 있다.", "target": "Trước tiên, có thể kể đến việc không thể xác định chính xác năng lực và sở trường của bản thân."},
-            {"id": 4, "source": "자신이 무엇을 좋아하고 어떤 분야에 소질이 있는지 충분히 알지 못하기 때문에 진로를 결정하는 데 어려움을 느끼는 것이다.", "target": "Vì không hiểu rõ bản thân thích điều gì và có năng khiếu trong lĩnh vực nào nên các em cảm thấy khó khăn trong việc quyết định nghề nghiệp."},
-            {"id": 5, "source": "또한 직업에 대한 정보와 실제 경험이 부족하여 부모나 주변 사람들의 기대에 따라 진로를 선택하는 경우도 적지 않다.", "target": "Ngoài ra, do thiếu thông tin và kinh nghiệm thực tế về nghề nghiệp nên cũng có không ít trường hợp lựa chọn nghề nghiệp theo kỳ vọng của cha mẹ hoặc những người xung quanh."},
-            {"id": 6, "source": "이러한 상황에서 직업 체험 교육은 청소년들에게 큰 도움을 줄 수 있다.", "target": "Trong hoàn cảnh đó, giáo dục trải nghiệm nghề nghiệp có thể mang lại nhiều lợi ích cho thanh thiếu niên."},
-            {"id": 7, "source": "우선 다양한 직업을 직접 경험함으로써 자신의 적성과 흥미를 구체적으로 파악할 수 있다.", "target": "Trước hết, thông qua việc trực tiếp trải nghiệm nhiều nghề nghiệp khác nhau, các em có thể xác định cụ thể năng lực và sở thích của bản thân."},
-            {"id": 8, "source": "이를 통해 막연하게 생각했던 진로를 현실적으로 계획하고 자신에게 적합한 직업을 선택할 수 있게 된다.", "target": "Thông qua đó, các em có thể lập kế hoạch thực tế cho con đường nghề nghiệp mà trước đây mình chỉ nghĩ đến một cách mơ hồ, đồng thời có thể lựa chọn công việc phù hợp với bản thân."},
-            {"id": 9, "source": "또한 실제 직업 현장을 경험하면서 해당 직업에 필요한 능력과 책임감을 이해할 수 있으며, 미래를 준비하는 데 필요한 동기와 자신감도 얻을 수 있다.", "target": "Ngoài ra, thông qua việc trải nghiệm môi trường làm việc thực tế, các em có thể hiểu được những năng lực và tinh thần trách nhiệm cần thiết đối với nghề nghiệp đó, đồng thời có được động lực và sự tự tin cần thiết để chuẩn bị cho tương lai."},
-            {"id": 10, "source": "그렇다면 학교는 의미 있는 직업 체험 교육을 위해 무엇을 해야 할까?", "target": "Vậy nhà trường cần làm gì để tổ chức hoạt động giáo dục trải nghiệm nghề nghiệp có ý nghĩa?"},
-            {"id": 11, "source": "먼저 학생들의 관심 분야와 적성을 고려하여 다양한 직업 체험 프로그램을 마련해야 한다.", "target": "Trước tiên, nhà trường cần xây dựng nhiều chương trình trải nghiệm nghề nghiệp đa dạng, có cân nhắc đến lĩnh vực quan tâm và năng lực của học sinh."},
-            {"id": 12, "source": "단순히 직업을 소개하는 데 그치지 않고 실제 업무를 직접 해 볼 수 있는 기회를 제공하는 것이 중요하다.", "target": "Điều quan trọng là không chỉ dừng lại ở việc giới thiệu nghề nghiệp đơn thuần mà còn phải cung cấp cơ hội để học sinh trực tiếp thử sức với công việc thực tế."},
-            {"id": 13, "source": "또한 기업이나 지역 사회와 협력하여 전문가와의 만남, 현장 견학 및 실습 활동을 확대해야 한다.", "target": "Ngoài ra, cần mở rộng các hoạt động gặp gỡ chuyên gia, tham quan nơi làm việc và thực hành thông qua việc hợp tác với các doanh nghiệp hoặc cộng đồng địa phương."},
-            {"id": 14, "source": "이처럼 체계적이고 실질적인 직업 체험 교육이 이루어진다면 청소년들은 자신의 미래를 주도적으로 설계하고 올바른 진로를 선택하는 데 큰 도움을 받을 수 있을 것이다.", "target": "Nếu hoạt động giáo dục trải nghiệm nghề nghiệp được thực hiện một cách có hệ thống và thiết thực như vậy, thanh thiếu niên sẽ nhận được sự hỗ trợ lớn trong việc chủ động hoạch định tương lai và lựa chọn con đường nghề nghiệp đúng đắn."}
+            {"id": 1, "source": "현대 사회에서 경쟁은 학생들이 성장하는 데 중요한 역할을 한다.", "target": "Trong xã hội hiện đại, sự cạnh tranh đóng vai trò quan trọng đối với sự phát triển của học sinh."},
+            {"id": 2, "source": "학생들은 경쟁을 통해 자신의 능력을 확인하고 부족한 점을 개선할 수 있다.", "target": "Thông qua cạnh tranh, học sinh có thể xác định năng lực bản thân và cải thiện những điểm thiếu sót."},
+            {"id": 3, "source": "그러나 지나친 경쟁은 오히려 부정적인 결과를 초래할 수 있으므로 바람직한 경쟁이 이루어져야 한다.", "target": "Tuy nhiên, cạnh tranh quá mức có thể dẫn đến kết quả tiêu cực, vì vậy cần phải có sự cạnh tranh lành mạnh."},
+            {"id": 4, "source": "먼저 학생들은 경쟁을 통해 자신의 실력을 향상시키고 목표를 달성하려는 의지를 기를 수 있다.", "target": "Trước hết, thông qua cạnh tranh, học sinh có thể nâng cao thực lực và nuôi dưỡng ý chí đạt được mục tiêu."},
+            {"id": 5, "source": "다른 학생들과 실력을 겨루는 과정에서 자신의 강점과 약점을 파악할 수 있다.", "target": "Trong quá trình đọ sức với các học sinh khác, các em có thể nắm bắt được điểm mạnh và điểm yếu."},
+            {"id": 6, "source": "부족한 부분을 보완하기 위해 더욱 노력하게 된다.", "target": "Các em sẽ nỗ lực hơn nữa để bù đắp những phần còn thiếu sót."},
+            {"id": 7, "source": "또한 이러한 경험은 학생들이 어려움에 부딪혔을 때 포기하지 않고 도전하는 태도를 기르는 데에도 도움이 된다.", "target": "Ngoài ra, trải nghiệm này giúp học sinh rèn luyện thái độ dám thử thách, không bỏ cuộc khi gặp khó khăn."},
+            {"id": 8, "source": "반면 지나친 경쟁은 학생들에게 심한 스트레스와 심리적 부담을 줄 수 있다.", "target": "Ngược lại, cạnh tranh quá mức có thể gây áp lực tâm lý và căng thẳng nặng nề cho học sinh."},
+            {"id": 9, "source": "특히 좋은 성적이나 높은 순위만을 중요하게 생각하게 되면 결과에 집착하게 된다.", "target": "Đặc biệt, nếu chỉ coi trọng điểm số cao hay thứ hạng cao, các em sẽ dễ bị ám ảnh bởi kết quả."},
+            {"id": 10, "source": "결과에 집착한 나머지 친구를 경쟁 상대로만 여기게 될 수 있다.", "target": "Quá chìm đắm vào kết quả có thể khiến các em xem bạn bè chỉ là đối thủ cạnh tranh."},
+            {"id": 11, "source": "심한 경우에는 부정행위를 하거나 다른 사람을 배려하지 않는 태도가 나타날 수도 있다.", "target": "Trong trường hợp nặng, có thể xuất hiện hành vi gian lận hoặc thái độ không biết quan tâm đến người khác."},
+            {"id": 12, "source": "이는 학생들의 건강한 성장뿐만 아니라 원만한 교우 관계에도 부정적인 영향을 미친다.", "target": "Điều này gây ảnh hưởng tiêu cực đến sự phát triển lành mạnh và các mối quan hệ bạn bè."},
+            {"id": 13, "source": "따라서 학교에서는 학생들이 서로 협력하면서 자신의 능력을 발휘할 수 있는 환경을 조성해야 한다.", "target": "Do đó, nhà trường cần tạo môi trường để học sinh phát huy năng lực trong khi hợp tác với nhau."},
+            {"id": 14, "source": "예를 들어 개인의 성적이나 순위만을 강조하기보다는 모둠별 과제나 체육 활동을 통해 서로의 장점을 인정해야 한다.", "target": "Ví dụ, thay vì chỉ nhấn mạnh điểm số cá nhân, nên thông qua bài tập nhóm hoặc thể thao để công nhận ưu điểm của nhau."},
+            {"id": 15, "source": "부족한 부분을 서로 도와주도록 해야 한다.", "target": "Cần phải giúp đỡ lẫn nhau trong những phần còn thiếu sót."},
+            {"id": 16, "source": "또한 결과뿐만 아니라 노력과 발전 과정도 공정하게 평가해야 한다.", "target": "Hơn nữa, không chỉ kết quả mà cả nỗ lực và quá trình phát triển cũng cần được đánh giá công bằng."},
+            {"id": 17, "source": "이를 통해 학생들은 다른 사람과의 경쟁을 두려워하지 않게 된다.", "target": "Qua đó, học sinh sẽ không còn sợ hãi việc cạnh tranh với người khác."},
+            {"id": 18, "source": "서로 배우며 함께 성장할 수 있을 것이다.", "target": "Các em có thể học hỏi lẫn nhau và cùng nhau trưởng thành."},
+            {"id": 19, "source": "경쟁은 때로는 우리에게 발전의 자극제가 된다.", "target": "Cạnh tranh đôi khi là chất kích thích cho sự phát triển của chúng ta."},
+            {"id": 20, "source": "우리는 건강한 경쟁 속에서 서로를 존중하며 살아가야 한다.", "target": "Chúng ta phải sống và tôn trọng lẫn nhau trong môi trường cạnh tranh lành mạnh."}
+        ],
+        "vi_kr": [
+            {"id": 1, "source": "Trong xã hội hiện đại, sự cạnh tranh đóng vai trò quan trọng đối với sự phát triển của học sinh.", "target": "현대 사회에서 경쟁은 학생들이 성장하는 데 중요한 역할을 한다."},
+            {"id": 2, "source": "Thông qua cạnh tranh, học sinh có thể xác định năng lực và cải thiện điểm thiếu sót.", "target": "학생들은 경쟁을 통해 자신의 능력을 확인하고 부족한 점을 개선할 수 있다."},
+            {"id": 3, "source": "Tuy nhiên, cạnh tranh quá mức có thể dẫn đến kết quả tiêu cực.", "target": "그러나 지나친 경쟁은 오히려 부정적인 결과를 초래할 수 있다."},
+            {"id": 4, "source": "Cần phải có sự cạnh tranh lành mạnh.", "target": "바람직한 경쟁이 이루어져야 한다."},
+            {"id": 5, "source": "Học sinh có thể nâng cao thực lực và nuôi dưỡng ý chí đạt mục tiêu.", "target": "학생들은 실력을 향상시키고 목표를 달성하려는 의지를 기를 수 있다."},
+            {"id": 6, "source": "Trong quá trình đọ sức, các em có thể nắm bắt điểm mạnh và điểm yếu.", "target": "겨루는 과정에서 자신의 강점과 약점을 파악할 수 있다."},
+            {"id": 7, "source": "Trải nghiệm này giúp học sinh rèn luyện thái độ không bỏ cuộc khi gặp khó khăn.", "target": "이러한 경험은 학생들이 어려움에 부딪혔을 때 포기하지 않는 태도를 기르는 데 도움이 된다."},
+            {"id": 8, "source": "Cạnh tranh quá mức có thể gây ra áp lực tâm lý nặng nề cho học sinh.", "target": "지나친 경쟁은 학생들에게 심한 심리적 부담을 줄 수 있다."},
+            {"id": 9, "source": "Nếu chỉ coi trọng điểm số, học sinh sẽ dễ bị ám ảnh bởi kết quả.", "target": "성적만을 중요하게 생각하게 되면 결과에 집착하게 된다."},
+            {"id": 10, "source": "Việc này khiến các em xem bạn bè chỉ là đối thủ.", "target": "이는 친구를 경쟁 상대로만 여기게 될 수 있다."},
+            {"id": 11, "source": "Trường hợp nặng có thể xuất hiện hành vi gian lận.", "target": "심한 경우에는 부정행위가 나타날 수도 있다."},
+            {"id": 12, "source": "Điều này gây ảnh hưởng tiêu cực đến quan hệ bạn bè.", "target": "이는 교우 관계에도 부정적인 영향을 미친다."},
+            {"id": 13, "source": "Nhà trường cần tạo ra môi trường để học sinh hợp tác với nhau.", "target": "학교에서는 학생들이 서로 협력할 수 있는 환경을 조성해야 한다."},
+            {"id": 14, "source": "Thay vì chỉ nhấn mạnh điểm số, nên tổ chức bài tập nhóm.", "target": "성적만을 강조하기보다는 모둠별 과제를 통해야 한다."},
+            {"id": 15, "source": "Học sinh cần công nhận ưu điểm của nhau.", "target": "학생들은 서로의 장점을 인정해야 한다."},
+            {"id": 16, "source": "Cần đánh giá công bằng cả quá trình nỗ lực.", "target": "노력 과정도 공정하게 평가해야 한다."},
+            {"id": 17, "source": "Học sinh sẽ không sợ hãi việc cạnh tranh.", "target": "학생들은 경쟁을 두려워하지 않게 된다."},
+            {"id": 18, "source": "Các em có thể học hỏi lẫn nhau và cùng nhau trưởng thành.", "target": "서로 배우며 함께 성장할 수 있다."},
+            {"id": 19, "source": "Cạnh tranh là chất kích thích cho sự phát triển.", "target": "경쟁은 발전의 자극제가 된다."},
+            {"id": 20, "source": "Chúng ta phải tôn trọng lẫn nhau trong cạnh tranh lành mạnh.", "target": "우리는 바람직한 경쟁 속에서 서로를 존중해야 한다."}
         ]
     },
-    "Đề 106: 올바른 대중매체 활용 (Sử dụng truyền thông đại chúng đúng đắn)": {
+    "Đề 107: Kinh nghiệm & Tích lũy kinh nghiệm": {
         "kr_vi": [
-            {"id": 1, "source": "아울러 자신에게 필요한 내용을 선택하고 이용 시간을 적절하게 조절해야 한다.", "target": "Ngoài ra, các em cần lựa chọn những nội dung cần thiết cho bản thân và điều chỉnh thời gian sử dụng một cách hợp lý."},
-            {"id": 2, "source": "이를 위해 학교에서는 미디어 교육을 강화하고 올바른 정보 이용 방법을 가르칠 필요가 있다.", "target": "Để làm được điều này, nhà trường cần tăng cường giáo dục truyền thông và giảng dạy phương pháp sử dụng thông tin đúng đắn."},
-            {"id": 3, "source": "이처럼 청소년들이 대중 매체를 올바르게 활용한다면 다양한 지식을 얻는 동시에 건강한 가치관을 형성할 수 있을 것이다.", "target": "Nếu thanh thiếu niên sử dụng truyền thông đại chúng một cách đúng đắn như vậy, các em có thể vừa tiếp thu được nhiều kiến thức đa dạng, vừa hình thành hệ giá trị quan lành mạnh."}
+            {"id": 1, "source": "현대 사회에서는 과학 기술과 정보 통신의 발달로 사람들이 다양한 경험을 얻는 방식이 달라지고 있다.", "target": "Trong xã hội hiện đại, do sự phát triển của khoa học kỹ thuật và công nghệ thông tin, phương thức con người tiếp nhận những trải nghiệm đa dạng đang dần thay đổi."},
+            {"id": 2, "source": "특히 직접 경험하기보다 간접 경험을 통해 세상을 접하는 사람들이 점점 많아지고 있다.", "target": "Đặc biệt, ngày càng có nhiều người tiếp xúc với thế giới thông qua trải nghiệm gián tiếp thay vì trực tiếp trải nghiệm."},
+            {"id": 3, "source": "이처럼 간접 경험이 많아진 이유로는 먼저 인터넷과 디지털 매체의 발달을 들 수 있다.", "target": "Trước tiên, có thể kể đến sự phát triển của Internet và các phương tiện truyền thông kỹ thuật số là nguyên nhân khiến trải nghiệm gián tiếp ngày càng gia tăng như vậy."},
+            {"id": 4, "source": "과거에는 새로운 지식이나 정보를 얻기 위해 직접 현장을 방문해야 했지만, 이제는 인터넷이나 동영상 등을 통해 다양한 정보를 쉽게 접할 수 있게 되었다.", "target": "Trước đây, để có được kiến thức hoặc thông tin mới, người ta phải trực tiếp đến địa điểm thực tế, nhưng ngày nay đã có thể dễ dàng tiếp cận nhiều thông tin khác nhau thông qua Internet hoặc video."},
+            {"id": 5, "source": "또한 시간과 비용을 절약할 수 있다는 점도 간접 경험이 증가한 중요한 원인이다.", "target": "Ngoài ra, việc có thể tiết kiệm thời gian và chi phí cũng là một nguyên nhân quan trọng khiến trải nghiệm gián tiếp gia tăng."},
+            {"id": 6, "source": "그러나 직접 경험을 통해 얻을 수 있는 장점도 많다.", "target": "Tuy nhiên, trải nghiệm trực tiếp cũng mang lại nhiều lợi ích có thể đạt được."},
+            {"id": 7, "source": "우선 어떤 일을 직접 해 보는 과정에서 책이나 영상만으로는 알기 어려운 실제적인 지식과 기술을 습득할 수 있다.", "target": "Trước hết, trong quá trình trực tiếp thử làm một việc nào đó, chúng ta có thể tiếp thu những kiến thức và kỹ năng thực tế mà chỉ thông qua sách vở hoặc video thì khó có thể hiểu được."},
+            {"id": 8, "source": "또한 예상하지 못한 문제에 부딪히고 이를 해결하는 과정에서 문제 해결 능력과 자신감을 기를 수 있다.", "target": "Ngoài ra, trong quá trình đối mặt với những vấn đề không lường trước được và giải quyết chúng, chúng ta có thể rèn luyện năng lực giải quyết vấn đề và sự tự tin."},
+            {"id": 9, "source": "이러한 경험은 자신의 부족한 점을 발견하고 앞으로 발전하는 데에도 큰 도움이 된다.", "target": "Những trải nghiệm này cũng giúp ích rất nhiều trong việc phát hiện những điểm còn thiếu sót của bản thân và phát triển hơn trong tương lai."},
+            {"id": 10, "source": "그렇다면 개인의 성장을 위해서는 어떻게 경험을 쌓아야 할까?", "target": "Vậy để phát triển bản thân, chúng ta nên tích lũy kinh nghiệm như thế nào?"},
+            {"id": 11, "source": "먼저 실패를 두려워하지 말고 새로운 일에 적극적으로 도전하는 태도가 필요하다.", "target": "Trước tiên, cần có thái độ tích cực thử thách bản thân với những điều mới mẻ mà không sợ thất bại."},
+            {"id": 12, "source": "또한 다양한 활동에 참여한 후 자신의 경험을 되돌아보고 잘한 점과 부족한 점을 분석해야 한다.", "target": "Ngoài ra, sau khi tham gia các hoạt động đa dạng, chúng ta cần nhìn lại trải nghiệm của bản thân và phân tích những điểm đã làm tốt cũng như những điểm còn thiếu sót."},
+            {"id": 13, "source": "이를 통해 같은 실수를 반복하지 않고 경험을 실제적인 성장으로 연결할 수 있다.", "target": "Thông qua đó, chúng ta có thể không lặp lại những sai lầm giống nhau và biến kinh nghiệm thành sự phát triển thực chất."},
+            {"id": 14, "source": "이처럼 간접 경험과 직접 경험을 적절히 활용하고 꾸준히 새로운 경험을 쌓는다면 개인의 능력을 향상시키고 더욱 주도적으로 미래를 준비할 수 있을 것이다.", "target": "Nếu biết sử dụng hợp lý cả trải nghiệm gián tiếp lẫn trải nghiệm trực tiếp, đồng thời không ngừng tích lũy những trải nghiệm mới như vậy, chúng ta có thể nâng cao năng lực cá nhân và chủ động hơn trong việc chuẩn bị cho tương lai."}
+        ],
+        "vi_kr": [
+            {"id": 1, "source": "Trong xã hội hiện đại, do sự phát triển của khoa học kỹ thuật và công nghệ thông tin, phương thức con người tiếp nhận những trải nghiệm đa dạng đang dần thay đổi.", "target": "현대 사회에서는 과학 기술과 정보 통신의 발달로 사람들이 다양한 경험을 얻는 방식이 달라지고 있다."},
+            {"id": 2, "source": "Đặc biệt, ngày càng có nhiều người tiếp xúc với thế giới thông qua trải nghiệm gián tiếp thay vì trực tiếp trải nghiệm.", "target": "특히 직접 경험하기보다 간접 경험을 통해 세상을 접하는 사람들이 점점 많아지고 있다."},
+            {"id": 3, "source": "Trước tiên, có thể kể đến sự phát triển của Internet và các phương tiện truyền thông kỹ thuật số là nguyên nhân khiến trải nghiệm gián tiếp ngày càng gia tăng như vậy.", "target": "이처럼 간접 경험이 많아진 이유로는 먼저 인터넷과 디지털 매체의 발달을 들 수 있다."},
+            {"id": 4, "source": "Trước đây, để có được kiến thức hoặc thông tin mới, người ta phải trực tiếp đến địa điểm thực tế, nhưng ngày nay đã có thể dễ dàng tiếp cận nhiều thông tin khác nhau thông qua Internet hoặc video.", "target": "과거에는 새로운 지식이나 정보를 얻기 위해 직접 현장을 방문해야 했지만, 이제는 인터넷이나 동영상 등을 통해 다양한 정보를 쉽게 접할 수 있게 되었다."},
+            {"id": 5, "source": "Ngoài ra, việc có thể tiết kiệm thời gian và chi phí cũng là một nguyên nhân quan trọng khiến trải nghiệm gián tiếp gia tăng.", "target": "또한 시간과 비용을 절약할 수 있다는 점도 간접 경험이 증가한 중요한 원인이다."},
+            {"id": 6, "source": "Tuy nhiên, trải nghiệm trực tiếp cũng mang lại nhiều lợi ích có thể đạt được.", "target": "그러나 직접 경험을 통해 얻을 수 있는 장점도 많다."},
+            {"id": 7, "source": "Trước hết, trong quá trình trực tiếp thử làm một việc nào đó, chúng ta có thể tiếp thu những kiến thức và kỹ năng thực tế mà chỉ thông qua sách vở hoặc video thì khó có thể hiểu được.", "target": "우선 어떤 일을 직접 해 보는 과정에서 책이나 영상만으로는 알기 어려운 실제적인 지식과 기술을 습득할 수 있다."},
+            {"id": 8, "source": "Ngoài ra, trong quá trình đối mặt với những vấn đề không lường trước được và giải quyết chúng, chúng ta có thể rèn luyện năng lực giải quyết vấn đề và sự tự tin.", "target": "또한 예상하지 못한 문제에 부딪히고 이를 해결하는 과정에서 문제 해결 능력과 자신감을 기를 수 있다."},
+            {"id": 9, "source": "Những trải nghiệm này cũng giúp ích rất nhiều trong việc phát hiện những điểm còn thiếu sót của bản thân và phát triển hơn trong tương lai.", "target": "이러한 경험은 자신의 부족한 점을 발견하고 앞으로 발전하는 데에도 큰 도움이 된다."},
+            {"id": 10, "source": "Vậy để phát triển bản thân, chúng ta nên tích lũy kinh nghiệm như thế nào?", "target": "그렇다면 개인의 성장을 위해서는 어떻게 경험을 쌓아야 할까?"},
+            {"id": 11, "source": "Trước tiên, cần có thái độ tích cực thử thách bản thân với những điều mới mẻ mà không sợ thất bại.", "target": "먼저 실패를 두려워하지 말고 새로운 일에 적극적으로 도전하는 태도가 필요하다."},
+            {"id": 12, "source": "Ngoài ra, sau khi tham gia các hoạt động đa dạng, chúng ta cần nhìn lại trải nghiệm của bản thân và phân tích những điểm đã làm tốt cũng như những điểm còn thiếu sót.", "target": "또한 다양한 활동에 참여한 후 자신의 경험을 되돌아보고 잘한 점과 부족한 점을 분석해야 한다."},
+            {"id": 13, "source": "Thông qua đó, chúng ta có thể không lặp lại những sai lầm giống nhau và biến kinh nghiệm thành sự phát triển thực chất.", "target": "이를 통해 같은 실수를 반복하지 않고 경험을 실제적인 성장으로 연결할 수 있다."},
+            {"id": 14, "source": "Nếu biết sử dụng hợp lý cả trải nghiệm gián tiếp lẫn trải nghiệm trực tiếp, đồng thời không ngừng tích lũy những trải nghiệm mới như vậy, chúng ta có thể nâng cao năng lực cá nhân và chủ động hơn trong việc chuẩn bị cho tương lai.", "target": "이처럼 간접 경험과 직접 경험을 적절히 활용하고 꾸준히 새로운 경험을 쌓는다면 개인의 능력을 향상시키고 더욱 주도적으로 미래를 준비할 수 있을 것이다."}
         ]
     },
-    "Đề 105: 경험의 활용과 성장 (Vận dụng kinh nghiệm và phát triển bản thân)": {
+    "Đề 106: Truyền thông đại chúng & Thanh thiếu niên": {
         "kr_vi": [
-            {"id": 1, "source": "아울러 다양한 활동에 참여한 후에는 자신의 경험을 돌아보고 잘한 점과 부족한 점을 분석해야 한다.", "target": "Ngoài ra, sau khi tham gia các hoạt động đa dạng, chúng ta cần nhìn lại trải nghiệm của bản thân và phân tích những điểm đã làm tốt cũng như những điểm còn thiếu sót."},
-            {"id": 2, "source": "이를 통해 같은 실수를 반복하지 않고 경험을 실제적인 성장으로 연결할 수 있다.", "target": "Thông qua đó, chúng ta có thể không lặp lại những sai lầm giống nhau và biến kinh nghiệm thành sự phát triển thực chất."},
-            {"id": 3, "source": "이처럼 간접 경험과 직접 경험을 적절히 활용하고 꾸준히 새로운 경험을 쌓는다면 개인의 능력을 향상시키고 더욱 주도적으로 미래를 준비할 수 있을 것이다.", "target": "Nếu biết sử dụng hợp lý cả trải nghiệm gián tiếp lẫn trải nghiệm trực tiếp, đồng thời không ngừng tích lũy những trải nghiệm mới như vậy, chúng ta có thể nâng cao năng lực cá nhân và chủ động hơn trong việc chuẩn bị cho tương lai."}
+            {"id": 1, "source": "현대 사회에서 대중 매체는 청소년들의 일상생활에서 중요한 역할을 하고 있다.", "target": "Trong xã hội hiện đại, truyền thông đại chúng đang đóng vai trò quan trọng trong cuộc sống hằng ngày của thanh thiếu niên."},
+            {"id": 2, "source": "청소년들은 텔레비전이나 인터넷, SNS 등 다양한 매체를 통해 많은 정보를 얻고 있다.", "target": "Thanh thiếu niên đang tiếp nhận nhiều thông tin thông qua các phương tiện truyền thông đa dạng như truyền hình, Internet và mạng xã hội."},
+            {"id": 3, "source": "먼저 대중 매체를 통해 청소년들은 사회에서 일어나는 다양한 사건과 새로운 지식을 쉽게 접할 수 있다.", "target": "Trước tiên, thông qua truyền thông đại chúng, thanh thiếu niên có thể dễ dàng tiếp cận những sự kiện đa dạng xảy ra trong xã hội và những kiến thức mới."},
+            {"id": 4, "source": "이를 통해 세상에 대한 이해의 폭을 넓히고 자신의 관심 분야에 대한 지식과 정보를 얻을 수 있다.", "target": "Thông qua đó, các em có thể mở rộng phạm vi hiểu biết về thế giới và tiếp thu kiến thức, thông tin về lĩnh vực mà bản thân quan tâm."},
+            {"id": 5, "source": "또한 다양한 사람들의 생각과 문화를 접하면서 다른 사람의 입장을 이해하고 세상을 바라보는 시각을 넓힐 수 있다.", "target": "Ngoài ra, thông qua việc tiếp xúc với suy nghĩ và văn hóa của nhiều người khác nhau, các em có thể hiểu được lập trường của người khác và mở rộng góc nhìn về thế giới."},
+            {"id": 6, "source": "그러나 대중 매체는 청소년들의 가치관에 부정적인 영향을 미치기도 한다.", "target": "Tuy nhiên, truyền thông đại chúng đôi khi cũng gây ra những ảnh hưởng tiêu cực đến hệ giá trị quan của thanh thiếu niên."},
+            {"id": 7, "source": "우선 자극적이고 폭력적인 콘텐츠에 반복적으로 노출되면 폭력적인 행동을 가볍게 여겨나 잘못된 행동을 모방할 가능성이 높아진다.", "target": "Trước hết, nếu thường xuyên tiếp xúc với những nội dung kích động và bạo lực, các em sẽ có khả năng xem nhẹ hành vi bạo lực hoặc bắt chước những hành vi sai trái cao hơn."},
+            {"id": 8, "source": "또한 SNS에 올라오는 화려한 생활이나 외모를 자주 접하게 되면 다른 사람과 자신을 비교하면서 외모나 물질적인 성공만을 중요하게 생각할 수 있다.", "target": "Ngoài ra, nếu thường xuyên tiếp xúc với những hình ảnh về cuộc sống xa hoa hoặc ngoại hình trên mạng xã hội, các em có thể so sánh bản thân với người khác và chỉ coi trọng ngoại hình hoặc thành công về mặt vật chất."},
+            {"id": 9, "source": "이는 자존감을 낮추고 올바른 가치관을 형성하는 데 방해가 될 수 있다.", "target": "Điều này có thể làm giảm lòng tự trọng và cản trở việc hình thành hệ giá trị quan đúng đắn."},
+            {"id": 10, "source": "그렇다면 청소년들은 대중 매체를 대할 때 어떤 태도를 가져야 할까?", "target": "Vậy thanh thiếu niên cần có thái độ như thế nào khi tiếp xúc với truyền thông đại chúng?"},
+            {"id": 11, "source": "먼저 매체에서 제공하는 정보를 무조건 믿기보다는 사실인지 확인하고 비판적으로 판단하는 습관을 길러야 한다.", "target": "Trước tiên, thay vì tin tưởng một cách vô điều kiện vào thông tin do truyền thông cung cấp, các em cần rèn luyện thói quen kiểm chứng xem thông tin đó có đúng sự thật hay không và đánh giá một cách có tư duy phản biện."},
+            {"id": 12, "source": "또한 자신에게 필요한 콘텐츠를 선택하고 이용 시간을 적절히 조절해야 한다.", "target": "Ngoài ra, các em cần lựa chọn những nội dung cần thiết cho bản thân và điều chỉnh thời gian sử dụng một cách hợp lý."},
+            {"id": 13, "source": "이를 위해 학교에서는 미디어 교육을 강화하고 올바른 정보 이용 방법을 가르칠 필요가 있다.", "target": "Để làm được điều này, nhà trường cần tăng cường giáo dục truyền thông và giảng dạy phương pháp sử dụng thông tin đúng đắn."},
+            {"id": 14, "source": "이처럼 청소년들이 대중 매체를 올바르게 활용한다면 다양한 지식을 얻는 동시에 건강한 가치관을 형성할 수 있을 것이다.", "target": "Nếu thanh thiếu niên sử dụng truyền thông đại chúng một cách đúng đắn như vậy, các em có thể vừa tiếp thu được nhiều kiến thức đa dạng, vừa hình thành hệ giá trị quan lành mạnh."}
+        ],
+        "vi_kr": [
+            {"id": 1, "source": "Trong xã hội hiện đại, truyền thông đại chúng đang đóng vai trò quan trọng trong cuộc sống hằng ngày của thanh thiếu niên.", "target": "현대 사회에서 대중 매체는 청소년들의 일상생활에서 중요한 역할을 하고 있다."},
+            {"id": 2, "source": "Thanh thiếu niên đang tiếp nhận nhiều thông tin thông qua các phương tiện truyền thông đa dạng như truyền hình, Internet và mạng xã hội.", "target": "청소년들은 텔레비전이나 인터넷, SNS 등 다양한 매체를 통해 많은 정보를 얻고 있다."},
+            {"id": 3, "source": "Trước tiên, thông qua truyền thông đại chúng, thanh thiếu niên có thể dễ dàng tiếp cận những sự kiện đa dạng xảy ra trong xã hội và những kiến thức mới.", "target": "먼저 대중 매체를 통해 청소년들은 사회에서 일어나는 다양한 사건과 새로운 지식을 쉽게 접할 수 있다."},
+            {"id": 4, "source": "Thông qua đó, các em có thể mở rộng phạm vi hiểu biết về thế giới và tiếp thu kiến thức, thông tin về lĩnh vực mà bản thân quan tâm.", "target": "이를 통해 세상에 대한 이해의 폭을 넓히고 자신의 관심 분야에 대한 지식과 정보를 얻을 수 있다."},
+            {"id": 5, "source": "Ngoài ra, thông qua việc tiếp xúc với suy nghĩ và văn hóa của nhiều người khác nhau, các em có thể hiểu được lập trường của người khác và mở rộng góc nhìn về thế giới.", "target": "또한 다양한 사람들의 생각과 문화를 접하면서 다른 사람의 입장을 이해하고 세상을 바라보는 시각을 넓힐 수 있다."},
+            {"id": 6, "source": "Tuy nhiên, truyền thông đại chúng đôi khi cũng gây ra những ảnh hưởng tiêu cực đến hệ giá trị quan của thanh thiếu niên.", "target": "그러나 대중 매체는 청소년들의 가치관에 부정적인 영향을 미치기도 한다."},
+            {"id": 7, "source": "Trước hết, nếu thường xuyên tiếp xúc với những nội dung kích động và bạo lực, các em sẽ có khả năng xem nhẹ hành vi bạo lực hoặc bắt chước những hành vi sai trái cao hơn.", "target": "우선 자극적이고 폭력적인 콘텐츠에 반복적으로 노출되면 폭력적인 행동을 가볍게 여겨나 잘못된 행동을 모방할 가능성이 높아진다."},
+            {"id": 8, "source": "Ngoài ra, nếu thường xuyên tiếp xúc với những hình ảnh về cuộc sống xa hoa hoặc ngoại hình trên mạng xã hội, các em có thể so sánh bản thân với người khác và chỉ coi trọng ngoại hình hoặc thành công về mặt vật chất.", "target": "또한 SNS에 올라오는 화려한 생활이나 외모를 자주 접하게 되면 다른 사람과 자신을 비교하면서 외모나 물질적인 성공만을 중요하게 생각할 수 있다."},
+            {"id": 9, "source": "Điều này có thể làm giảm lòng tự trọng và cản trở việc hình thành hệ giá trị quan đúng đắn.", "target": "이는 자존감을 낮추고 올바른 가치관을 형성하는 데 방해가 될 수 있다."},
+            {"id": 10, "source": "Vậy thanh thiếu niên cần có thái độ như thế nào khi tiếp xúc với truyền thông đại chúng?", "target": "그렇다면 청소년들은 대중 매체를 대할 때 어떤 태도를 가져야 할까?"},
+            {"id": 11, "source": "Trước tiên, thay vì tin tưởng một cách vô điều kiện vào thông tin do truyền thông cung cấp, các em cần rèn luyện thói quen kiểm chứng xem thông tin đó có đúng sự thật hay không và đánh giá một cách có tư duy phản biện.", "target": "먼저 매체에서 제공하는 정보를 무조건 믿기보다는 사실인지 확인하고 비판적으로 판단하는 습관을 길러야 한다."},
+            {"id": 12, "source": "Ngoài ra, các em cần lựa chọn những nội dung cần thiết cho bản thân và điều chỉnh thời gian sử dụng một cách hợp lý.", "target": "또한 자신에게 필요한 콘텐츠를 선택하고 이용 시간을 적절히 조절해야 한다."},
+            {"id": 13, "source": "Để làm được điều này, nhà trường cần tăng cường giáo dục truyền thông và giảng dạy phương pháp sử dụng thông tin đúng đắn.", "target": "이를 위해 학교에서는 미디어 교육을 강화하고 올바른 정보 이용 방법을 가르칠 필요가 있다."},
+            {"id": 14, "source": "Nếu thanh thiếu niên sử dụng truyền thông đại chúng một cách đúng đắn như vậy, các em có thể vừa tiếp thu được nhiều kiến thức đa dạng, vừa hình thành hệ giá trị quan lành mạnh.", "target": "이처럼 청소년들이 대중 매체를 올바르게 활용한다면 다양한 지식을 얻는 동시에 건강한 가치관을 형성할 수 있을 것이다."}
         ]
     },
-    "Đề 104: 공정한 보상 제도 (Chế độ khen thưởng công bằng)": {
+    "Đề 105: Tích lũy kinh nghiệm (Tương tự 107)": {
         "kr_vi": [
-            {"id": 1, "source": "이를 통해 구성원들이 서로 돕고 함께 성장하는 분위기를 만들 수 있다.", "target": "Thông qua đó, có thể tạo ra bầu không khí trong đó các thành viên giúp đỡ lẫn nhau và cùng nhau phát triển."},
-            {"id": 2, "source": "또한 단기적인 결과만으로 평가하지 않고 업무의 과정과 장기적인 발전 가능성까지 종합적으로 고려해야 한다.", "target": "Ngoài ra, không nên chỉ đánh giá dựa trên kết quả ngắn hạn mà cần xem xét một cách toàn diện cả quá trình làm việc và khả năng phát triển lâu dài."},
-            {"id": 3, "source": "이처럼 공정하고 균형 잡힌 보상 제도가 마련된다면 구성원들의 만족도를 높이는 동시에 조직 전체의 지속적인 발전에도 기여할 수 있을 것이다.", "target": "Nếu một chế độ khen thưởng công bằng và cân bằng được xây dựng như vậy thì có thể vừa nâng cao mức độ hài lòng của các thành viên, vừa đóng góp vào sự phát triển bền vững của toàn bộ tổ chức."}
+            {"id": 1, "source": "현대 사회에서는 과학 기술과 정보 통신의 발달로 사람들이 다양한 경험을 얻는 방식이 달라지고 있다.", "target": "Trong xã hội hiện đại, do sự phát triển của khoa học kỹ thuật và công nghệ thông tin, phương thức con người tiếp nhận những trải nghiệm đa dạng đang dần thay đổi."},
+            {"id": 2, "source": "특히 직접 경험하기보다 간접 경험을 통해 세상을 접하는 사람들이 점점 많아지고 있다.", "target": "Đặc biệt, ngày càng có nhiều người tiếp xúc với thế giới thông qua trải nghiệm gián tiếp thay vì trực tiếp trải nghiệm."},
+            {"id": 3, "source": "이처럼 간접 경험이 많아진 이유로는 먼저 인터넷과 디지털 매체의 발달을 들 수 있다.", "target": "Trước tiên, có thể kể đến sự phát triển của Internet và các phương tiện truyền thông kỹ thuật số là nguyên nhân khiến trải nghiệm gián tiếp ngày càng gia tăng như vậy."},
+            {"id": 4, "source": "과거에는 새로운 지식이나 정보를 얻기 위해 직접 현장을 방문해야 했지만, 이제는 인터넷이나 동영상 등을 통해 다양한 정보를 쉽게 접할 수 있게 되었다.", "target": "Trước đây, để có được kiến thức hoặc thông tin mới, người ta phải trực tiếp đến địa điểm thực tế, nhưng ngày nay đã có thể dễ dàng tiếp cận nhiều thông tin khác nhau thông qua Internet hoặc video."},
+            {"id": 5, "source": "또한 시간과 비용을 절약할 수 있다는 점도 간접 경험이 증가한 중요한 원인이다.", "target": "Ngoài ra, việc có thể tiết kiệm thời gian và chi phí cũng là một nguyên nhân quan trọng khiến trải nghiệm gián tiếp gia tăng."},
+            {"id": 6, "source": "그러나 직접 경험을 통해 얻을 수 있는 장점도 많다.", "target": "Tuy nhiên, trải nghiệm trực tiếp cũng mang lại nhiều lợi ích có thể đạt được."},
+            {"id": 7, "source": "우선 어떤 일을 직접 해 보는 과정에서 책이나 영상만으로는 알기 어려운 실제적인 지식과 기술을 습득할 수 있다.", "target": "Trước hết, trong quá trình trực tiếp thử làm một việc nào đó, chúng ta có thể tiếp thu những kiến thức và kỹ năng thực tế mà chỉ thông qua sách vở hoặc video thì khó có thể hiểu được."},
+            {"id": 8, "source": "또한 예상하지 못한 문제에 부딪히고 이를 해결하는 과정에서 문제 해결 능력과 자신감을 기를 수 있다.", "target": "Ngoài ra, trong quá trình đối mặt với những vấn đề không lường trước được và giải quyết chúng, chúng ta có thể rèn luyện năng lực giải quyết vấn đề và sự tự tin."},
+            {"id": 9, "source": "이러한 경험은 자신의 부족한 점을 발견하고 앞으로 발전하는 데에도 큰 도움이 된다.", "target": "Những trải nghiệm này cũng giúp ích rất nhiều trong việc phát hiện những điểm còn thiếu sót của bản thân và phát triển hơn trong tương lai."},
+            {"id": 10, "source": "그렇다면 개인의 성장을 위해서는 어떻게 경험을 쌓아야 할까?", "target": "Vậy để phát triển bản thân, chúng ta nên tích lũy kinh nghiệm như thế nào?"},
+            {"id": 11, "source": "먼저 실패를 두려워하지 말고 새로운 일에 적극적으로 도전하는 태도가 필요하다.", "target": "Trước tiên, cần có thái độ tích cực thử thách bản thân với những điều mới mẻ mà không sợ thất bại."},
+            {"id": 12, "source": "또한 다양한 활동에 참여한 후 자신의 경험을 되돌아보고 잘한 점과 부족한 점을 분석해야 한다.", "target": "Ngoài ra, sau khi tham gia các hoạt động đa dạng, chúng ta cần nhìn lại trải nghiệm của bản thân và phân tích những điểm đã làm tốt cũng như những điểm còn thiếu sót."},
+            {"id": 13, "source": "이를 통해 같은 실수를 반복하지 않고 경험을 실제적인 성장으로 연결할 수 있다.", "target": "Thông qua đó, chúng ta có thể không lặp lại những sai lầm giống nhau và biến kinh nghiệm thành sự phát triển thực chất."},
+            {"id": 14, "source": "이처럼 간접 경험과 직접 경험을 적절히 활용하고 꾸준히 새로운 경험을 쌓는다면 개인의 능력을 향상시키고 더욱 주도적으로 미래를 준비할 수 있을 것이다.", "target": "Nếu biết sử dụng hợp lý cả trải nghiệm gián tiếp lẫn trải nghiệm trực tiếp, đồng thời không ngừng tích lũy những trải nghiệm mới như vậy, chúng ta có thể nâng cao năng lực cá nhân và chủ động hơn trong việc chuẩn bị cho tương lai."}
+        ],
+        "vi_kr": [
+            {"id": 1, "source": "Trong xã hội hiện đại, do sự phát triển của khoa học kỹ thuật và công nghệ thông tin, phương thức con người tiếp nhận những trải nghiệm đa dạng đang dần thay đổi.", "target": "현대 사회에서는 과학 기술과 정보 통신의 발달로 사람들이 다양한 경험을 얻는 방식이 달라지고 있다."},
+            {"id": 2, "source": "Đặc biệt, ngày càng có nhiều người tiếp xúc với thế giới thông qua trải nghiệm gián tiếp thay vì trực tiếp trải nghiệm.", "target": "특히 직접 경험하기보다 간접 경험을 통해 세상을 접하는 사람들이 점점 많아지고 있다."},
+            {"id": 3, "source": "Trước tiên, có thể kể đến sự phát triển của Internet và các phương tiện truyền thông kỹ thuật số là nguyên nhân khiến trải nghiệm gián tiếp ngày càng gia tăng như vậy.", "target": "이처럼 간접 경험이 많아진 이유로는 먼저 인터넷과 디지털 매체의 발달을 들 수 있다."},
+            {"id": 4, "source": "Trước đây, để có được kiến thức hoặc thông tin mới, người ta phải trực tiếp đến địa điểm thực tế, nhưng ngày nay đã có thể dễ dàng tiếp cận nhiều thông tin khác nhau thông qua Internet hoặc video.", "target": "과거에는 새로운 지식이나 정보를 얻기 위해 직접 현장을 방문해야 했지만, 이제는 인터넷이나 동영상 등을 통해 다양한 정보를 쉽게 접할 수 있게 되었다."},
+            {"id": 5, "source": "Ngoài ra, việc có thể tiết kiệm thời gian và chi phí cũng là một nguyên nhân quan trọng khiến trải nghiệm gián tiếp gia tăng.", "target": "또한 시간과 비용을 절약할 수 있다는 점도 간접 경험이 증가한 중요한 원인이다."},
+            {"id": 6, "source": "Tuy nhiên, trải nghiệm trực tiếp cũng mang lại nhiều lợi ích có thể đạt được.", "target": "그러나 직접 경험을 통해 얻을 수 있는 장점도 많다."},
+            {"id": 7, "source": "Trước hết, trong quá trình trực tiếp thử làm một việc nào đó, chúng ta có thể tiếp thu những kiến thức và kỹ năng thực tế mà chỉ thông qua sách vở hoặc video thì khó có thể hiểu được.", "target": "우선 어떤 일을 직접 해 보는 과정에서 책이나 영상만으로는 알기 어려운 실제적인 지식과 기술을 습득할 수 있다."},
+            {"id": 8, "source": "Ngoài ra, trong quá trình đối mặt với những vấn đề không lường trước được và giải quyết chúng, chúng ta có thể rèn luyện năng lực giải quyết vấn đề và sự tự tin.", "target": "또한 예상하지 못한 문제에 부딪히고 이를 해결하는 과정에서 문제 해결 능력과 자신감을 기를 수 있다."},
+            {"id": 9, "source": "Những trải nghiệm này cũng giúp ích rất nhiều trong việc phát hiện những điểm còn thiếu sót của bản thân và phát triển hơn trong tương lai.", "target": "이러한 경험은 자신의 부족한 점을 발견하고 앞으로 발전하는 데에도 큰 도움이 된다."},
+            {"id": 10, "source": "Vậy để phát triển bản thân, chúng ta nên tích lũy kinh nghiệm như thế nào?", "target": "그렇다면 개인의 성장을 위해서는 어떻게 경험을 쌓아야 할까?"},
+            {"id": 11, "source": "Trước tiên, cần có thái độ tích cực thử thách bản thân với những điều mới mẻ mà không sợ thất bại.", "target": "먼저 실패를 두려워하지 말고 새로운 일에 적극적으로 도전하는 태도가 필요하다."},
+            {"id": 12, "source": "Ngoài ra, sau khi tham gia các hoạt động đa dạng, chúng ta cần nhìn lại trải nghiệm của bản thân và phân tích những điểm đã làm tốt cũng như những điểm còn thiếu sót.", "target": "또한 다양한 활동에 참여한 후 자신의 경험을 되돌아보고 잘한 점과 부족한 점을 분석해야 한다."},
+            {"id": 13, "source": "Thông qua đó, chúng ta có thể không lặp lại những sai lầm giống nhau và biến kinh nghiệm thành sự phát triển thực chất.", "target": "이를 통해 같은 실수를 반복하지 않고 경험을 실제적인 성장으로 연결할 수 있다."},
+            {"id": 14, "source": "Nếu biết sử dụng hợp lý cả trải nghiệm gián tiếp lẫn trải nghiệm trực tiếp, đồng thời không ngừng tích lũy những trải nghiệm mới như vậy, chúng ta có thể nâng cao năng lực cá nhân và chủ động hơn trong việc chuẩn bị cho tương lai.", "target": "이처럼 간접 경험과 직접 경험을 적절히 활용하고 꾸준히 새로운 경험을 쌓는다면 개인의 능력을 향상시키고 더욱 주도적으로 미래를 준비할 수 있을 것이다."}
         ]
     },
-    "Đề 103: 환경 위생과 시민 의식 (Vệ sinh môi trường và ý thức công dân)": {
+    "Đề 104: Vệ sinh công cộng": {
         "kr_vi": [
-            {"id": 1, "source": "아울러 시민들은 쓰레기를 함부로 버리지 않고 분리배출을 실천하는 등 일상생활에서 위생 수칙을 준수해야 한다.", "target": "Ngoài ra, người dân cần tuân thủ các quy tắc vệ sinh trong cuộc sống hằng ngày, chẳng hạn như không vứt rác bừa bãi và thực hiện phân loại rác thải."},
-            {"id": 2, "source": "이와 함께 학교와 지역 사회에서는 위생 교육과 캠페인을 통해 시민들의 인식을 높일 필요가 있다.", "target": "Cùng với đó, nhà trường và cộng đồng địa phương cần nâng cao nhận thức của người dân thông qua giáo dục vệ sinh và các chiến dịch tuyên truyền."},
-            {"id": 3, "source": "이처럼 정부의 체계적인 관리와 시민들의 자발적인 참여가 함께 이루어진다면 더욱 깨끗하고 건강한 사회를 만들 수 있을 것이다.", "target": "Nếu việc quản lý có hệ thống của chính phủ và sự tham gia tự giác của người dân được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội sạch sẽ và lành mạnh hơn."}
-        ]
-    },
-    "Đề 102: 디지털 정보 격차 해소 (Giải quyết khoảng cách thông tin kỹ thuật số)": {
-        "kr_vi": [
-            {"id": 1, "source": "아울러 사회적으로는 고령자와 장애인을 위한 교육 프로그램을 확대하고, 누구나 쉽게 사용할 수 있도록 기기의 화면과 기능을 개선해야 한다.", "target": "Ngoài ra, về mặt xã hội, cần mở rộng các chương trình giáo dục dành cho người cao tuổi và người khuyết tật, đồng thời cải thiện màn hình và chức năng của thiết bị để bất kỳ ai cũng có thể dễ dàng sử dụng."},
-            {"id": 2, "source": "아울러 디지털 기기 사용이 어려운 사람들을 위해 대면 서비스도 함께 제공할 필요가 있다.", "target": "Đồng thời, cần cung cấp cả dịch vụ trực tiếp dành cho những người gặp khó khăn trong việc sử dụng thiết bị kỹ thuật số."},
-            {"id": 3, "source": "이처럼 개인의 노력과 사회의 제도적 지원이 함께 이루어진다면 누구나 디지털 기술의 혜택을 누릴 수 있는 포용적인 사회를 만들 수 있을 것이다.", "target": "Nếu nỗ lực của cá nhân và sự hỗ trợ về mặt chính sách, thể chế của xã hội được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội hòa nhập, nơi bất kỳ ai cũng có thể tận hưởng những lợi ích của công nghệ số."}
-        ]
-    },
-    "Đề 101: 재택근무의 효율적 운용 (Vận hành hiệu quả hình thức làm việc tại nhà)": {
-        "kr_vi": [
-            {"id": 1, "source": "우선 기업은 화상 회의나 메신저 등 온라인 소통 수단을 적극 활용하여 직원 간의 원활한 정보 공유를 지원해야 한다.", "target": "Trước tiên, doanh nghiệp cần tích cực sử dụng các phương tiện giao tiếp trực tuyến như họp trực tuyến hoặc ứng dụng nhắn tin để hỗ trợ việc trao đổi thông tin thuận lợi giữa các nhân viên."},
-            {"id": 2, "source": "또한 직원들은 정해진 근무 시간과 휴식 시간을 지키고 업무 공간을 별도로 마련하는 등 스스로 업무 환경을 관리해야 한다.", "target": "Ngoài ra, nhân viên cần tự quản lý môi trường làm việc của mình bằng cách tuân thủ thời gian làm việc và nghỉ ngơi đã quy định, đồng thời bố trí không gian làm việc riêng biệt."},
-            {"id": 3, "source": "이처럼 기업의 체계적인 지원과 직원들의 자발적인 노력이 함께 이루어진다면 재택근무의 장점을 살리면서 문제점을 줄일 수 있을 것이다.", "target": "Nếu sự hỗ trợ có hệ thống của doanh nghiệp và nỗ lực tự giác của nhân viên được thực hiện đồng thời như vậy thì có thể phát huy những ưu điểm của hình thức làm việc tại nhà đồng thời giảm thiểu các vấn đề của nó."}
-        ]
-    },
-    "Đề 100: 인공지능의 올바른 활용 (Sử dụng trí tuệ nhân tạo AI đúng đắn)": {
-        "kr_vi": [
-            {"id": 1, "source": "아울러 인공지능에 지나치게 의존하지 않고 스스로 생각하고 판단하는 능력을 길러야 한다.", "target": "Ngoài ra, cần rèn luyện khả năng tự suy nghĩ và phán đoán mà không phụ thuộc quá mức vào AI."},
-            {"id": 2, "source": "아울러 개인정보를 함부로 입력하지 않는 등 안전한 사용 방법을 익혀야 한다.", "target": "Bên cạnh đó, cần học cách sử dụng an toàn, chẳng hạn như không tùy tiện nhập thông tin cá nhân vào AI."},
-            {"id": 3, "source": "이처럼 인공지능은 어떻게 활용하느냐에 따라 긍정적인 결과를 가져올 수도 있고 부정적인 결과를 초래할 수도 있다.", "target": "Như vậy, tùy thuộc vào cách sử dụng, AI có thể mang lại kết quả tích cực nhưng cũng có thể gây ra những hậu quả tiêu cực."},
-            {"id": 4, "source": "그러므로 인공지능의 장점을 적극적으로 활용하되 인간의 판단력과 책임감을 바탕으로 올바르게 사용하는 것이 중요하다.", "target": "Do đó, điều quan trọng là tích cực tận dụng những ưu điểm của AI, đồng thời sử dụng nó một cách đúng đắn dựa trên khả năng phán đoán và tinh thần trách nhiệm của con người."}
-        ]
-    },
-    "Đề 99: 마음의 상처 회복 (Chữa lành vết thương lòng)": {
-        "kr_vi": [
-            {"id": 1, "source": "아울러 운동이나 취미 활동을 통해 스트레스를 해소하고 새로운 목표를 세워 일상에 활력을 되찾는 노력도 중요하다.", "target": "Bên cạnh đó, nỗ lực giải tỏa căng thẳng thông qua tập thể dục hoặc các hoạt động sở thích, đồng thời đặt ra mục tiêu mới để lấy lại sức sống trong cuộc sống hằng ngày cũng rất quan trọng."},
-            {"id": 2, "source": "이처럼 마음의 상처를 회복하는 데에는 시간이 필요하다.", "target": "Như vậy, việc chữa lành những vết thương lòng cần có thời gian."},
-            {"id": 3, "source": "그러나 자신의 감정을 이해하고 긍정적으로 극복하려는 노력을 꾸준히 한다면 누구나 다시 건강한 마음으로 살아갈 수 있을 것이다.", "target": "Tuy nhiên, nếu kiên trì nỗ lực thấu hiểu cảm xúc của bản thân và vượt qua chúng theo hướng tích cực thì bất kỳ ai cũng có thể tiếp tục sống với một tinh thần khỏe mạnh."}
-        ]
-    },
-    "Đề 98: 진정한 격려와 응원 (Sự động viên và khích lệ thực sự)": {
-        "kr_vi": [
-            {"id": 1, "source": "아울러 막연한 칭찬보다는 지금까지의 노력 과정과 상대방의 구체적인 장점을 인정해 주는 것이 효과적이다.", "target": "Bên cạnh đó, thay vì những lời khen ngợi chung chung, việc công nhận quá trình nỗ lực từ trước đến nay và những ưu điểm cụ thể của đối phương sẽ hiệu quả hơn."},
-            {"id": 2, "source": "이처럼 진정한 격려와 응원은 단순히 긍정적인 말을 건네는 것이 아니라 상대방의 마음을 이해하고 다시 도전할 수 있도록 용기를 주는 것이다.", "target": "Như vậy, sự động viên và khích lệ thực sự không đơn thuần là nói những lời tích cực, mà là thấu hiểu tâm tư của đối phương và tiếp thêm dũng khí để họ có thể thử sức một lần nữa."},
-            {"id": 3, "source": "그러므로 상대방의 입장에서 생각하며 진심 어린 격려와 응원을 하는 자세가 필요하다.", "target": "Do đó, cần có thái độ suy nghĩ từ góc độ của đối phương và dành cho họ những lời động viên, khích lệ chân thành."}
-        ]
-    },
-    "Đề 97: 차별 없는 사회 (Một xã hội không phân biệt đối xử)": {
-        "kr_vi": [
-            {"id": 1, "source": "아울러 학교와 사회에서는 차별 문제와 인권의 중요성에 대한 인식을 높이기 위해 교육을 강화해야 한다.", "target": "Ngoài ra, nhà trường và xã hội cần tăng cường giáo dục nhằm nâng cao nhận thức về những vấn đề của phân biệt đối xử và tầm quan trọng của nhân quyền."},
-            {"id": 2, "source": "아울러 정부는 차별을 방지하기 위한 제도와 법적 장치를 마련하고 이를 공정하게 시행해야 한다.", "target": "Bên cạnh đó, chính phủ cần thiết lập các chế độ và biện pháp pháp lý nhằm ngăn chặn sự phân biệt đối xử, đồng thời thực thi chúng một cách công bằng."},
-            {"id": 3, "source": "이처럼 차별 없는 사회를 만들기 위해서는 개인의 인식 개선과 사회적 노력이 함께 이루어져야 한다.", "target": "Như vậy, để xây dựng một xã hội không có sự phân biệt đối xử, việc nâng cao nhận thức của cá nhân và những nỗ lực của xã hội cần được thực hiện đồng thời."},
-            {"id": 4, "source": "서로의 차이를 존중하고 동등한 기회를 보장할 때 더욱 평등하고 발전된 사회를 만들 수 있을 것이다.", "target": "Chỉ khi tôn trọng sự khác biệt của nhau và bảo đảm cơ hội bình đẳng, chúng ta mới có thể xây dựng một xã hội bình đẳng và phát triển hơn."}
-        ]
-    },
-    "Đề 96: 자율성과 조직 내 협력 (Tính tự chủ và sự hợp tác trong tổ chức)": {
-        "kr_vi": [
-            {"id": 1, "source": "이러한 문제를 해결하기 위해서는 구성원들이 개인의 자율성을 존중하면서도 업무를 수행할 때는 동료와 적극적으로 협력하고 서로를 배려해야 한다.", "target": "Để giải quyết những vấn đề này, các thành viên cần tôn trọng tính tự chủ của mỗi cá nhân, đồng thời tích cực hợp tác với đồng nghiệp và quan tâm đến nhau trong quá trình thực hiện công việc."},
-            {"id": 2, "source": "또한 조직은 구성원의 자율성을 보장하는 동시에 조직의 목표를 달성할 수 있는 방안을 마련해야 한다.", "target": "Ngoài ra, tổ chức cần xây dựng những phương án vừa bảo đảm tính tự chủ của các thành viên, vừa giúp đạt được mục tiêu chung của tổ chức."},
-            {"id": 3, "source": "나아가 효율적인 의사소통 방안을 마련하여 구성원 간 원활한 협력이 이루어지도록 해야 할 것이다.", "target": "Hơn nữa, cần xây dựng những phương thức giao tiếp hiệu quả để sự hợp tác giữa các thành viên có thể diễn ra một cách thuận lợi."}
+            {"id": 1, "source": "현대 사회에서 공공위생은 개인의 건강뿐만 아니라 사회 전체의 안전과 삶의 질에 영향을 미치는 중요한 요소이다.", "target": "Trong xã hội hiện đại, vệ sinh công cộng là một yếu tố quan trọng, gây ảnh hưởng không chỉ đến sức khỏe cá nhân mà còn đến sự an toàn và chất lượng cuộc sống của toàn xã hội."},
+            {"id": 2, "source": "특히 많은 사람들이 함께 생활하는 공간일수록 공공위생 관리가 더욱 중요하다.", "target": "Đặc biệt, ở những không gian có nhiều người cùng sinh sống thì việc quản lý vệ sinh công cộng càng trở nên quan trọng hơn."},
+            {"id": 3, "source": "먼저 공공위생이 중요한 이유는 감염병의 확산을 예방하고 쾌적한 생활환경을 유지할 수 있기 때문이다.", "target": "Trước tiên, lý do vệ sinh công cộng quan trọng là vì có thể ngăn ngừa sự lây lan của các bệnh truyền nhiễm và duy trì môi trường sống dễ chịu, sạch sẽ."},
+            {"id": 4, "source": "공공장소가 깨끗하게 관리되면 세균이나 바이러스에 노출될 위험이 줄어들어 사람들이 보다 안전하게 생활할 수 있다.", "target": "Nếu các địa điểm công cộng được quản lý sạch sẽ, nguy cơ tiếp xúc với vi khuẩn hoặc virus sẽ giảm xuống, nhờ đó mọi người có thể sinh hoạt an toàn hơn."},
+            {"id": 5, "source": "또한 깨끗한 환경은 시민들의 건강을 보호하고 생활 만족도를 높이는 데에도 도움이 된다.", "target": "Ngoài ra, môi trường sạch sẽ cũng giúp bảo vệ sức khỏe của người dân và nâng cao mức độ hài lòng trong cuộc sống."},
+            {"id": 6, "source": "반면 공공위생 관리가 제대로 이루어지지 않으면 여러 가지 문제가 발생할 수 있다.", "target": "Ngược lại, nếu việc quản lý vệ sinh công cộng không được thực hiện đúng cách thì nhiều vấn đề khác nhau có thể phát sinh."},
+            {"id": 7, "source": "우선 쓰레기와 오염 물질이 쌓이면 악취가 발생하고 해충이 번식하여 각종 질병을 유발할 수 있다.", "target": "Trước hết, nếu rác thải và các chất ô nhiễm tích tụ, mùi hôi sẽ phát sinh và côn trùng gây hại sinh sôi, từ đó có thể gây ra nhiều loại bệnh khác nhau."},
+            {"id": 8, "source": "또한 감염병이 빠르게 확산될 위험이 커지며, 이는 개인의 건강을 넘어 사회 전체에 경제적 부담을 줄 수도 있다.", "target": "Ngoài ra, nguy cơ các bệnh truyền nhiễm lây lan nhanh chóng sẽ tăng lên, điều này không chỉ ảnh hưởng đến sức khỏe cá nhân mà còn có thể gây ra gánh nặng kinh tế cho toàn xã hội."},
+            {"id": 9, "source": "나아가 도시의 이미지가 나빠지고 관광객이나 방문객이 줄어드는 결과로 이어질 수 있다.", "target": "Hơn nữa, điều này có thể dẫn đến kết quả là hình ảnh của thành phố trở nên xấu đi và số lượng khách du lịch hoặc khách tham quan giảm xuống."},
+            {"id": 10, "source": "그렇다면 공공위생을 개선하기 위해서는 어떤 노력이 필요할까?", "target": "Vậy cần có những nỗ lực nào để cải thiện vệ sinh công cộng?"},
+            {"id": 11, "source": "먼저 정부와 지방자치단체는 공공장소의 청소와 쓰레기 수거를 정기적으로 실시하고 위생 시설을 확충해야 한다.", "target": "Trước tiên, chính phủ và chính quyền địa phương cần thường xuyên tiến hành vệ sinh các địa điểm công cộng, thu gom rác thải và mở rộng các cơ sở, trang thiết bị vệ sinh."},
+            {"id": 12, "source": "또한 시민들은 쓰레기를 함부로 버리지 않고 분리배출을 실천하는 등 일상생활에서 위생 수칙을 지켜야 한다.", "target": "Ngoài ra, người dân cần tuân thủ các quy tắc vệ sinh trong cuộc sống hằng ngày, chẳng hạn như không vứt rác bừa bãi và thực hiện phân loại rác thải."},
+            {"id": 13, "source": "이와 함께 학교와 지역 사회에서는 위생 교육과 캠페인을 통해 시민들의 인식을 높일 필요가 있다.", "target": "Cùng với đó, nhà trường và cộng đồng địa phương cần nâng cao nhận thức của người dân thông qua giáo dục vệ sinh và các chiến dịch tuyên truyền."},
+            {"id": 14, "source": "이처럼 정부의 체계적인 관리와 시민들의 자발적인 참여가 함께 이루어진다면 더욱 깨끗하고 건강한 사회를 만들 수 있을 것이다.", "target": "Nếu việc quản lý có hệ thống của chính phủ và sự tham gia tự giác của người dân được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội sạch sẽ và lành mạnh hơn."}
+        ],
+        "vi_kr": [
+            {"id": 1, "source": "Trong xã hội hiện đại, vệ sinh công cộng là một yếu tố quan trọng, gây ảnh hưởng không chỉ đến sức khỏe cá nhân mà còn đến sự an toàn và chất lượng cuộc sống của toàn xã hội.", "target": "현대 사회에서 공공위생은 개인의 건강뿐만 아니라 사회 전체의 안전과 삶의 질에 영향을 미치는 중요한 요소이다."},
+            {"id": 2, "source": "Đặc biệt, ở những không gian có nhiều người cùng sinh sống thì việc quản lý vệ sinh công cộng càng trở nên quan trọng hơn.", "target": "특히 많은 사람들이 함께 생활하는 공간일수록 공공위생 관리가 더욱 중요하다."},
+            {"id": 3, "source": "Trước tiên, lý do vệ sinh công cộng quan trọng là vì có thể ngăn ngừa sự lây lan của các bệnh truyền nhiễm và duy trì môi trường sống dễ chịu, sạch sẽ.", "target": "먼저 공공위생이 중요한 이유는 감염병의 확산을 예방하고 쾌적한 생활환경을 유지할 수 있기 때문이다."},
+            {"id": 4, "source": "Nếu các địa điểm công cộng được quản lý sạch sẽ, nguy cơ tiếp xúc với vi khuẩn hoặc virus sẽ giảm xuống, nhờ đó mọi người có thể sinh hoạt an toàn hơn.", "target": "공공장소가 깨끗하게 관리되면 세균이나 바이러스에 노출될 위험이 줄어들어 사람들이 보다 안전하게 생활할 수 있다."},
+            {"id": 5, "source": "Ngoài ra, môi trường sạch sẽ cũng giúp bảo vệ sức khỏe của người dân và nâng cao mức độ hài lòng trong cuộc sống.", "target": "또한 깨끗한 환경은 시민들의 건강을 보호하고 생활 만족도를 높이는 데에도 도움이 된다."},
+            {"id": 6, "source": "Ngược lại, nếu việc quản lý vệ sinh công cộng không được thực hiện đúng cách thì nhiều vấn đề khác nhau có thể phát sinh.", "target": "반면 공공위생 관리가 제대로 이루어지지 않으면 여러 가지 문제가 발생할 수 있다."},
+            {"id": 7, "source": "Trước hết, nếu rác thải và các chất ô nhiễm tích tụ, mùi hôi sẽ phát sinh và côn trùng gây hại sinh sôi, từ đó có thể gây ra nhiều loại bệnh khác nhau.", "target": "우선 쓰레기와 오염 물질이 쌓이면 악취가 발생하고 해충이 번식하여 각종 질병을 유발할 수 있다."},
+            {"id": 8, "source": "Ngoài ra, nguy cơ các bệnh truyền nhiễm lây lan nhanh chóng sẽ tăng lên, điều này không chỉ ảnh hưởng đến sức khỏe cá nhân mà còn có thể gây ra gánh nặng kinh tế cho toàn xã hội.", "target": "또한 감염병이 빠르게 확산될 위험이 커지며, 이는 개인의 건강을 넘어 사회 전체에 경제적 부담을 줄 수도 있다."},
+            {"id": 9, "source": "Hơn nữa, điều này có thể dẫn đến kết quả là hình ảnh của thành phố trở nên xấu đi và số lượng khách du lịch hoặc khách tham quan giảm xuống.", "target": "나아가 도시의 이미지가 나빠지고 관광객이나 방문객이 줄어드는 결과로 이어질 수 있다."},
+            {"id": 10, "source": "Vậy cần có những nỗ lực nào để cải thiện vệ sinh công cộng?", "target": "그렇다면 공공위생을 개선하기 위해서는 어떤 노력이 필요할까?"},
+            {"id": 11, "source": "Trước tiên, chính phủ và chính quyền địa phương cần thường xuyên tiến hành vệ sinh các địa điểm công cộng, thu gom rác thải và mở rộng các cơ sở, trang thiết bị vệ sinh.", "target": "먼저 정부와 지방자치단체는 공공장소의 청소와 쓰레기 수거를 정기적으로 실시하고 위생 시설을 확충해야 한다."},
+            {"id": 12, "source": "Ngoài ra, người dân cần tuân thủ các quy tắc vệ sinh trong cuộc sống hằng ngày, chẳng hạn như không vứt rác bừa bãi và thực hiện phân loại rác thải.", "target": "또한 시민들은 쓰레기를 함부로 버리지 않고 분리배출을 실천하는 등 일상생활에서 위생 수칙을 지켜야 한다."},
+            {"id": 13, "source": "Cùng với đó, nhà trường và cộng đồng địa phương cần nâng cao nhận thức của người dân thông qua giáo dục vệ sinh và các chiến dịch tuyên truyền.", "target": "이와 함께 학교와 지역 사회에서는 위생 교육과 캠페인을 통해 시민들의 인식을 높일 필요가 있다."},
+            {"id": 14, "source": "Nếu việc quản lý có hệ thống của chính phủ và sự tham gia tự giác của người dân được thực hiện đồng thời như vậy thì chúng ta có thể xây dựng một xã hội sạch sẽ và lành mạnh hơn.", "target": "이처럼 정부의 체계적인 관리와 시민들의 자발적인 참여가 함께 이루어진다면 더욱 깨끗하고 건강한 사회를 만들 수 있을 것이다."}
         ]
     }
 }
 
 # ==========================================
-# 2. TỪ VỰNG & NGỮ PHÁP TOPIK (3-6)
+# TỪ VỰNG & NGỮ PHÁP MỞ RỘNG TOPIK II (3-6)
 # ==========================================
+
 TOPIK_VOCAB = [
-    {"word": "자율성", "level": "TOPIK 5", "meaning": "Tính tự chủ, tính tự do cá nhân", "example": "개인의 자율성을 존중해야 한다.", "example_meaning": "Cần tôn trọng tính tự chủ của cá nhân."},
-    {"word": "격려하다", "level": "TOPIK 4", "meaning": "Khích lệ, động viên", "example": "진심 어린 격려와 응원이 필요하다.", "example_meaning": "Cần có sự động viên và khích lệ chân thành."},
-    {"word": "차별", "level": "TOPIK 4", "meaning": "Sự phân biệt đối xử", "example": "차별 없는 사회를 만들어야 한다.", "example_meaning": "Cần phải tạo ra một xã hội không có sự phân biệt đối xử."},
-    {"word": "인권", "level": "TOPIK 5", "meaning": "Nhân quyền, quyền con người", "example": "인권의 중요성에 대한 인식을 높여야 한다.", "example_meaning": "Cần nâng cao nhận thức về tầm quan trọng của nhân quyền."},
-    {"word": "상처", "level": "TOPIK 3", "meaning": "Vết thương, tổn thương", "example": "마음의 상처를 회복하는 데에는 시간이 필요하다.", "example_meaning": "Việc chữa lành vết thương lòng cần có thời gian."},
-    {"word": "극복하다", "level": "TOPIK 4", "meaning": "Vượt qua, khắc phục", "example": "어려움을 긍정적으로 극복해야 한다.", "example_meaning": "Cần vượt qua khó khăn một cách tích cực."},
-    {"word": "적성", "level": "TOPIK 4", "meaning": "Năng khiếu, sở trường", "example": "자신의 적성과 흥미를 발견하는 것이 중요하다.", "example_meaning": "Việc phát hiện năng khiếu và sở thích của bản thân là rất quan trọng."},
-    {"word": "체계적이다", "level": "TOPIK 5", "meaning": "Có hệ thống, bài bản", "example": "정부의 체계적인 관리가 필요하다.", "example_meaning": "Cần có sự quản lý có hệ thống của chính phủ."}
+    {"word": "초래하다", "level": "TOPIK 5-6", "meaning": "Gây ra, dẫn đến (kết quả xấu)", "example": "지나친 경쟁은 부정적인 결과를 초래할 수 있다.", "example_meaning": "Cạnh tranh quá mức có thể dẫn đến kết quả tiêu cực."},
+    {"word": "바람직하다", "level": "TOPIK 4-5", "meaning": "Đáng mong muốn, lành mạnh", "example": "바람직한 경쟁이 이루어져야 한다.", "example_meaning": "Cần phải có sự cạnh tranh lành mạnh."},
+    {"word": "집착하다", "level": "TOPIK 5-6", "meaning": "Ám ảnh, câu nệ, bám chấp", "example": "결과에 집착하게 된다.", "example_meaning": "Dễ bị ám ảnh bởi kết quả."},
+    {"word": "보완하다", "level": "TOPIK 4", "meaning": "Bổ sung, bù đắp phần thiếu sót", "example": "부족한 부분을 보완해야 한다.", "example_meaning": "Cần phải bù đắp phần còn thiếu sót."},
+    {"word": "조성하다", "level": "TOPIK 5", "meaning": "Kiến tạo, tạo dựng (môi trường)", "example": "좋은 환경을 조성해야 한다.", "example_meaning": "Cần tạo ra một môi trường tốt."},
+    {"word": "습득하다", "level": "TOPIK 5", "meaning": "Lĩnh hội, tiếp thu (kiến thức/kỹ năng)", "example": "실제적인 지식을 습득할 수 있다.", "example_meaning": "Có thể tiếp thu kiến thức thực tế."},
+    {"word": "노출되다", "level": "TOPIK 4", "meaning": "Bị phơi nhiễm, tiếp xúc", "example": "자극적인 콘텐츠에 노출되다.", "example_meaning": "Bị tiếp xúc với nội dung kích động."},
+    {"word": "모방하다", "level": "TOPIK 5", "meaning": "Mô phỏng, bắt chước", "example": "잘못된 행동을 모방할 가능성이 있다.", "example_meaning": "Có khả năng bắt chước hành vi sai trái."},
+    {"word": "유발하다", "level": "TOPIK 5", "meaning": "Gây ra, kích phát (dịch bệnh, sự cố)", "example": "각종 질병을 유발할 수 있다.", "example_meaning": "Có thể gây ra nhiều loại bệnh khác nhau."},
+    {"word": "확충하다", "level": "TOPIK 5-6", "meaning": "Mở rộng và tăng cường (cơ sở hạ tầng)", "example": "위생 시설을 확충해야 한다.", "example_meaning": "Cần mở rộng trang thiết bị vệ sinh."}
 ]
 
 TOPIK_54_GRAMMAR = [
-    {"grammar": "이처럼 ~ -ㄴ/는다/ㄹ 것이다", "usage": "Viết câu kết luận cho bài văn TOPIK 54 (Như vậy... thì sẽ...)", "example": "이처럼 차별 없는 사회를 만들기 위해서는 사회적 노력이 함께 이루어져야 한다.", "example_meaning": "Như vậy để tạo ra một xã hội không phân biệt đối xử thì cần thực hiện đồng thời các nỗ lực xã hội."},
-    {"grammar": "-는 동시에", "usage": "Đồng thời, vừa... vừa... (Diễn tả 2 hành động/trạng thái song song)", "example": "구성원의 자율성을 보장하는 동시에 조직의 목표를 달성해야 한다.", "example_meaning": "Vừa bảo đảm tính tự chủ của thành viên, đồng thời vừa phải đạt được mục tiêu của tổ chức."},
-    {"grammar": "-을/를 바탕으로", "usage": "Dựa trên cơ sở..., lấy... làm nền tảng", "example": "인간의 판단력과 책임감을 바탕으로 올바르게 사용해야 한다.", "example_meaning": "Cần sử dụng đúng đắn dựa trên khả năng phán đoán và tinh thần trách nhiệm của con người."},
-    {"grammar": "~기 위해서는 ~ -아/어야 한다", "usage": "Mẫu câu chỉ mục đích & giải pháp (Để... thì phải...)", "example": "이러한 문제를 해결하기 위해서는 서로 배려해야 한다.", "example_meaning": "Để giải quyết vấn đề này thì cần phải quan tâm lẫn nhau."}
+    {"grammar": "-기 마련이다", "usage": "Đương nhiên sẽ, quy luật tất yếu", "example": "시간이 지나면 잊혀지기 마련이다.", "example_meaning": "Thời gian trôi qua thì đương nhiên sẽ bị lãng quên."},
+    {"grammar": "-을/를 초래하다", "usage": "Gây ra kết quả tiêu cực (văn viết trang trọng)", "example": "심각한 문제를 초래할 수 있다.", "example_meaning": "Có thể gây ra vấn đề nghiêm trọng."},
+    {"grammar": "-기보다는", "usage": "Thay vì... thì...", "example": "결과를 강조하기보다는 과정을 coi trọng.", "example_meaning": "Thay vì nhấn mạnh kết quả thì nên coi trọng quá trình."},
+    {"grammar": "-을 뿐만 아니라", "usage": "Không những... mà còn...", "example": "건강뿐만 아니라 삶의 질에도 영향을 미친다.", "example_meaning": "Không những ảnh hưởng tới sức khỏe mà còn tới chất lượng cuộc sống."},
+    {"grammar": "-을/를 통해(서)", "usage": "Thông qua...", "example": "경험을 통해 성장할 수 있다.", "example_meaning": "Thông qua trải nghiệm có thể trưởng thành."}
 ]
 
 SYNONYMS = {
-    "청소년": ["thanh thiếu niên", "giới trẻ", "học sinh"],
-    "진로": ["con đường nghề nghiệp", "hướng đi", "tương lai nghề nghiệp"],
-    "자율성": ["tính tự chủ", "sự tự chủ", "tự do cá nhân"],
-    "격려": ["động viên", "khích lệ", "an ủi"],
-    "차별": ["phân biệt đối xử", "sự phân biệt"],
-    "인권": ["nhân quyền", "quyền con người"],
-    "체계적": ["có hệ thống", "bài bản"],
-    "자발적": ["tự giác", "tự nguyện"]
+    "좋은 성적": ["điểm số tốt", "thành tích tốt", "kết quả học tập tốt"],
+    "높은 순위": ["thứ hạng cao", "vị trí xếp hạng cao", "xếp hạng cao"],
+    "결과에 집착하다": ["ám ảnh với kết quả", "quá chú trọng vào kết quả"],
+    "경쟁": ["cạnh tranh", "sự cạnh tranh", "thi đua"],
+    "능력": ["năng lực", "khả năng", "thực lực"],
+    "부족한 점": ["điểm thiếu sót", "điểm còn thiếu", "điểm yếu"],
+    "개선하다": ["cải thiện", "khắc phục", "nâng cao"],
+    "지나친 경쟁": ["cạnh tranh quá mức", "sự cạnh tranh thái quá"],
+    "부정적인 결과": ["kết quả tiêu cực", "hậu quả tiêu cực"],
+    "바람직한 경쟁": ["cạnh tranh lành mạnh", "sự cạnh tranh đáng mong muốn"],
+    "간접 경험": ["trải nghiệm gián tiếp", "kinh nghiệm gián tiếp"],
+    "직접 경험": ["trải nghiệm trực tiếp", "kinh nghiệm trực tiếp"],
+    "공공위생": ["vệ sinh công cộng", "y tế công cộng"],
+    "대중 매체": ["truyền thông đại chúng", "phương tiện truyền thông"]
 }
 
 # ==========================================
-# 3. HÀM XỬ LÝ KỸ THUẬT & ĐÁNH GIÁ
+# CÁC HÀM XỬ LÝ VÀ CHẤM ĐIỂM
 # ==========================================
+
 def normalize(text):
     text = text.lower().strip()
     text = re.sub(r"[\s.,?!:;“”\"'()~–\-·]", "", text)
@@ -181,31 +278,33 @@ def evaluate_rule_based(user_text, reference, direction):
 
     missing = sorted(rt - ut)
     notes = []
-    notes.append("Đây là điểm ước lượng từ vựng/cụm từ theo quy tắc tự động.")
+    notes.append("Đây là điểm ước lượng theo quy tắc/từ khóa miễn phí, không phải phần trăm hiểu đúng ngữ nghĩa.")
     if synonym_hits:
-        notes.append("Nhận diện được diễn đạt tương đương: " + "; ".join(f"{a} ↔ {b}" for a, b in synonym_hits[:8]))
-    if missing:
-        notes.append("Một số từ trong đáp án chưa xuất hiện nguyên dạng: " + ", ".join(missing[:10]))
-    
-    if estimate >= 0.8:
-        level = "Mức tương đồng khá cao"
-    elif estimate >= 0.5:
-        level = "Có một số từ/cụm tương ứng"
+        notes.append("Có nhận diện được cách diễn đạt tương đương: " + "; ".join(f"{a} ↔ {b}" for a, b in synonym_hits[:8]))
     else:
-        level = "Cần kiểm tra và chỉnh sửa lại"
+        notes.append("Chưa nhận diện được cụm tương đương trong từ điển nhỏ của ứng dụng; điều này không đồng nghĩa bản dịch sai.")
+    if missing:
+        notes.append("Một số từ trong đáp án tham khảo chưa xuất hiện nguyên dạng: " + ", ".join(missing[:12]))
+        notes.append("Hãy kiểm tra xem bạn đã diễn đạt bằng từ đồng nghĩa hay vô tình bỏ sót ý.")
+    if estimate >= 0.8:
+        level = "Mức tương đồng từ ngữ khá cao"
+    elif estimate >= 0.5:
+        level = "Có một phần từ/cụm tương ứng"
+    else:
+        level = "Cần tự đối chiếu lại nội dung"
     return score, percent, level, notes, synonym_hits
 
 def speak_button(text, key, label="🔊 Nghe phát âm"):
     safe_text = json.dumps(text, ensure_ascii=False)
     component = f"""
-    <button id="b_{key}" style="padding:6px 12px;border:1px solid #ccc;border-radius:6px;background:#f9f9f9;cursor:pointer">
+    <button id="b_{key}" style="padding:8px 13px;border:1px solid #bbb;border-radius:8px;background:white;cursor:pointer">
       {html.escape(label)}
     </button>
     <script>
     const btn = document.getElementById("b_{key}");
     btn.onclick = () => {{
       if (!('speechSynthesis' in window)) {{
-        alert('Trình duyệt không hỗ trợ phát âm.');
+        alert('Trình duyệt này không hỗ trợ đọc văn bản. Hãy thử Chrome.');
         return;
       }}
       window.speechSynthesis.cancel();
@@ -219,142 +318,125 @@ def speak_button(text, key, label="🔊 Nghe phát âm"):
     }};
     </script>
     """
-    st.components.v1.html(component, height=42)
+    st.components.v1.html(component, height=48)
 
 # ==========================================
-# 4. GIAO DIỆN STREAMLIT MAIN
+# GIAO DIỆN CHÍNH STREAMLIT
 # ==========================================
-st.title("🇰🇷 Luyện dịch TOPIK II Câu 54 (Đề 96 đến Đề 108)")
-st.caption("Ứng dụng miễn phí: Hệ thống chấm câu theo từ khóa & phát âm Web Speech API chuẩn giọng Hàn.")
 
-menu = st.sidebar.selectbox("Chọn chế độ luyện tập", [
-    "📝 Luyện dịch Hàn → Việt (Các Đề)", 
-    "📝 Luyện dịch Việt → Hàn (Các Đề)",
-    "📚 Từ vựng TOPIK 3-6", 
-    "✍️ Ngữ pháp & Biểu hiện TOPIK 54", 
-    "🔍 Chấm câu tự nhập"
+st.title("🇰🇷 Luyện dịch Hàn – Việt theo định hướng TOPIK II")
+st.caption("Phiên bản miễn phí: không dùng OpenAI API, không cần API Key, không phát sinh phí API từ ứng dụng.")
+
+# Chọn bài đề thi
+selected_topic_name = st.sidebar.selectbox("📂 Chọn Đề thi / Chủ đề luyện tập", list(TOPICS_DATA.keys()))
+current_topic = TOPICS_DATA[selected_topic_name]
+
+menu = st.sidebar.selectbox("Chọn chế độ", [
+    "Luyện dịch Hàn → Việt", "Luyện dịch Việt → Hàn",
+    "📚 Từ vựng TOPIK", "✍️ Ngữ pháp TOPIK 54", "📝 Chấm câu tự nhập"
 ])
 
-def render_multi_topic_practice(direction):
-    is_k2v = direction == "kr_vi"
-    dir_label = "Hàn → Việt" if is_k2v else "Việt → Hàn"
-    
-    # Chọn đề TOPIK
-    selected_topic_name = st.selectbox("📌 Chọn đề TOPIK 54:", list(TOPIK_54_TOPICS.keys()))
-    data_list = TOPIK_54_TOPICS[selected_topic_name]["kr_vi"]
-    
-    # Key quản lý từng đề
-    state_key = f"idx_{direction}_{selected_topic_name}"
-    if state_key not in st.session_state:
-        st.session_state[state_key] = 0
-    idx = st.session_state[state_key]
+if "idx_k2v" not in st.session_state: st.session_state.idx_k2v = 0
+if "idx_v2k" not in st.session_state: st.session_state.idx_v2k = 0
 
-    st.subheader(f"Luyện dịch {dir_label}: {selected_topic_name}")
+def render_practice(direction, data):
+    is_k2v = direction == "kr_vi"
+    state_key = "idx_k2v" if is_k2v else "idx_v2k"
+    idx = st.session_state[state_key]
+    title = "Hàn → Việt" if is_k2v else "Việt → Hàn"
     
-    if idx >= len(data_list):
-        st.success(f"🎉 Bạn đã hoàn thành toàn bộ {len(data_list)} câu của bài này!")
-        if st.button("Làm lại từ đầu", key=f"restart_{selected_topic_name}"):
+    st.subheader(f"Luyện dịch {title} - [{selected_topic_name}]")
+    if idx >= len(data):
+        st.success(f"Bạn đã hoàn thành tất cả {len(data)} câu của {selected_topic_name}.")
+        if st.button("Làm lại từ câu 1", key=f"restart_{direction}"):
             st.session_state[state_key] = 0
             st.rerun()
         return
-
-    q = data_list[idx]
-    st.markdown(f"### **Câu {idx+1} / {len(data_list)}**")
+        
+    q = data[idx]
+    st.write(f"**Câu {idx+1}/{len(data)}**")
+    st.info(q["source"])
     
-    # Hiển thị câu nguồn
     if is_k2v:
-        st.info(f"**Tiếng Hàn:** {q['source']}")
-        speak_button(q["source"], f"src_{selected_topic_name}_{idx}")
-        user_ans = st.text_area("Nhập bản dịch tiếng Việt của bạn:", key=f"ans_{selected_topic_name}_{idx}", height=100)
-        ref_text = q["target"]
+        speak_button(q["source"], f"source_{direction}_{idx}")
+        answer = st.text_area("Nhập bản dịch tiếng Việt:", key=f"answer_{direction}_{idx}", height=100)
     else:
-        st.info(f"**Tiếng Việt:** {q['target']}")
-        user_ans = st.text_area("Nhập bản dịch tiếng Hàn của bạn:", key=f"ans_{selected_topic_name}_{idx}", height=100)
-        ref_text = q["source"]
-        speak_button(q["source"], f"ref_spk_{selected_topic_name}_{idx}", "🔊 Nghe câu tham khảo")
-
-    # Chấm bài
-    if st.button("Chấm câu", key=f"grade_{selected_topic_name}_{idx}"):
-        if not user_ans.strip():
-            st.warning("Vui lòng nhập bản dịch trước khi chấm.")
+        answer = st.text_area("Nhập bản dịch tiếng Hàn:", key=f"answer_{direction}_{idx}", height=100)
+        speak_button(q["target"], f"reference_{direction}_{idx}", "🔊 Nghe câu tham khảo")
+        
+    if st.button("Chấm thử", key=f"grade_{direction}_{idx}"):
+        if not answer.strip():
+            st.warning("Bạn hãy nhập bản dịch trước.")
         else:
-            score, pct, level, notes, hits = evaluate_rule_based(user_ans, ref_text, direction)
-            st.markdown("---")
-            st.markdown("#### 📊 Kết quả phân tích tham khảo")
-            col1, col2 = st.columns(2)
-            col1.metric("Điểm ước lượng", f"{score} / 10")
-            col2.metric("Chỉ số trùng khớp từ ngữ", f"{pct}%")
-            
-            st.write(f"**Đánh giá:** {level}")
-            for n in notes: st.write("• " + n)
-            
+            score, pct, level, notes, hits = evaluate_rule_based(answer, q["target"], direction)
+            st.markdown("### Kết quả tham khảo")
+            c1, c2 = st.columns(2)
+            c1.metric("Điểm ước lượng", f"{score}/10")
+            c2.metric("Chỉ số từ ngữ", f"{pct}%")
+            st.write(f"**Nhận xét:** {level}")
+            for note in notes: st.write("• " + note)
             if hits:
-                st.write("**Cụm từ tương đương nhận diện được:**")
+                st.write("**Cụm tương đương được nhận diện:**")
                 for a, b in hits: st.write(f"- {a} ↔ {b}")
-                
-            st.write("**Đáp án mẫu:**")
-            st.success(ref_text)
-            if is_k2v:
-                speak_button(q["source"], f"ans_spk_{selected_topic_name}_{idx}", "🔊 Nghe lại tiếng Hàn")
-            else:
-                speak_button(q["source"], f"ans_spk_{selected_topic_name}_{idx}", "🔊 Nghe đáp án tiếng Hàn")
-
-    col_a, col_b = st.columns(2)
-    with col_a:
-        if st.button("Câu tiếp theo ➡️", key=f"next_{selected_topic_name}_{idx}"):
+            st.write("**Đáp án tham khảo:**")
+            st.success(q["target"])
+            if not is_k2v:
+                speak_button(q["target"], f"answer_{direction}_{idx}", "🔊 Nghe đáp án tiếng Hàn")
+            st.caption("Lưu ý: công cụ miễn phí này không thể xác nhận chính xác ngữ nghĩa như giảng viên hoặc mô hình AI. Đừng xem % là xác suất dịch đúng.")
+            
+    a, b = st.columns(2)
+    with a:
+        if st.button("Câu tiếp theo ➡️", key=f"next_{direction}_{idx}"):
             st.session_state[state_key] += 1
             st.rerun()
-    with col_b:
-        if st.button("🔄 Làm lại bài này", key=f"reset_{selected_topic_name}_{idx}"):
+    with b:
+        if st.button("🔄 Làm lại phần này", key=f"reset_{direction}_{idx}"):
             st.session_state[state_key] = 0
             st.rerun()
 
-# RENDER MENU SELECTION
-if menu == "📝 Luyện dịch Hàn → Việt (Các Đề)":
-    render_multi_topic_practice("kr_vi")
-elif menu == "📝 Luyện dịch Việt → Hàn (Các Đề)":
-    render_multi_topic_practice("vi_kr")
-
-elif menu == "📚 Từ vựng TOPIK 3-6":
-    st.subheader("📚 Từ vựng quan trọng trong các bài TOPIK 54 mẫu")
+if menu == "Luyện dịch Hàn → Việt":
+    render_practice("kr_vi", current_topic["kr_vi"])
+elif menu == "Luyện dịch Việt → Hàn":
+    render_practice("vi_kr", current_topic["vi_kr"])
+elif menu == "📚 Từ vựng TOPIK":
+    st.subheader("Từ vựng TOPIK 3–6 trọng tâm")
     for i, item in enumerate(TOPIK_VOCAB):
-        with st.expander(f"📌 {item['word']} ({item['level']}) – {item['meaning']}"):
+        with st.expander(f"{item['word']} ({item['level']}) – {item['meaning']}"):
             st.write("**Nghĩa:**", item["meaning"])
             st.write("**Ví dụ:**", item["example"])
-            speak_button(item["word"], f"voc_{i}", "🔊 Nghe từ")
-            speak_button(item["example"], f"voc_ex_{i}", "🔊 Nghe câu ví dụ")
+            speak_button(item["word"], f"vocab_{i}", "🔊 Nghe từ")
+            speak_button(item["example"], f"vocab_ex_{i}", "🔊 Nghe câu ví dụ")
             st.write("**Dịch:**", item["example_meaning"])
-
-elif menu == "✍️ Ngữ pháp & Biểu hiện TOPIK 54":
-    st.subheader("✍️ Ngữ pháp & Biểu hiện cao cấp dùng cho bài viết 54")
+elif menu == "✍️ Ngữ pháp TOPIK 54":
+    st.subheader("Biểu hiện và ngữ pháp TOPIK 54")
     for i, item in enumerate(TOPIK_54_GRAMMAR):
-        with st.expander(f"🔑 {item['grammar']}"):
+        with st.expander(item["grammar"]):
             st.write("**Cách dùng:**", item["usage"])
             st.write("**Ví dụ:**", item["example"])
-            speak_button(item["example"], f"grm_{i}", "🔊 Nghe ví dụ")
+            speak_button(item["example"], f"grammar_{i}", "🔊 Nghe câu ví dụ")
             st.write("**Dịch:**", item["example_meaning"])
-
-elif menu == "🔍 Chấm câu tự nhập":
-    st.subheader("🔍 Chấm bản dịch tự nhập")
-    dir_sel = st.radio("Chiều dịch", ["Hàn → Việt", "Việt → Hàn"], horizontal=True)
-    direction = "kr_vi" if dir_sel == "Hàn → Việt" else "vi_kr"
-    
-    src = st.text_area("Nhập câu gốc:")
-    ans = st.text_area("Nhập bản dịch của bạn:")
-    ref = st.text_area("Nhập đáp án tham khảo (để đối chiếu):")
-    
-    if direction == "kr_vi" and src.strip():
-        speak_button(src, "cust_src")
-        
-    if st.button("Đánh giá ngay"):
-        if not src.strip() or not ans.strip() or not ref.strip():
-            st.warning("Vui lòng nhập đầy đủ câu gốc, bản dịch và đáp án tham khảo.")
+elif menu == "📝 Chấm câu tự nhập":
+    st.subheader("Luyện dịch câu tự nhập – chế độ miễn phí")
+    direction_label = st.radio("Chiều dịch", ["Hàn → Việt", "Việt → Hàn"], horizontal=True)
+    direction = "kr_vi" if direction_label == "Hàn → Việt" else "vi_kr"
+    source_text = st.text_area("Câu gốc")
+    answer_text = st.text_area("Bản dịch của bạn")
+    reference_text = st.text_area("Đáp án tham khảo (cùng ngôn ngữ với bản dịch, nếu có)")
+    if direction == "kr_vi" and source_text.strip():
+        speak_button(source_text, "custom_source")
+    if direction == "vi_kr" and answer_text.strip():
+        speak_button(answer_text, "custom_answer")
+    if st.button("Đánh giá tham khảo", key="custom_grade"):
+        if not source_text.strip() or not answer_text.strip():
+            st.warning("Hãy nhập cả câu gốc và bản dịch.")
+        elif not reference_text.strip():
+            st.info("Bạn chưa nhập đáp án tham khảo. Ứng dụng miễn phí không thể tự hiểu và chấm chính xác một cặp câu khác ngôn ngữ nếu không có đáp án đối chiếu. Hãy thêm đáp án tham khảo bằng ngôn ngữ đích để xem chỉ số từ ngữ.")
         else:
-            score, pct, level, notes, hits = evaluate_rule_based(ans, ref, direction)
+            score, pct, level, notes, hits = evaluate_rule_based(answer_text, reference_text, direction)
             st.metric("Điểm ước lượng", f"{score}/10")
-            st.metric("Tỷ lệ khớp từ ngữ", f"{pct}%")
+            st.metric("Chỉ số từ ngữ", f"{pct}%")
             st.write(level)
-            for n in notes: st.write("• " + n)
+            for note in notes: st.write("• " + note)
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Ứng dụng tự động hóa dành riêng cho học viên ôn thi TOPIK II. Phát âm sử dụng giọng đọc hệ thống ko-KR.")
+st.sidebar.caption("Miễn phí, không tích hợp OpenAI API. Phát âm dùng giọng tiếng Hàn có sẵn trong trình duyệt/thiết bị; có thể không hoạt động nếu thiết bị không có giọng ko-KR.")
