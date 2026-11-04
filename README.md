@@ -1,49 +1,24 @@
-# Ứng dụng luyện dịch TOPIK II – Câu 54
+# Ứng dụng luyện dịch TOPIK II – bản miễn phí
 
-## Chức năng
-- Luyện dịch Hàn → Việt và Việt → Hàn.
-- AI đánh giá ngữ nghĩa, ngữ cảnh, từng cụm từ và tiêu chí riêng cho từng chiều dịch.
-- Chấp nhận cách dịch đồng nghĩa hợp lý, không chỉ so sánh với đáp án mẫu.
-- Nghe phát âm câu tiếng Hàn, câu trả lời tiếng Hàn và từ vựng bằng OpenAI Text-to-Speech.
-- Giữ ngân hàng 20 câu mỗi chiều, từ vựng và ngữ pháp trong mã gốc.
-- Có chế độ tự nhập câu để luyện thêm.
+## Điểm quan trọng
+- Không tích hợp OpenAI API, không cần API Key và không gọi dịch vụ AI trả phí.
+- Giữ ngân hàng 20 câu Hàn → Việt, 20 câu Việt → Hàn, từ vựng và ngữ pháp trong mã nguồn ban đầu.
+- Có nút đọc câu/từ tiếng Hàn bằng Web Speech API của trình duyệt/thiết bị. Chọn giọng `ko-KR` nếu thiết bị có giọng này.
+- Có chế độ chấm câu tự nhập.
+- Tách bộ đếm tiến độ của hai chiều dịch.
 
-## Cài đặt
-Yêu cầu Python 3.10 trở lên.
+## Giới hạn chấm điểm
+Bản miễn phí dùng so khớp từ ngữ, tỷ lệ từ chung và một từ điển nhỏ các cách diễn đạt tương đương. Điểm và phần trăm chỉ là **chỉ số tham khảo theo từ ngữ**, không phải đánh giá ngữ nghĩa thật, không thể thay thế giảng viên hoặc AI hiểu ngữ cảnh. Từ đồng nghĩa ngoài từ điển có thể chưa được nhận diện.
 
-```bash
-python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
+## Cài đặt trên máy tính
+1. Cài Python 3.10 trở lên.
+2. Giải nén thư mục.
+3. Mở Terminal/CMD tại thư mục chứa `app.py`.
+4. Chạy: `pip install -r requirements.txt`
+5. Chạy: `streamlit run app.py`
 
-pip install -r requirements.txt
-```
+## Phát âm
+Nút 🔊 sử dụng giọng đọc có sẵn trong trình duyệt, không cần API Key. Nên mở bằng Chrome/Edge và kiểm tra thiết bị đã cài giọng tiếng Hàn (Korean/ko-KR). Chất lượng và khả năng phát âm phụ thuộc thiết bị/trình duyệt; đây không phải tệp âm thanh tải sẵn.
 
-## Cấu hình API Key
-
-Cách 1: Nhập OpenAI API Key ở thanh bên trong ứng dụng. Key chỉ tồn tại trong phiên chạy hiện tại.
-
-Cách 2: Đặt biến môi trường `OPENAI_API_KEY`.
-
-Cách 3: Tạo `.streamlit/secrets.toml`:
-```toml
-OPENAI_API_KEY = "sk-..."
-```
-
-Không chia sẻ API Key hoặc đưa file secrets lên GitHub.
-
-Tuỳ chọn:
-- `OPENAI_TEXT_MODEL`: mặc định `gpt-4o-mini`
-- `OPENAI_TTS_MODEL`: mặc định `tts-1`
-- `OPENAI_TTS_VOICE`: mặc định `alloy`
-- `APP_PASSWORD`: đặt mật khẩu ứng dụng. Nếu không đặt, ứng dụng không bật màn hình đăng nhập.
-
-## Chạy ứng dụng
-```bash
-streamlit run app.py
-```
-
-## Chi phí và giới hạn
-Chấm dịch và tạo âm thanh đều gọi OpenAI API, có thể phát sinh phí theo mức giá và hạn mức tài khoản hiện hành. Âm thanh được cache trong phiên/cache Streamlit để tránh tạo lại không cần thiết. Mô hình AI có thể đánh giá chưa hoàn hảo; phần trăm là ước lượng học tập, không phải xác suất hay điểm TOPIK chính thức.
+## Chi phí
+Ứng dụng không sử dụng OpenAI API và không yêu cầu thanh toán API. Nếu triển khai trên nền tảng hosting bên ngoài, nền tảng đó có thể có chính sách/giới hạn riêng.
