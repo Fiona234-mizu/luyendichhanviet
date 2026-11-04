@@ -114,7 +114,6 @@ TOPIK_54_GRAMMAR = [
     }
 ]
 
-# Từ/cụm tương đương thường gặp. Đây là gợi ý từ vựng, không phải bộ hiểu ngữ nghĩa hoàn chỉnh.
 SYNONYMS = {
     "좋은 성적": ["điểm số tốt", "thành tích tốt", "kết quả học tập tốt"],
     "높은 순위": ["thứ hạng cao", "vị trí xếp hạng cao", "xếp hạng cao"],
@@ -144,7 +143,6 @@ def normalize(text):
     return text
 
 def token_set(text):
-    # Korean: eojeol; Vietnamese: whitespace tokens. This is a rough lexical signal only.
     return set(re.findall(r"[가-힣]+|[a-zA-ZÀ-ỹ]+", text.lower()))
 
 def find_synonym_hits(user_text, reference_text, direction):
@@ -169,7 +167,6 @@ def evaluate_rule_based(user_text, reference, direction):
     overlap = len(ut & rt) / max(1, len(rt))
     synonym_hits = find_synonym_hits(user_text, reference, direction)
 
-    # The estimate combines lexical overlap and recognized variants; it is NOT semantic AI scoring.
     synonym_bonus = min(0.25, 0.07 * len(synonym_hits))
     estimate = min(1.0, max(seq * 0.55 + overlap * 0.45, overlap + synonym_bonus))
     score = round(estimate * 10, 1)
@@ -186,15 +183,14 @@ def evaluate_rule_based(user_text, reference, direction):
         notes.append("Một số từ trong đáp án tham khảo chưa xuất hiện nguyên dạng: " + ", ".join(missing[:12]))
         notes.append("Hãy kiểm tra xem bạn đã diễn đạt bằng từ đồng nghĩa hay vô tình bỏ sót ý.")
     if estimate >= 0.8:
-        level = "Mức tương đồng từ ngữ khá cao"
+        level = "Mức tương đồng từ ngữ khá cao 🎉"
     elif estimate >= 0.5:
-        level = "Có một phần từ/cụm tương ứng"
+        level = "Có một phần từ/cụm tương ứng 👍"
     else:
-        level = "Cần tự đối chiếu lại nội dung"
-    return score, percent, level, notes, synonym_hits
+        level = "Cần tự đối chiếu lại nội dung 💡"
+    return score, percent, level, notes, synonym_hits, estimate
 
 def speak_button(text, key, label="🔊 Nghe phát âm"):
-    # Uses the browser/device's installed Korean voice through Web Speech API; no paid API key.
     safe_text = json.dumps(text, ensure_ascii=False)
     component = f"""
     <button id="b_{key}" style="padding:8px 13px;border:1px solid #bbb;border-radius:8px;background:white;cursor:pointer">
@@ -252,16 +248,22 @@ def render_practice(direction, data):
     else:
         answer = st.text_area("Nhập bản dịch tiếng Hàn:", key=f"answer_{direction}_{idx}", height=100)
         speak_button(q["target"], f"reference_{direction}_{idx}", "🔊 Nghe câu tham khảo")
+    
     if st.button("Chấm thử", key=f"grade_{direction}_{idx}"):
         if not answer.strip():
             st.warning("Bạn hãy nhập bản dịch trước.")
         else:
-            score, pct, level, notes, hits = evaluate_rule_based(answer, q["target"], direction)
-            st.markdown("### Kết quả tham khảo")
+            score, pct, level, notes, hits, estimate = evaluate_rule_based(answer, q["target"], direction)
+            st.markdown("### Kết quả đánh giá")
+            
+            # Hiển thị tỷ lệ phần trăm chính xác trực quan
+            st.metric(label="📊 Mức độ chính xác so với đáp án", value=f"{pct}%")
+            st.progress(float(min(1.0, max(0.0, estimate))))
+            
             c1, c2 = st.columns(2)
             c1.metric("Điểm ước lượng", f"{score}/10")
-            c2.metric("Chỉ số từ ngữ", f"{pct}%")
-            st.write(f"**Nhận xét:** {level}")
+            c2.metric("Trạng thái", level)
+            
             for note in notes: st.write("• " + note)
             if hits:
                 st.write("**Cụm tương đương được nhận diện:**")
@@ -271,6 +273,7 @@ def render_practice(direction, data):
             if not is_k2v:
                 speak_button(q["target"], f"answer_{direction}_{idx}", "🔊 Nghe đáp án tiếng Hàn")
             st.caption("Lưu ý: công cụ miễn phí này không thể xác nhận chính xác ngữ nghĩa như giảng viên hoặc mô hình AI. Đừng xem % là xác suất dịch đúng.")
+            
     a, b = st.columns(2)
     with a:
         if st.button("Câu tiếp theo ➡️", key=f"next_{direction}_{idx}"):
@@ -319,10 +322,14 @@ elif menu == "📝 Chấm câu tự nhập":
         elif not reference_text.strip():
             st.info("Bạn chưa nhập đáp án tham khảo. Ứng dụng miễn phí không thể tự hiểu và chấm chính xác một cặp câu khác ngôn ngữ nếu không có đáp án đối chiếu. Hãy thêm đáp án tham khảo bằng ngôn ngữ đích để xem chỉ số từ ngữ.")
         else:
-            score, pct, level, notes, hits = evaluate_rule_based(answer_text, reference_text, direction)
-            st.metric("Điểm ước lượng", f"{score}/10")
-            st.metric("Chỉ số từ ngữ", f"{pct}%")
-            st.write(level)
+            score, pct, level, notes, hits, estimate = evaluate_rule_based(answer_text, reference_text, direction)
+            st.metric(label="📊 Mức độ chính xác so với đáp án", value=f"{pct}%")
+            st.progress(float(min(1.0, max(0.0, estimate))))
+            
+            c1, c2 = st.columns(2)
+            c1.metric("Điểm ước lượng", f"{score}/10")
+            c2.metric("Trạng thái", level)
+            
             for note in notes: st.write("• " + note)
 
 st.sidebar.markdown("---")
