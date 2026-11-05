@@ -221,6 +221,80 @@ EXAM_DATA = {
             ("마지막으로 기존의 정답에만 머무는 것이 아니라 비판적 사고를 바탕으로 새로운 해결 방안이 없는지를 모색하는 노력을 기울여야 한다.", "Cuối cùng, chúng ta không nên chỉ bó hẹp trong những đáp án có sẵn mà cần nỗ lực tìm kiếm xem liệu có phương án giải quyết mới nào hay không, dựa trên tư duy phản biện."),
         ]),
     },
+
+    "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc": {
+        "title": "Lợi ích, tác động tiêu cực và phương án phát huy tính tự chủ trong công việc",
+        "kr_vi": make_pairs([
+            ("사회의 변화로 개인의 자율성을 중시하는 사람들이 많아졌다.", "Do sự thay đổi của xã hội, ngày càng có nhiều người coi trọng tính tự chủ của cá nhân."),
+            ("이에 따라 기업에서도 유연근무제를 실시하는 등 직장 내 자율성을 높이고자 노력하고 있다.", "Theo đó, các doanh nghiệp cũng đang nỗ lực nâng cao tính tự chủ tại nơi làm việc, chẳng hạn như triển khai chế độ làm việc linh hoạt."),
+            ("직장에서 개인의 자율성이 보장되면 직장 내 문화가 유연해져 개인이 창의성을 발휘할 수 있는 근무 환경이 만들어진다.", "Khi tính tự chủ của cá nhân được đảm bảo tại nơi làm việc, văn hóa công sở trở nên linh hoạt hơn, từ đó tạo ra môi trường làm việc để mỗi cá nhân phát huy khả năng sáng tạo."),
+            ("또한 개인이 자신에게 적합한 근무 여건을 조성하여 일할 수 있어 일과 삶의 균형이 생긴다.", "Ngoài ra, mỗi cá nhân có thể làm việc trong điều kiện phù hợp với bản thân, nhờ đó hình thành sự cân bằng giữa công việc và cuộc sống."),
+            ("이것이 구성원의 업무 효율을 높이는 데 기여하여 조직의 목표를 달성하는 데에 도움이 된다.", "Điều này góp phần nâng cao hiệu suất công việc của các thành viên, qua đó giúp tổ chức đạt được mục tiêu của mình."),
+            ("그러나 직장 내 사람들이 개인의 자율성만 중시하면 부작용이 발생할 수 있다.", "Tuy nhiên, nếu những người trong môi trường công sở chỉ coi trọng tính tự chủ cá nhân thì có thể phát sinh những tác dụng phụ."),
+            ("먼저, 개인이 공동의 목표보다는 자신의 입장만을 생각하다 보면 자율성이 이기주의로 변질될 수 있다.", "Trước hết, nếu mỗi cá nhân chỉ nghĩ đến lập trường của bản thân thay vì mục tiêu chung thì tính tự chủ có thể biến chất thành chủ nghĩa ích kỷ."),
+            ("이러한 상황이 계속되면 책임자와 팀원 간 갈등, 세대 간 갈등이 발생할 수도 있다.", "Nếu tình trạng này tiếp diễn, xung đột giữa người phụ trách và các thành viên trong nhóm, cũng như xung đột giữa các thế hệ, có thể phát sinh."),
+            ("또한 업무의 자율성이 높아져 개별적으로 일할 수 있는 환경이 익숙해지면 소통이 부재하여 합의점을 찾기 어렵고 협력을 통한 성과를 내기 어려울 수 있다.", "Ngoài ra, khi tính tự chủ trong công việc tăng lên và mọi người trở nên quen thuộc với môi trường có thể làm việc độc lập, việc giao tiếp có thể bị thiếu hụt, khiến họ khó tìm được tiếng nói chung và khó đạt được thành quả thông qua hợp tác."),
+            ("이러한 문제를 해결하기 위해서는 직장 내 개개인이 자율성을 가지면서도 업무를 수행할 때는 최대한 동료와 협업하고 서로를 배려하는 마음을 가질 필요가 있다.", "Để giải quyết những vấn đề này, mỗi cá nhân tại nơi làm việc cần có tính tự chủ nhưng đồng thời cũng cần hợp tác tối đa với đồng nghiệp và biết quan tâm, nhường nhịn lẫn nhau khi thực hiện công việc."),
+            ("또한 조직은 구성원의 자율성을 높이면서 조직의 목표를 성취하는 데 도움이 되는 방안을 고민해야 한다.", "Ngoài ra, tổ chức cần suy nghĩ về những phương án vừa nâng cao tính tự chủ của các thành viên, vừa giúp đạt được mục tiêu của tổ chức."),
+            ("나아가 효율적인 의사소통 방안을 마련하여 구성원 간 원활한 협력이 가능하도록 해야 할 것이다.", "Hơn nữa, cần xây dựng những phương thức giao tiếp hiệu quả để sự hợp tác giữa các thành viên có thể diễn ra một cách thuận lợi."),
+        ]),
+    },
+    "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả": {
+        "title": "Nguyên nhân, tác hại của tin giả và biện pháp ngăn chặn",
+        "kr_vi": make_pairs([
+            ("정보 통신 기술의 발달과 소셜 미디어의 대중화로 인해 이 시대에는 누구나 쉽게 정보를 생산하고 불특정 다수와 공유할 수 있게 되었다.", "Nhờ sự phát triển của công nghệ thông tin và truyền thông cùng với sự phổ biến của mạng xã hội, trong thời đại ngày nay, bất kỳ ai cũng có thể dễ dàng tạo ra thông tin và chia sẻ thông tin đó với đông đảo người không xác định."),
+            ("이는 정보를 생산하고 유통하는 매체가 신문이나 방송과 같은 전통적 미디어에서 디지털 미디어 플랫폼으로 확장되면서 가능해진 것이다.", "Điều này trở nên khả thi khi các phương tiện sản xuất và phân phối thông tin được mở rộng từ những phương tiện truyền thông truyền thống như báo chí, phát thanh và truyền hình sang các nền tảng truyền thông kỹ thuật số."),
+            ("나아가 그 과정에서 경제적 가치를 창출하는 것 역시 가능해지면서 다양한 문제가 양산되고 있다.", "Hơn nữa, trong quá trình đó, việc tạo ra giá trị kinh tế cũng trở nên khả thi, kéo theo nhiều vấn đề khác nhau được sản sinh hàng loạt."),
+            ("사람들의 이목을 끌기 위한 가짜 뉴스의 등장도 그 문제 중 하나이다.", "Sự xuất hiện của tin giả nhằm thu hút sự chú ý của mọi người cũng là một trong những vấn đề đó."),
+            ("가짜 뉴스는 정보 수용자로 하여금 잘못된 지식과 선입견, 편협한 사고를 형성하게 한다.", "Tin giả khiến người tiếp nhận thông tin hình thành những kiến thức sai lệch, định kiến và lối suy nghĩ phiến diện."),
+            ("가짜 뉴스의 소재가 되는 개인이나 기업, 단체의 경우 이미지 타격과 경제적 피해는 물론이고 사회적으로 재기가 어려울 정도로 명예가 훼손되기도 한다.", "Đối với các cá nhân, doanh nghiệp hoặc tổ chức trở thành đối tượng của tin giả, không chỉ hình ảnh bị tổn hại và thiệt hại kinh tế phát sinh mà danh dự của họ đôi khi còn bị tổn hại nghiêm trọng đến mức khó có thể khôi phục vị thế trong xã hội."),
+            ("또한 가짜 뉴스는 혐오를 확산하고 사회적 불안을 야기하며 사회 구성원들의 통합을 방해한다.", "Ngoài ra, tin giả còn lan truyền sự thù ghét, gây ra bất ổn xã hội và cản trở sự đoàn kết giữa các thành viên trong xã hội."),
+            ("나아가 정치 및 외교적 문제로 심화될 가능성도 있기 때문에 심각한 사회 문제라 말할 수 있다.", "Hơn nữa, vì tin giả còn có khả năng phát triển thành những vấn đề chính trị và ngoại giao nên có thể nói đây là một vấn đề xã hội nghiêm trọng."),
+            ("가짜 뉴스를 근절하기 위해서는 우선 제도적으로 가짜 뉴스의 생산과 유통이 불법적 행위임을 규정하고, 가짜 뉴스 단속을 위한 기구를 만들어 가짜 뉴스가 확산되지 않도록 규제를 강화해야 한다.", "Để loại bỏ tin giả, trước tiên cần quy định về mặt thể chế rằng việc sản xuất và phát tán tin giả là hành vi bất hợp pháp, đồng thời thành lập cơ quan giám sát và tăng cường quy định để tin giả không lan rộng."),
+            ("또한 각종 캠페인이나 교육을 통해 가짜 뉴스의 위험성과 위법성을 알리는 것 역시 필요하다.", "Ngoài ra, cũng cần thông qua các chiến dịch và hoạt động giáo dục để nâng cao nhận thức về mức độ nguy hiểm cũng như tính bất hợp pháp của tin giả."),
+            ("나아가 정보의 진위를 판단하는 기술을 개발해 가짜 뉴스가 정보 수용자에게 전달되는 것을 방지하는 것도 좋은 방법일 것이다.", "Hơn nữa, phát triển công nghệ có thể xác định tính xác thực của thông tin để ngăn tin giả truyền đến người tiếp nhận cũng sẽ là một biện pháp tốt."),
+        ]),
+    },
+    "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số": {
+        "title": "Thực trạng, nguyên nhân và giải pháp khắc phục tình trạng số hóa gây bất bình đẳng",
+        "kr_vi": make_pairs([
+            ("과학 기술이 빠르게 발달하면서 과거와는 달리 일상생활에서 디지털 기술의 활용이 일반화되고 있다.", "Cùng với sự phát triển nhanh chóng của khoa học kỹ thuật, khác với trước đây, việc ứng dụng công nghệ kỹ thuật số trong đời sống hằng ngày đang dần trở nên phổ biến."),
+            ("식당에서는 대면을 하지 않아도 키오스크로 음식을 주문할 수 있게 되었고 관공서나 금융 기관을 직접 방문하지 않아도 컴퓨터나 스마트폰으로 서비스를 이용할 수 있게 되었다.", "Tại các nhà hàng, mọi người đã có thể gọi món bằng máy kiosk mà không cần tiếp xúc trực tiếp với nhân viên; không cần đến trực tiếp cơ quan hành chính hoặc tổ chức tài chính vẫn có thể sử dụng dịch vụ qua máy tính hoặc điện thoại thông minh."),
+            ("또한 병원의 진료 예약이나 공연, 기차표 등의 예매도 인터넷으로 손쉽게 할 수 있다.", "Ngoài ra, việc đặt lịch khám bệnh, đặt vé biểu diễn hoặc vé tàu cũng có thể dễ dàng thực hiện qua Internet."),
+            ("그러나 이러한 편의를 모든 사람들이 동일하게 누리는 것은 아니다.", "Tuy nhiên, không phải tất cả mọi người đều được hưởng những tiện ích này một cách bình đẳng."),
+            ("고령층의 경우 디지털 기기가 익숙하지 않아서 금융·의료 서비스를 이용하는 데에 어려움이 따른다.", "Đối với người cao tuổi, do không quen sử dụng các thiết bị kỹ thuật số nên họ gặp khó khăn khi sử dụng dịch vụ tài chính và y tế."),
+            ("그리고 경제적인 여건이 되지 않아 디지털 기기를 구입하거나 사용하는 것이 부담이 되는 사람들도 있을 것이다.", "Ngoài ra, cũng có những người do điều kiện kinh tế không cho phép nên việc mua hoặc sử dụng thiết bị kỹ thuật số trở thành một gánh nặng."),
+            ("또한 디지털 인프라가 부족한 지역에서 거주하는 사람들은 온라인으로 제공 받을 수 있는 서비스가 제한적이다.", "Bên cạnh đó, những người sống ở khu vực thiếu cơ sở hạ tầng kỹ thuật số bị hạn chế trong việc tiếp cận các dịch vụ được cung cấp trực tuyến."),
+            ("이러한 문제를 해결하기 위해서는 개인과 사회 모두가 노력해야 한다.", "Để giải quyết những vấn đề này, cả cá nhân và xã hội đều cần nỗ lực."),
+            ("개인의 경우 처음에는 익숙하지 않더라도 변화하는 시대에 뒤처지지 않게 디지털 기기의 사용법을 익히도록 해야 한다.", "Đối với mỗi cá nhân, dù ban đầu chưa quen, vẫn cần học cách sử dụng các thiết bị kỹ thuật số để không bị tụt hậu trước sự thay đổi của thời đại."),
+            ("이를 위해서 정부에서는 디지털 소외 계층을 위한 지원 정책을 마련해서 모든 국민들이 일상에서 디지털 기술을 활용할 수 있게 하여 소외되는 사람들이 없도록 해야 한다.", "Để làm được điều này, chính phủ cần xây dựng các chính sách hỗ trợ dành cho những nhóm người bị gạt ra bên lề trong xã hội số, giúp tất cả người dân có thể ứng dụng công nghệ kỹ thuật số trong cuộc sống hằng ngày, qua đó không để bất kỳ ai bị bỏ lại phía sau."),
+            ("그리고 디지털 인프라를 확충하여 지역과 계층에 무관하게 많은 사람들이 디지털 기술 발달의 혜택을 고르게 누릴 수 있도록 해야 한다.", "Ngoài ra, cần mở rộng cơ sở hạ tầng kỹ thuật số để đông đảo mọi người được hưởng lợi ích từ sự phát triển công nghệ kỹ thuật số một cách bình đẳng, không phân biệt khu vực hay tầng lớp xã hội."),
+        ]),
+    },
+    "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường": {
+        "title": "Nguyên nhân ô nhiễm môi trường: đồ dùng một lần và công nghiệp hóa, đô thị hóa",
+        "kr_vi": make_pairs([
+            ("환경오염 문제는 어제오늘만의 일이 아니다.", "Vấn đề ô nhiễm môi trường không phải là chuyện mới xảy ra ngày một ngày hai."),
+            ("그러나 날이 갈수록 그 문제가 더욱 심각해지고 있다.", "Tuy nhiên, vấn đề đó đang ngày càng trở nên nghiêm trọng hơn."),
+            ("그 이유로는 일회용품 사용이 증가한 것을 들 수 있다.", "Một trong những nguyên nhân có thể kể đến là việc sử dụng đồ dùng một lần ngày càng gia tăng."),
+            ("이는 인간이 환경보호보다는 편리함만 추구했기 때문이다.", "Đó là bởi con người chỉ theo đuổi sự tiện lợi thay vì bảo vệ môi trường."),
+            ("생활 속에서 편리하게 사용하는 비닐봉지, 일회용 컵 등은 음식물과는 달리 시간이 지나도 잘 썩지 않는다.", "Những vật dụng tiện lợi trong đời sống như túi ni-lông và cốc dùng một lần, khác với thức ăn, không dễ phân hủy dù thời gian trôi qua."),
+            ("그래서 많은 양이 쌓이게 되어 환경을 오염시키는 것이다.", "Vì vậy, chúng tích tụ với số lượng lớn và gây ô nhiễm môi trường."),
+            ("또한 급격한 산업화, 도시화 때문이다.", "Một nguyên nhân khác là quá trình công nghiệp hóa và đô thị hóa diễn ra nhanh chóng."),
+            ("예를 들어 산업 시설 및 주거 단지가 만들어지면서 수많은 숲이 사라지고 생활 쓰레기와 산업 폐수가 바다를 오염시켰다.", "Ví dụ, khi các cơ sở công nghiệp và khu dân cư được xây dựng, nhiều cánh rừng đã biến mất, còn rác thải sinh hoạt và nước thải công nghiệp làm ô nhiễm biển."),
+            ("즉 개발이 환경오염을 심화시키고 있는 것이다.", "Nói cách khác, quá trình phát triển đang làm trầm trọng thêm tình trạng ô nhiễm môi trường."),
+        ]),
+    },
+    "Bài luyện bổ sung – Sự thờ ơ của con người hiện đại": {
+        "title": "Nguyên nhân khiến con người hiện đại ít quan tâm đến người khác",
+        "kr_vi": make_pairs([
+            ("현대인들은 다른 사람에게 그리 관심을 가지지 않는 경향이 있다.", "Người hiện đại có xu hướng không mấy quan tâm đến người khác."),
+            ("이러한 무관심의 원인으로는 먼저 개인주의의 심화를 들 수 있다.", "Trước tiên, có thể kể đến sự gia tăng của chủ nghĩa cá nhân như một nguyên nhân dẫn đến sự thờ ơ này."),
+            ("공동의 가치보다는 개인의 성공을 중요하게 생각하면서 다른 사람의 일에 큰 관심을 갖지 않게 된 것이다.", "Do coi trọng thành công cá nhân hơn những giá trị chung nên con người đã trở nên ít quan tâm đến chuyện của người khác."),
+            ("또한 많은 사람들이 타인에 대한 믿음을 잃었기 때문이다.", "Ngoài ra, đó còn là bởi vì nhiều người đã mất niềm tin vào người khác."),
+            ("이는 갈수록 자신의 목적을 이루기 위한 수단으로 사람을 대하는 사람들이 많아진 탓이다.", "Điều này là do ngày càng có nhiều người đối xử với người khác như một phương tiện để đạt được mục đích của bản thân."),
+        ]),
+    },
 }
 
 for exam in EXAM_DATA.values():
@@ -228,6 +302,8 @@ for exam in EXAM_DATA.values():
         {"id": q["id"], "source": q["target"], "target": q["source"]}
         for q in exam["kr_vi"]
     ]
+
+st.info(f"Ngân hàng hiện có {len(EXAM_DATA)} chủ đề và {sum(len(v['kr_vi']) for v in EXAM_DATA.values())} câu Hàn–Việt; mỗi câu đều luyện được theo cả hai chiều.")
 
 # Từ vựng học thuật được rút chọn từ chính các đề đang có trong ứng dụng.
 EXTRA_VOCAB = [
@@ -266,6 +342,32 @@ EXTRA_VOCAB = [
     ("비판적 사고", "TOPIK 5", "Tư duy phản biện", "비판적 사고를 바탕으로 해결 방안을 모색해야 한다.", "Cần tìm kiếm phương án giải quyết dựa trên tư duy phản biện.", "Đề 83"),
     ("모색하다", "TOPIK 5", "Tìm kiếm, tìm tòi (phương án/giải pháp)", "새로운 해결 방안을 모색해야 한다.", "Cần tìm kiếm phương án giải quyết mới.", "Đề 83"),
 ]
+
+EXTRA_VOCAB.extend([
+    ("자율성", "TOPIK 5", "Tính tự chủ, quyền tự quyết", "직장에서 개인의 자율성이 보장되어야 한다.", "Tính tự chủ của cá nhân cần được đảm bảo tại nơi làm việc.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("유연근무제", "TOPIK 5", "Chế độ làm việc linh hoạt", "기업에서는 유연근무제를 실시하고 있다.", "Các doanh nghiệp đang triển khai chế độ làm việc linh hoạt.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("근무 여건", "TOPIK 4-5", "Điều kiện làm việc", "자신에게 적합한 근무 여건을 조성해야 한다.", "Cần tạo điều kiện làm việc phù hợp với bản thân.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("부작용", "TOPIK 5", "Tác dụng phụ, hệ quả tiêu cực", "개인의 자율성만 중시하면 부작용이 발생할 수 있다.", "Nếu chỉ coi trọng tính tự chủ cá nhân thì có thể phát sinh hệ quả tiêu cực.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("이기주의", "TOPIK 5", "Chủ nghĩa ích kỷ", "자율성이 이기주의로 변질될 수 있다.", "Tính tự chủ có thể biến chất thành chủ nghĩa ích kỷ.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("가짜 뉴스", "TOPIK 4-5", "Tin giả", "가짜 뉴스는 심각한 사회 문제이다.", "Tin giả là một vấn đề xã hội nghiêm trọng.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("대중화", "TOPIK 5", "Sự phổ biến rộng rãi", "소셜 미디어의 대중화로 정보 공유가 쉬워졌다.", "Nhờ mạng xã hội phổ biến rộng rãi, việc chia sẻ thông tin trở nên dễ dàng.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("불특정 다수", "TOPIK 5-6", "Đông đảo người không xác định", "불특정 다수와 정보를 공유할 수 있다.", "Có thể chia sẻ thông tin với đông đảo người không xác định.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("유통하다", "TOPIK 5", "Lưu thông, phân phối", "가짜 뉴스의 생산과 유통을 규제해야 한다.", "Cần quản lý việc sản xuất và phát tán tin giả.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("근절하다", "TOPIK 5", "Loại trừ, diệt trừ tận gốc", "가짜 뉴스를 근절하기 위한 대책이 필요하다.", "Cần có biện pháp loại bỏ tin giả tận gốc.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("선입견", "TOPIK 5", "Định kiến", "잘못된 정보는 선입견을 형성하게 한다.", "Thông tin sai lệch khiến con người hình thành định kiến.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("명예가 훼손되다", "TOPIK 5-6", "Danh dự bị tổn hại", "가짜 뉴스로 개인의 명예가 훼손될 수 있다.", "Danh dự của cá nhân có thể bị tổn hại bởi tin giả.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("디지털 소외", "TOPIK 5", "Tình trạng bị gạt ra bên lề trong xã hội số", "디지털 소외 계층을 위한 지원 정책이 필요하다.", "Cần có chính sách hỗ trợ những nhóm người bị gạt ra bên lề trong xã hội số.", "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số"),
+    ("키오스크", "TOPIK 3-4", "Máy kiosk tự phục vụ", "키오스크로 음식을 주문할 수 있다.", "Có thể gọi món bằng máy kiosk.", "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số"),
+    ("고령층", "TOPIK 4", "Người cao tuổi", "고령층은 디지털 기기 사용에 어려움을 겪을 수 있다.", "Người cao tuổi có thể gặp khó khăn khi sử dụng thiết bị kỹ thuật số.", "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số"),
+    ("디지털 인프라", "TOPIK 5", "Cơ sở hạ tầng kỹ thuật số", "디지털 인프라를 확충해야 한다.", "Cần mở rộng cơ sở hạ tầng kỹ thuật số.", "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số"),
+    ("일회용품", "TOPIK 3-4", "Đồ dùng một lần", "일회용품 사용을 줄여야 한다.", "Cần giảm việc sử dụng đồ dùng một lần.", "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường"),
+    ("산업화", "TOPIK 4-5", "Công nghiệp hóa", "급격한 산업화가 환경에 영향을 미쳤다.", "Quá trình công nghiệp hóa nhanh chóng đã ảnh hưởng đến môi trường.", "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường"),
+    ("도시화", "TOPIK 4-5", "Đô thị hóa", "도시화로 인해 숲이 사라지고 있다.", "Rừng đang biến mất do quá trình đô thị hóa.", "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường"),
+    ("폐수", "TOPIK 4-5", "Nước thải", "산업 폐수가 바다를 오염시켰다.", "Nước thải công nghiệp đã làm ô nhiễm biển.", "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường"),
+    ("개인주의", "TOPIK 5", "Chủ nghĩa cá nhân", "개인주의가 심화되면서 무관심이 커지고 있다.", "Sự thờ ơ gia tăng khi chủ nghĩa cá nhân ngày càng sâu sắc.", "Bài luyện bổ sung – Sự thờ ơ của con người hiện đại"),
+    ("무관심", "TOPIK 4-5", "Sự thờ ơ, không quan tâm", "타인에 대한 무관심이 사회 문제로 이어질 수 있다.", "Sự thờ ơ với người khác có thể dẫn đến vấn đề xã hội.", "Bài luyện bổ sung – Sự thờ ơ của con người hiện đại"),
+])
+
 for word, level, meaning, example, example_meaning, exam in EXTRA_VOCAB:
     TOPIK_VOCAB.append({"word": word, "level": level, "meaning": meaning,
                         "example": example, "example_meaning": example_meaning, "exam": exam})
@@ -293,10 +395,75 @@ EXTRA_GRAMMAR = [
     ("-는 것이 아니라", "Không phải là ... mà là ...; phủ định cách hiểu/hành động trước và chuyển sang nội dung đúng.", "눈에 보이는 현상에만 집중하는 것이 아니라 숨겨진 원인을 탐색해야 한다.", "Không chỉ tập trung vào hiện tượng nhìn thấy mà cần tìm hiểu nguyên nhân ẩn giấu.", "Đề 83"),
     ("-는 데 중요한 역할을 하다", "Đóng vai trò quan trọng trong việc ...", "창의력은 문제를 해결하는 데 중요한 역할을 한다.", "Năng lực sáng tạo đóng vai trò quan trọng trong việc giải quyết vấn đề.", "Đề 83"),
 ]
+
+EXTRA_GRAMMAR.extend([
+    ("-고자 노력하다", "Nỗ lực để thực hiện mục tiêu nào đó.", "기업은 직장 내 자율성을 높이고자 노력하고 있다.", "Doanh nghiệp đang nỗ lực nâng cao tính tự chủ tại nơi làm việc.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("-으로 변질되다", "Biến chất thành, chuyển thành trạng thái tiêu cực.", "자율성이 이기주의로 변질될 수 있다.", "Tính tự chủ có thể biến chất thành chủ nghĩa ích kỷ.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("-는 데 기여하다", "Góp phần vào việc ...; văn viết trang trọng.", "업무 효율을 높이는 데 기여한다.", "Góp phần nâng cao hiệu suất công việc.", "Đề bổ sung – Tính tự chủ cá nhân tại nơi làm việc"),
+    ("-로 하여금 -게 하다", "Khiến/ làm cho ai đó thực hiện hoặc rơi vào trạng thái nào đó.", "가짜 뉴스는 정보 수용자로 하여금 편협한 사고를 형성하게 한다.", "Tin giả khiến người tiếp nhận thông tin hình thành lối suy nghĩ phiến diện.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("-은/는 물론이고", "Không chỉ ... mà còn ...; nhấn mạnh sự bổ sung.", "경제적 피해는 물론이고 명예도 훼손된다.", "Không chỉ thiệt hại kinh tế mà danh dự cũng bị tổn hại.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("-지 않도록", "Để không ...; diễn đạt mục đích ngăn chặn.", "가짜 뉴스가 확산되지 않도록 규제를 강화해야 한다.", "Cần tăng cường quy định để tin giả không lan rộng.", "Đề bổ sung – Vấn đề và giải pháp loại bỏ tin giả"),
+    ("-에 무관하게", "Không phụ thuộc vào, không phân biệt ...", "지역과 계층에 무관하게 혜택을 누릴 수 있어야 한다.", "Mọi người cần được hưởng lợi ích không phân biệt khu vực và tầng lớp.", "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số"),
+    ("-는 데 어려움이 따르다", "Gặp khó khăn trong việc ...", "디지털 기기를 사용하는 데 어려움이 따른다.", "Gặp khó khăn trong việc sử dụng thiết bị kỹ thuật số.", "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số"),
+    ("-에 뒤처지다", "Tụt hậu, bị bỏ lại phía sau so với ...", "변화하는 시대에 뒤처지지 않도록 노력해야 한다.", "Cần nỗ lực để không bị tụt hậu trước thời đại đang thay đổi.", "Đề bổ sung – Tình trạng bị gạt ra bên lề trong xã hội số"),
+    ("-보다는", "Thay vì ... thì ...; nêu sự đối lập/ưu tiên.", "환경보호보다는 편리함만 추구했다.", "Chỉ theo đuổi sự tiện lợi thay vì bảo vệ môi trường.", "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường"),
+    ("-을/를 들 수 있다", "Có thể kể đến ...; dùng để nêu ví dụ/nguyên nhân.", "그 이유로는 일회용품 사용 증가를 들 수 있다.", "Có thể kể đến việc gia tăng sử dụng đồ dùng một lần như một nguyên nhân.", "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường"),
+    ("-기 때문이다", "Bởi vì ...; nêu nguyên nhân.", "환경보호보다 편리함을 추구했기 때문이다.", "Bởi vì con người theo đuổi sự tiện lợi hơn là bảo vệ môi trường.", "Bài luyện bổ sung – Nguyên nhân ô nhiễm môi trường"),
+    ("-는 경향이 있다", "Có xu hướng ...", "현대인들은 다른 사람에게 관심을 가지지 않는 경향이 있다.", "Người hiện đại có xu hướng không quan tâm đến người khác.", "Bài luyện bổ sung – Sự thờ ơ của con người hiện đại"),
+    ("-에 대한 믿음을 잃다", "Mất niềm tin vào ...", "많은 사람들이 타인에 대한 믿음을 잃었다.", "Nhiều người đã mất niềm tin vào người khác.", "Bài luyện bổ sung – Sự thờ ơ của con người hiện đại"),
+])
+
 for grammar, usage, example, example_meaning, exam in EXTRA_GRAMMAR:
     TOPIK_54_GRAMMAR.append({"grammar": grammar, "usage": usage, "example": example,
                              "example_meaning": example_meaning, "exam": exam})
 
+
+
+
+# Các đề bài TOPIK II người học đã gửi nhưng chưa có đầy đủ bài mẫu song ngữ trong ngân hàng câu.
+# Được lưu riêng để không tự tạo hoặc thay thế nội dung gốc của người học.
+PROMPT_BANK = {
+    "Làm việc tại nhà (재택 근무)": [
+        ("재택 근무의 장점은 무엇인가?", "Làm việc tại nhà có những ưu điểm gì?"),
+        ("재택 근무의 문제점은 무엇인가?", "Làm việc tại nhà có những vấn đề/bất cập gì?"),
+        ("재택 근무의 문제를 해결하기 위한 방법에는 어떤 것이 있는가?", "Có những phương pháp nào để giải quyết các vấn đề của hình thức làm việc tại nhà?"),
+    ],
+    "Trí tuệ nhân tạo (인공지능)": [
+        ("인공지능의 긍정적인 영향은 무엇인가?", "Những ảnh hưởng tích cực của trí tuệ nhân tạo là gì?"),
+        ("인공지능의 부정적인 영향은 무엇인가?", "Những ảnh hưởng tiêu cực của trí tuệ nhân tạo là gì?"),
+        ("인공지능을 올바르게 사용하는 방법은 무엇인가?", "Phương pháp sử dụng trí tuệ nhân tạo đúng đắn là gì?"),
+    ],
+    "Chữa lành vết thương lòng (마음의 상처)": [
+        ("언제 마음의 상처를 받는가?", "Khi nào chúng ta bị tổn thương tinh thần?"),
+        ("어떤 사람들이 마음의 상처를 잘 회복하지 못하는가?", "Những người như thế nào thường khó hồi phục vết thương lòng?"),
+        ("마음의 상처를 잘 회복하기 위해 어떤 노력이 필요한가?", "Cần nỗ lực như thế nào để hồi phục tốt những tổn thương tinh thần?"),
+    ],
+    "Động viên và khích lệ (격려와 응원)": [
+        ("사람들은 언제 격려와 응원을 하는가?", "Mọi người thường động viên và khích lệ khi nào?"),
+        ("도움이 되지 않는 격려와 응원은 어떤 것인가?", "Những lời động viên, khích lệ không có ích là những lời như thế nào?"),
+        ("상대방에게 올바르게 격려와 응원을 하려면 어떻게 해야 하는가?", "Cần làm thế nào để động viên và khích lệ người khác một cách phù hợp?"),
+    ],
+    "Phân biệt đối xử (차별)": [
+        ("차별에는 어떤 유형이 있는가?", "Có những loại hình phân biệt đối xử nào?"),
+        ("차별로 인해 어떤 사회적 문제가 발생하는가?", "Những vấn đề xã hội nào phát sinh do phân biệt đối xử?"),
+        ("차별 문제를 해결하기 위해 어떤 노력이 필요한가?", "Cần có những nỗ lực nào để giải quyết vấn đề phân biệt đối xử?"),
+    ],
+    "Lựa chọn nghề nghiệp và trải nghiệm nghề nghiệp (진로 선택)": [
+        ("청소년들은 진로 선택 과정에 어떤 어려움을 겪을까?", "Thanh thiếu niên gặp những khó khăn gì trong quá trình lựa chọn nghề nghiệp?"),
+        ("직업 체험 교육은 청소년들에게 어떤 도움을 줄까?", "Giáo dục trải nghiệm nghề nghiệp mang lại những lợi ích gì cho thanh thiếu niên?"),
+        ("학교는 의미 있는 직업 체험 교육을 하기 위해 어떻게 해야 할까?", "Nhà trường cần làm gì để tổ chức hoạt động giáo dục trải nghiệm nghề nghiệp có ý nghĩa?"),
+    ],
+    "Truyền thông đại chúng và thanh thiếu niên (대중 매체)": [
+        ("청소년이 대중 매체를 통해 얻을 수 있는 것은 무엇인가?", "Thanh thiếu niên có thể nhận được những gì thông qua phương tiện truyền thông đại chúng?"),
+        ("대중 매체가 청소년의 가치관에 미치는 부정적인 영향은 무엇인가?", "Phương tiện truyền thông đại chúng gây ra những ảnh hưởng tiêu cực nào đối với hệ giá trị của thanh thiếu niên?"),
+        ("청소년이 대중 매체를 대할 때 가져야 할 바람직한 태도는 무엇인가?", "Thanh thiếu niên cần có thái độ phù hợp như thế nào khi tiếp nhận phương tiện truyền thông đại chúng?"),
+    ],
+    "Ảnh hưởng của thời tiết (날씨가 사람들의 생활에 미치는 영향)": [
+        ("날씨는 사람들의 건강에 어떤 영향을 미치는가?", "Thời tiết ảnh hưởng như thế nào đến sức khỏe con người?"),
+        ("날씨는 사람들의 경제 활동에 어떤 영향을 미치는가?", "Thời tiết ảnh hưởng như thế nào đến hoạt động kinh tế của con người?"),
+        ("사람들은 날씨 변화에 어떻게 대처해야 하는가?", "Con người cần ứng phó với sự thay đổi của thời tiết như thế nào?"),
+    ],
+}
 
 
 # ------------------------- Chấm đối chiếu miễn phí, chạy ngoại tuyến -------------------------
@@ -544,7 +711,7 @@ MENU_GRAMMAR = "✍️ Biểu hiện & ngữ pháp TOPIK 54"
 
 menu = st.sidebar.radio(
     "📂 Chọn chế độ",
-    [MENU_K2V, MENU_V2K, MENU_VOCAB, MENU_GRAMMAR, "🧑‍🎓 Chấm câu tự nhập"],
+    [MENU_K2V, MENU_V2K, MENU_VOCAB, MENU_GRAMMAR, "📑 Kho đề bài TOPIK đã gửi", "🧑‍🎓 Chấm câu tự nhập"],
 )
 
 if "question_index_k2v" not in st.session_state:
@@ -662,6 +829,16 @@ elif menu == MENU_GRAMMAR:
             st.markdown(f"**Ví dụ:** {item['example']}")
             st.write(item["example_meaning"])
             pronunciation_player(item["example"], f"grammar_{i}")
+
+elif menu == "📑 Kho đề bài TOPIK đã gửi":
+    st.subheader("📑 Kho đề bài TOPIK II đã gửi")
+    st.caption("Các đề có đủ bài song ngữ nằm trong hai mục luyện dịch. Mục này lưu riêng những đề bài hiện mới có câu hỏi, chưa có đầy đủ bài mẫu song ngữ để đưa vào luyện dịch từng câu.")
+    for topic, questions in PROMPT_BANK.items():
+        with st.expander(topic):
+            for korean, vietnamese in questions:
+                st.markdown(f"**{korean}**")
+                st.write(vietnamese)
+                pronunciation_player(korean, "prompt_" + str(abs(hash(korean))))
 
 elif menu == "🧑‍🎓 Chấm câu tự nhập":
     st.subheader("🧑‍🎓 Luyện dịch với câu tự chọn")
